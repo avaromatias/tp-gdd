@@ -10,3 +10,9 @@ C:\Users\Matias\Google Drive\UTN\Gestión de datos\TP Frba Cupon 1.0 - 2C 2019\A
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\bin\Debug\FrbaOfertas.exe.config
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.exe
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.pdb
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\bin\Debug\FrbaOfertas.exe
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\bin\Debug\FrbaOfertas.pdb
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.csprojResolveAssemblyReference.cache
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.Properties.Resources.resources
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.csproj.GenerateResource.Cache
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormLogin.resources

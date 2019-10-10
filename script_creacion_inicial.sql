@@ -162,3 +162,61 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_usuario),
 	FOREIGN KEY (id_estado) REFERENCES [LOS_GDDS].[estados_compra](id_estado_compra)
 )
+
+
+/* STORED PROCEDURES */
+
+/* Validar login */
+USE [GD2C2019]
+GO
+
+/****** Object:  StoredProcedure [LOS_GDDS].[validar_login]    Script Date: 10/10/2019 14:56:35 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[validar_login] 
+	@Usuario varchar(100),
+	@Clave varchar(100),
+	@MaxIntentos numeric(3,0),
+	@Resultado INT OUT,
+	@Id INT OUT
+AS
+BEGIN
+DECLARE
+	@ClaveEncriptada varchar(255),
+	@Intentos numeric(3,0)
+SELECT @Id = id_usuario, @ClaveEncriptada = password, @Intentos = cantidad_logins_fallidos FROM LOS_GDDS.usuarios
+WHERE username = @Usuario
+
+SELECT @Resultado =
+CASE
+	--El usuario no existe
+	WHEN @Id IS NULL THEN 0
+	--Intentos excedidos
+	WHEN @Intentos >= @MaxIntentos THEN 1
+	--La password no coincide
+	WHEN @ClaveEncriptada <> CAST(@Clave AS binary(32)) THEN 2
+	--El usuario no está habilitado
+	WHEN (SELECT habilitado FROM LOS_GDDS.usuarios WHERE id_usuario = @Id) = 0 THEN 3
+	--Login exitoso
+	ELSE 4
+END
+
+
+SELECT @Intentos = 
+	CASE @Resultado
+		WHEN 1 THEN @Intentos
+		WHEN 2 THEN (@Intentos + 1)
+		WHEN 3 THEN 0
+		WHEN 4 THEN 0
+	END
+
+IF (@Resultado <> 0)
+	UPDATE LOS_GDDS.usuarios SET cantidad_logins_fallidos = @Intentos WHERE id_usuario = @Id
+
+RETURN
+END
+GO
