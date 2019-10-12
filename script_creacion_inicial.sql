@@ -65,6 +65,7 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	fecha_nacimiento DATETIME,
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
 	saldo NUMERIC(18,2),
+	ciudad VARCHAR(50)
 	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario)
 )
 
@@ -85,14 +86,28 @@ CREATE TABLE [LOS_GDDS].[tarjetas] (
 	FOREIGN KEY (id_tipo_tarjeta) REFERENCES [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta)
 )
 
+-- tabla medios_pago
+CREATE TABLE [LOS_GDDS].[medios_pago] (
+	id_medio_pago INT IDENTITY PRIMARY KEY,
+	descripcion VARCHAR(100),
+)
+
 -- tabla cargas_realizadas
 CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	id_carga INT PRIMARY KEY IDENTITY,
 	id_usuario INT,
-	id_tarjeta INT,
+	id_tarjeta INT NULL,
+	id_medio_pago INT,
 	fecha DATETIME,
 	monto NUMERIC(18,2)
-	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta)
+	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta),
+	FOREIGN KEY (id_medio_pago) REFERENCES [LOS_GDDS].[medios_pago](id_medio_pago)
+)
+
+-- tabla rubros
+CREATE TABLE [LOS_GDDS].[rubros] (
+	id_rubro INT IDENTITY PRIMARY KEY,
+	descripcion VARCHAR(100)
 )
 
 -- tabla proveedores
@@ -108,7 +123,9 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	cuit NVARCHAR(20),
 	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
-	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario)
+	id_rubro INT
+	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario),
+	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro)
 )
 
 -- tabla facturacion_proveedor
@@ -157,6 +174,7 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	id_cliente INT,
 	id_estado INT,
 	fecha DATETIME,
+	fecha_consumo DATETIME,
 	cantidad NUMERIC(18,0),
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_usuario),
