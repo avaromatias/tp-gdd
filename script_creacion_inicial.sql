@@ -65,7 +65,7 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	fecha_nacimiento DATETIME,
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
 	saldo NUMERIC(18,2),
-	ciudad VARCHAR(50)
+	ciudad NVARCHAR(255)
 	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario)
 )
 
