@@ -188,8 +188,12 @@ BEGIN
 DECLARE
 	@ClaveEncriptada varchar(255),
 	@Intentos numeric(3,0)
-SELECT @Id = id_usuario, @ClaveEncriptada = password, @Intentos = cantidad_logins_fallidos FROM LOS_GDDS.usuarios
-WHERE username = @Usuario
+	SELECT 
+		@Id = [id_usuario], 
+		@ClaveEncriptada = [password],
+		@Intentos = [cantidad_logins_fallidos] 
+	FROM [LOS_GDDS].[usuarios]
+WHERE [username] = @Usuario
 
 SELECT @Resultado =
 CASE
@@ -200,7 +204,7 @@ CASE
 	--La password no coincide
 	WHEN @ClaveEncriptada <> CAST(@Clave AS binary(32)) THEN 2
 	--El usuario no está habilitado
-	WHEN (SELECT habilitado FROM LOS_GDDS.usuarios WHERE id_usuario = @Id) = 0 THEN 3
+	WHEN (SELECT [habilitado] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = @Id) = 0 THEN 3
 	--Login exitoso
 	ELSE 4
 END
@@ -215,7 +219,7 @@ SELECT @Intentos =
 	END
 
 IF (@Resultado <> 0)
-	UPDATE LOS_GDDS.usuarios SET cantidad_logins_fallidos = @Intentos WHERE id_usuario = @Id
+	UPDATE [LOS_GDDS].[usuarios] SET [cantidad_logins_fallidos] = @Intentos WHERE [id_usuario] = @Id
 
 RETURN
 END
