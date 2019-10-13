@@ -37,7 +37,7 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	id_cliente INT PRIMARY KEY IDENTITY,
 	nombre NVARCHAR(255),
 	apellido NVARCHAR(255),
-	dni NUMERIC(18,0),
+	dni NUMERIC(18,0) UNIQUE,
 	mail NVARCHAR(255),
 	telefono NUMERIC(18,0),
 	direccion NVARCHAR(255),
@@ -75,13 +75,14 @@ CREATE TABLE [LOS_GDDS].[medios_pago] (
 -- tabla cargas_realizadas
 CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	id_carga INT PRIMARY KEY IDENTITY,
-	id_usuario INT,
-	id_tarjeta INT NULL,
+	id_cliente INT NOT NULL,
+	id_tarjeta INT,
 	id_medio_pago INT,
 	fecha DATETIME,
 	monto NUMERIC(18,2)
 	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta),
-	FOREIGN KEY (id_medio_pago) REFERENCES [LOS_GDDS].[medios_pago](id_medio_pago)
+	FOREIGN KEY (id_medio_pago) REFERENCES [LOS_GDDS].[medios_pago](id_medio_pago),
+	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente)
 )
 
 -- tabla rubros
@@ -101,7 +102,7 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	codigo_postal NVARCHAR(15),
 	ciudad NVARCHAR(255),
 	direccion NVARCHAR(100),
-	cuit NVARCHAR(20),
+	cuit NVARCHAR(20) UNIQUE,
 	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
 	id_rubro INT
@@ -116,8 +117,8 @@ CREATE TABLE [LOS_GDDS].[usuarios] (
 	password BINARY(32),
 	habilitado BIT,
 	cantidad_logins_fallidos INT,
-	id_proveedor INT NULL,
-	id_cliente INT NULL,
+	id_proveedor INT,
+	id_cliente INT,
 	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
 )
@@ -340,7 +341,7 @@ CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[cargas_realizadas]([id_usuario], [monto], [fecha])
+		[LOS_GDDS].[cargas_realizadas]([id_cliente], [monto], [fecha])
 		(SELECT
 			DISTINCT
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
@@ -523,11 +524,11 @@ BEGIN
 			-- revisar de donde sacar la fecha DESDE
 			NULL,
 			[Factura_Fecha]
-			FROM
+		 FROM
 			[gd_esquema].[Maestra]
-			WHERE 
+		 WHERE 
 			[Factura_Fecha] IS NOT NULL
-			GROUP BY
+		 GROUP BY
 			[Factura_nro],
 			[Provee_CUIT],
 			[Factura_Fecha]
