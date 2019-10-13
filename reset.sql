@@ -1,0 +1,127 @@
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'compras')
+DROP TABLE [LOS_GDDS].[compras]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'estados_compra')
+DROP TABLE [LOS_GDDS].[estados_compra]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'ofertas')
+DROP TABLE [LOS_GDDS].[ofertas]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'facturas')
+DROP TABLE [LOS_GDDS].[facturas]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'facturacion_proveedor')
+DROP TABLE [LOS_GDDS].[facturacion_proveedor]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'roles_usuario')
+DROP TABLE [LOS_GDDS].[roles_usuario]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'usuarios')
+DROP TABLE [LOS_GDDS].[usuarios]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'proveedores')
+DROP TABLE [LOS_GDDS].[proveedores]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'rubros')
+DROP TABLE [LOS_GDDS].[rubros]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'cargas_realizadas')
+DROP TABLE [LOS_GDDS].[cargas_realizadas]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'medios_pago')
+DROP TABLE [LOS_GDDS].[medios_pago]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'tarjetas')
+DROP TABLE [LOS_GDDS].[tarjetas]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'tipos_tarjeta')
+DROP TABLE [LOS_GDDS].[tipos_tarjeta]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'clientes')
+DROP TABLE [LOS_GDDS].[clientes]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'funcionalidades_rol')
+DROP TABLE [LOS_GDDS].[funcionalidades_rol]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'roles')
+DROP TABLE [LOS_GDDS].[roles]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'funcionalidades')
+DROP TABLE [LOS_GDDS].[funcionalidades]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+           WHERE TABLE_NAME = N'obtener_rubro_by_descripcion')
+DROP TABLE [LOS_GDDS].[obtener_rubro_by_descripcion]
+
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[obtener_rubro_by_descripcion]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion]
+
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[buscar_fecha_entrega_oferta]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[buscar_fecha_entrega_oferta]
+
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[obtener_cliente_by_dni]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[obtener_cliente_by_dni]
+
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[obtener_proveedor_by_cuit]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'validar_login')
+DROP PROCEDURE [LOS_GDDS].[validar_login]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_clientes')
+DROP PROCEDURE [LOS_GDDS].[migrar_clientes]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_fecha_entrega_ofertas')
+DROP PROCEDURE [LOS_GDDS].[actualizar_fecha_entrega_ofertas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_rubros')
+DROP PROCEDURE [LOS_GDDS].[migrar_rubros]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_proveedores')
+DROP PROCEDURE [LOS_GDDS].[migrar_proveedores]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_cargas_realizadas')
+DROP PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_ofertas')
+DROP PROCEDURE [LOS_GDDS].[migrar_ofertas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_compras')
+DROP PROCEDURE [LOS_GDDS].[migrar_compras]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_facturas')
+DROP PROCEDURE [LOS_GDDS].[migrar_facturas]
+
+IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
+BEGIN
+DROP SCHEMA [LOS_GDDS]
+END
