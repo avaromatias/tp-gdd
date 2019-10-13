@@ -32,28 +32,9 @@ CREATE TABLE [LOS_GDDS].[funcionalidades_rol] (
 	FOREIGN KEY (id_funcionalidad) REFERENCES [LOS_GDDS].[funcionalidades](id_funcionalidad)
 )
 
--- tabla usuarios
--- para guardar la password use binary(32) como recomiendan aca https://stackoverflow.com/questions/247304/what-data-type-to-use-for-hashed-password-field-and-what-length
-CREATE TABLE [LOS_GDDS].[usuarios] (
-	id_usuario INT PRIMARY KEY IDENTITY,
-	username VARCHAR(100),
-	password BINARY(32),
-	habilitado BIT,
-	cantidad_logins_fallidos INT
-)
-
--- tabla roles_usuario
-CREATE TABLE [LOS_GDDS].[roles_usuario] (
-	id_usuario INT,
-	id_rol INT,
-	PRIMARY KEY (id_usuario, id_rol),
-	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario),
-	FOREIGN KEY (id_rol) REFERENCES [LOS_GDDS].[roles](id_rol)
-)
-
 -- tabla clientes
 CREATE TABLE [LOS_GDDS].[clientes] (
-	id_usuario INT PRIMARY KEY IDENTITY,
+	id_cliente INT PRIMARY KEY IDENTITY,
 	nombre NVARCHAR(255),
 	apellido NVARCHAR(255),
 	dni NUMERIC(18,0),
@@ -66,7 +47,6 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
 	saldo NUMERIC(18,2),
 	ciudad NVARCHAR(255)
-	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario)
 )
 
 -- tabla tipos_tarjeta
@@ -112,7 +92,7 @@ CREATE TABLE [LOS_GDDS].[rubros] (
 
 -- tabla proveedores
 CREATE TABLE [LOS_GDDS].[proveedores] (
-	id_usuario INT PRIMARY KEY IDENTITY,
+	id_proveedor INT PRIMARY KEY IDENTITY,
 	razon_social NVARCHAR(100),
 	-- use el mismo datatype que usamos en clientes, porque en la maestra no esta el campo
 	mail NVARCHAR(255),
@@ -120,19 +100,42 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	-- use el mismo datatype que en clientes
 	codigo_postal NVARCHAR(15),
 	ciudad NVARCHAR(255),
+	direccion NVARCHAR(100),
 	cuit NVARCHAR(20),
 	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
 	id_rubro INT
-	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario),
 	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro)
+)
+
+-- tabla usuarios
+-- para guardar la password use binary(32) como recomiendan aca https://stackoverflow.com/questions/247304/what-data-type-to-use-for-hashed-password-field-and-what-length
+CREATE TABLE [LOS_GDDS].[usuarios] (
+	id_usuario INT PRIMARY KEY IDENTITY,
+	username VARCHAR(100),
+	password BINARY(32),
+	habilitado BIT,
+	cantidad_logins_fallidos INT,
+	id_proveedor INT NULL,
+	id_cliente INT NULL,
+	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor),
+	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
+)
+
+-- tabla roles_usuario
+CREATE TABLE [LOS_GDDS].[roles_usuario] (
+	id_usuario INT,
+	id_rol INT,
+	PRIMARY KEY (id_usuario, id_rol),
+	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario),
+	FOREIGN KEY (id_rol) REFERENCES [LOS_GDDS].[roles](id_rol)
 )
 
 -- tabla facturacion_proveedor
 CREATE TABLE [LOS_GDDS].[facturacion_proveedor] (
 	id_proveedor INT PRIMARY KEY,
 	total_facturado NUMERIC(18,2)
-	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_usuario)
+	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
 )
 
 -- tabla facturas
@@ -142,7 +145,7 @@ CREATE TABLE [LOS_GDDS].[facturas] (
 	total NUMERIC(18,2),
 	fecha_desde DATETIME,
 	fecha_hasta DATETIME
-	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_usuario)
+	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
 )
 
 -- tabla ofertas
@@ -158,7 +161,7 @@ CREATE TABLE [LOS_GDDS].[ofertas] (
 	descripcion NVARCHAR(255),
 	fecha_vencimiento DATETIME,
 	fecha_publicacion DATETIME,
-	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_usuario)
+	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
 )
 
 --tabla estados_compra
@@ -177,7 +180,7 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	fecha_consumo DATETIME,
 	cantidad NUMERIC(18,0),
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
-	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_usuario),
+	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
 	FOREIGN KEY (id_estado) REFERENCES [LOS_GDDS].[estados_compra](id_estado_compra)
 )
 
@@ -242,3 +245,350 @@ IF (@Resultado <> 0)
 RETURN
 END
 GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_clientes]
+AS
+BEGIN
+	INSERT INTO 
+		[LOS_GDDS].[clientes]([apellido], [nombre], [dni], [direccion], [telefono], [mail], [fecha_nacimiento], [ciudad])
+		(SELECT
+			DISTINCT
+				[Cli_Apellido] ,
+				[Cli_Nombre],
+				[Cli_Dni],
+				[Cli_Direccion],
+				[Cli_Telefono],
+				[Cli_Mail],
+				[Cli_Fecha_Nac],
+				[Cli_Ciudad]
+		FROM 
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Cli_Apellido] IS NOT NULL
+		)
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_rubros]
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[rubros](descripcion)
+		(SELECT
+			DISTINCT
+				[provee_rubro]
+		 FROM 
+			[gd_esquema].[Maestra]
+		 WHERE
+			[provee_rubro] IS NOT NULL
+		)
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion] (@descripcion_rubro NVARCHAR(100))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_rubro INT
+	SELECT
+		@id_rubro = [id_rubro]
+		FROM 
+			[LOS_GDDS].[rubros]
+		WHERE 
+			[descripcion] = @descripcion_rubro
+	RETURN @id_rubro
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_proveedores]
+AS
+BEGIN
+	INSERT INTO 
+		[LOS_GDDS].[proveedores]([razon_social], [direccion], [ciudad], [telefono], [cuit], [id_rubro])
+		(SELECT
+			DISTINCT
+				[Provee_RS],
+				[Provee_Dom],
+				[Provee_Ciudad],
+				[Provee_Telefono],
+				[Provee_CUIT],
+				[LOS_GDDS].[obtener_rubro_by_descripcion]([Provee_Rubro])
+		FROM 
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Provee_RS] IS NOT NULL
+		)
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[obtener_cliente_by_dni] (@dni NUMERIC(18,0))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_cliente INT
+	SELECT
+		@id_cliente = [id_cliente]
+		FROM 
+			[LOS_GDDS].[clientes]
+		WHERE 
+			[dni] = @dni
+	RETURN @id_cliente
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
+AS
+BEGIN
+	INSERT INTO 
+		[LOS_GDDS].[cargas_realizadas]([id_usuario], [monto], [fecha])
+		(SELECT
+			DISTINCT
+				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+				[Carga_credito],
+				[Carga_fecha]
+			FROM 
+				[gd_esquema].[Maestra]
+			WHERE 
+				[Carga_credito] IS NOT NULL
+		)
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit] (@cuit NVARCHAR(20))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_proveedor INT
+	SELECT
+		@id_proveedor = [id_proveedor]
+		FROM 
+			[LOS_GDDS].[proveedores]
+		WHERE 
+			[cuit] = @cuit
+	RETURN @id_proveedor
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_ofertas]
+AS
+BEGIN
+	INSERT INTO 
+		[LOS_GDDS].[ofertas]([id_oferta], [id_proveedor], [precio_lista], [precio_oferta], [stock], [descripcion], [fecha_publicacion], [fecha_vencimiento])
+		(SELECT
+			DISTINCT
+				[Oferta_Codigo],
+				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
+				[Oferta_Precio_Ficticio],
+				[Oferta_Precio],
+				[Oferta_Cantidad],
+				[Oferta_Descripcion],
+				[Oferta_Fecha],
+				[Oferta_Fecha_Venc]
+				FROM 
+						[gd_esquema].[Maestra]
+				WHERE 
+						[Oferta_Codigo] IS NOT NULL
+		)
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[buscar_fecha_entrega_oferta] (@codigo_oferta NVARCHAR(50), @dni_cliente NUMERIC(18,0))
+RETURNS DATETIME
+AS
+BEGIN
+	DECLARE @fecha_entrega_oferta DATETIME = NULL
+	SELECT
+		@fecha_entrega_oferta =
+		[Oferta_Entregado_Fecha]
+		FROM
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Oferta_Codigo] = @codigo_oferta
+			AND [Cli_Dni] = @dni_cliente
+			AND [Oferta_Entregado_Fecha] IS NOT NULL
+	RETURN @fecha_entrega_oferta
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[actualizar_fecha_entrega_ofertas]
+AS
+BEGIN
+	DECLARE @id_oferta NVARCHAR(50),
+			@id_cliente	INT,
+			@oferta_entregado_fecha DATETIME
+
+	DECLARE ofertas_cursor CURSOR
+	FOR
+		SELECT
+			DISTINCT
+					[Oferta_Codigo],
+					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+					[Oferta_entregado_fecha]
+				FROM
+					[gd_esquema].[Maestra]
+				WHERE 
+					[Oferta_Codigo]	IS NOT NULL
+					AND [Cli_Dni] IS NOT NULL
+					AND [Oferta_Entregado_Fecha] IS NOT NULL
+	
+	OPEN ofertas_cursor
+		FETCH NEXT FROM ofertas_cursor INTO
+			@id_oferta,
+			@id_cliente,
+			@oferta_entregado_fecha
+
+	WHILE @@FETCH_STATUS = 0
+				BEGIN
+					UPDATE
+						[LOS_GDDS].[compras]
+						SET 
+							[fecha_consumo] = @oferta_entregado_fecha
+						WHERE
+							[id_oferta] = @id_oferta
+							AND [id_cliente] = @id_cliente
+
+					FETCH NEXT FROM ofertas_cursor INTO
+						@id_oferta,
+						@id_cliente,
+						@oferta_entregado_fecha
+				END
+	CLOSE ofertas_cursor
+	DEALLOCATE ofertas_cursor
+END
+GO
+
+
+PRINT('insertando estados compra')
+SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] ON
+INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
+VALUES (1, 'pago')
+INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
+VALUES (2, 'entregado')
+SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] OFF
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_compras]
+AS
+BEGIN
+	DECLARE @estado_compra_pago INT = 1
+	DECLARE @estado_compra_entregado INT = 2
+
+	INSERT INTO 
+		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_estado], [fecha], [fecha_consumo])
+		(SELECT
+			DISTINCT
+					[Oferta_Codigo],
+					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+					@estado_compra_pago,
+					[Oferta_fecha_compra],
+					(
+						SELECT	
+							[Oferta_Entregado_fecha]
+						FROM
+							[gd_esquema].[Maestra] [m2]
+						WHERE
+							[m1].[Oferta_Codigo] = [m2].[Oferta_Codigo]
+						AND
+							[m1].[Cli_Dni] = [m2].[Cli_Dni]
+						AND
+							[m1].[Oferta_Fecha_Compra] = [m2].[Oferta_Fecha_Compra]
+						AND
+							[m2].[Oferta_Cantidad] IS NOT NULL
+						AND
+							[m2].[Oferta_Entregado_Fecha] IS NOT NULL
+						)
+		 FROM
+			[gd_esquema].[Maestra] [m1]
+		 WHERE 
+			[Oferta_Codigo] IS NOT NULL
+		)
+
+	UPDATE
+		[LOS_GDDS].[compras]
+		SET
+			[id_estado] = @estado_compra_entregado
+		WHERE
+			[fecha_consumo] IS NOT NULL
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[migrar_facturas]
+AS
+BEGIN
+	INSERT INTO 
+		[LOS_GDDS].[facturas]([id_proveedor], [total], [fecha_desde], [fecha_hasta])
+		(SELECT
+			[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
+			SUM([Oferta_Precio]),
+			-- revisar de donde sacar la fecha DESDE
+			NULL,
+			[Factura_Fecha]
+			FROM
+			[gd_esquema].[Maestra]
+			WHERE 
+			[Factura_Fecha] IS NOT NULL
+			GROUP BY
+			[Factura_nro],
+			[Provee_CUIT],
+			[Factura_Fecha]
+		)
+END
+GO
+
+
+-- este workaround es para que se migren los datos únicamente una vez por tabla
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[clientes]) = 0)
+BEGIN
+	PRINT('migrando clientes')
+	EXEC [LOS_GDDS].[migrar_clientes]
+	PRINT('clientes migrados!')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[rubros]) = 0)
+BEGIN
+	PRINT('migrando rubros')
+	EXEC [LOS_GDDS].[migrar_rubros]
+	PRINT('rubros migrados!')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[proveedores]) = 0)
+BEGIN
+	PRINT('migrando proveedores')
+	EXEC [LOS_GDDS].[migrar_proveedores]
+	PRINT('proveedores migrados!')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[cargas_realizadas]) = 0)
+BEGIN
+	PRINT('migrando cargas realizadas')
+	EXEC [LOS_GDDS].[migrar_cargas_realizadas]
+	PRINT('cargas realizadas migradas!')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[ofertas]) = 0)
+BEGIN
+	PRINT('migrando ofertas')
+	EXEC [LOS_GDDS].[migrar_ofertas]
+	PRINT('ofertas migradas!')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[compras]) = 0)
+BEGIN
+	PRINT('migrando compras')
+	EXEC [LOS_GDDS].[migrar_compras]
+	PRINT('compras migradas!')
+	--PRINT('actualizando fecha de entrega de compras')
+	--EXEC [LOS_GDDS].[actualizar_fecha_entrega_ofertas]
+	--PRINT('fecha de entrega de compras actualizadas')
+END
+
+IF((SELECT COUNT(1) FROM [LOS_GDDS].[facturas]) = 0)
+BEGIN
+	PRINT('migrando facturas')
+	EXEC [LOS_GDDS].[migrar_facturas]
+	PRINT('facturas migradas!')
+END
+
+-- con el viejo approach (cursor) tarda 01:02:53
+-- con el nuevo approach (sub-query) tarda 00:00:17
+-- hay que verificar los resultados pero parece que esta todo andando
