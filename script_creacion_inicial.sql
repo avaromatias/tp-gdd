@@ -348,9 +348,12 @@ DECLARE
 		@ClaveEncriptada = [u].[password],
 		@Intentos = [u].[cantidad_logins_fallidos],
 		@Rol = [ru].[id_rol]
-		FROM [LOS_GDDS].[usuarios] [u]
-		JOIN [LOS_GDDS].[roles_usuario] [ru]
-		ON [ru].[id_usuario] = [u].[id_usuario]
+		FROM 
+			[LOS_GDDS].[usuarios] [u]
+		INNER JOIN 
+			[LOS_GDDS].[roles_usuario] [ru]
+		ON 
+			[ru].[id_usuario] = [u].[id_usuario]
 	WHERE [username] = @Usuario
 
 SELECT @Resultado =
