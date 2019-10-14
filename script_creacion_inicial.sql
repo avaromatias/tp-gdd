@@ -145,6 +145,7 @@ CREATE TABLE [LOS_GDDS].[facturas] (
 	id_factura NUMERIC(18,0) PRIMARY KEY IDENTITY,
 	id_proveedor INT,
 	total NUMERIC(18,2),
+	fecha_emision DATETIME,
 	fecha_desde DATETIME,
 	fecha_hasta DATETIME
 	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
@@ -215,14 +216,16 @@ BEGIN
 		[LOS_GDDS].[clientes]
 	SET
 		[saldo] -=
-			((
-				SELECT
-					[precio_oferta]
-				FROM
-					[LOS_GDDS].[ofertas]
-				WHERE
-					[id_oferta] = @id_oferta
-			) * @cantidad)
+			(
+				(
+					SELECT
+						[precio_oferta]
+					FROM
+						[LOS_GDDS].[ofertas]
+					WHERE
+						[id_oferta] = @id_oferta
+				) * @cantidad
+			)
 	WHERE
 		[clientes].[id_cliente] = @id_cliente
 	COMMIT TRANSACTION
@@ -384,21 +387,22 @@ AS
 BEGIN
 	INSERT INTO 
 		[LOS_GDDS].[clientes]([apellido], [nombre], [dni], [direccion], [telefono], [mail], [fecha_nacimiento], [ciudad], [saldo])
-		(SELECT
-			DISTINCT
-				[Cli_Apellido] ,
-				[Cli_Nombre],
-				[Cli_Dni],
-				[Cli_Direccion],
-				[Cli_Telefono],
-				[Cli_Mail],
-				[Cli_Fecha_Nac],
-				[Cli_Ciudad],
-				0
-		FROM 
-			[gd_esquema].[Maestra]
-		WHERE 
-			[Cli_Apellido] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+					[Cli_Apellido] ,
+					[Cli_Nombre],
+					[Cli_Dni],
+					[Cli_Direccion],
+					[Cli_Telefono],
+					[Cli_Mail],
+					[Cli_Fecha_Nac],
+					[Cli_Ciudad],
+					0
+			FROM 
+				[gd_esquema].[Maestra]
+			WHERE 
+				[Cli_Apellido] IS NOT NULL
 		)
 END
 GO
@@ -408,13 +412,14 @@ AS
 BEGIN
 	INSERT INTO
 		[LOS_GDDS].[rubros](descripcion)
-		(SELECT
-			DISTINCT
-				[provee_rubro]
-		 FROM 
-			[gd_esquema].[Maestra]
-		 WHERE
-			[provee_rubro] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+					[provee_rubro]
+			 FROM 
+				[gd_esquema].[Maestra]
+			 WHERE
+				[provee_rubro] IS NOT NULL
 		)
 END
 GO
@@ -424,18 +429,19 @@ AS
 BEGIN
 	INSERT INTO 
 		[LOS_GDDS].[proveedores]([razon_social], [direccion], [ciudad], [telefono], [cuit], [id_rubro])
-		(SELECT
-			DISTINCT
-				[Provee_RS],
-				[Provee_Dom],
-				[Provee_Ciudad],
-				[Provee_Telefono],
-				[Provee_CUIT],
-				[LOS_GDDS].[obtener_rubro_by_descripcion]([Provee_Rubro])
-		FROM 
-			[gd_esquema].[Maestra]
-		WHERE 
-			[Provee_RS] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+					[Provee_RS],
+					[Provee_Dom],
+					[Provee_Ciudad],
+					[Provee_Telefono],
+					[Provee_CUIT],
+					[LOS_GDDS].[obtener_rubro_by_descripcion]([Provee_Rubro])
+			FROM 
+				[gd_esquema].[Maestra]
+			WHERE 
+				[Provee_RS] IS NOT NULL
 		)
 END
 GO
@@ -466,16 +472,17 @@ AS
 BEGIN
 	INSERT INTO 
 		[LOS_GDDS].[cargas_realizadas]([id_cliente], [monto], [fecha], [id_medio_pago])
-		(SELECT
-			DISTINCT
-				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-				[Carga_credito],
-				[Carga_fecha],
-				[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
-			FROM 
-				[gd_esquema].[Maestra]
-			WHERE 
-				[Carga_credito] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+					[Carga_credito],
+					[Carga_fecha],
+					[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
+				FROM 
+					[gd_esquema].[Maestra]
+				WHERE 
+					[Carga_credito] IS NOT NULL
 		)
 	EXEC [LOS_GDDS].[actualizar_saldos_clientes]
 END
@@ -486,20 +493,21 @@ AS
 BEGIN
 	INSERT INTO 
 		[LOS_GDDS].[ofertas]([id_oferta], [id_proveedor], [precio_lista], [precio_oferta], [stock], [descripcion], [fecha_publicacion], [fecha_vencimiento])
-		(SELECT
-			DISTINCT
-				[Oferta_Codigo],
-				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
-				[Oferta_Precio_Ficticio],
-				[Oferta_Precio],
-				[Oferta_Cantidad],
-				[Oferta_Descripcion],
-				[Oferta_Fecha],
-				[Oferta_Fecha_Venc]
-				FROM 
-						[gd_esquema].[Maestra]
-				WHERE 
-						[Oferta_Codigo] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+					[Oferta_Codigo],
+					[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
+					[Oferta_Precio_Ficticio],
+					[Oferta_Precio],
+					[Oferta_Cantidad],
+					[Oferta_Descripcion],
+					[Oferta_Fecha],
+					[Oferta_Fecha_Venc]
+					FROM 
+							[gd_esquema].[Maestra]
+					WHERE 
+							[Oferta_Codigo] IS NOT NULL
 		)
 END
 GO
@@ -621,33 +629,34 @@ BEGIN
 
 	INSERT INTO 
 		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_estado], [fecha], [fecha_consumo], [cantidad])
-		(SELECT
-			DISTINCT
-					[Oferta_Codigo],
-					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-					@estado_compra_pago,
-					[Oferta_fecha_compra],
-					(
-						SELECT	
-							[Oferta_Entregado_fecha]
-						FROM
-							[gd_esquema].[Maestra] [m2]
-						WHERE
-							[m1].[Oferta_Codigo] = [m2].[Oferta_Codigo]
-						AND
-							[m1].[Cli_Dni] = [m2].[Cli_Dni]
-						AND
-							[m1].[Oferta_Fecha_Compra] = [m2].[Oferta_Fecha_Compra]
-						AND
-							[m2].[Oferta_Cantidad] IS NOT NULL
-						AND
-							[m2].[Oferta_Entregado_Fecha] IS NOT NULL
-						),
-					1
-		 FROM
-			[gd_esquema].[Maestra] [m1]
-		 WHERE 
-			[Oferta_Codigo] IS NOT NULL
+		(
+			SELECT
+				DISTINCT
+						[Oferta_Codigo],
+						[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+						@estado_compra_pago,
+						[Oferta_fecha_compra],
+						(
+							SELECT	
+								[Oferta_Entregado_fecha]
+							FROM
+								[gd_esquema].[Maestra] [m2]
+							WHERE
+								[m1].[Oferta_Codigo] = [m2].[Oferta_Codigo]
+							AND
+								[m1].[Cli_Dni] = [m2].[Cli_Dni]
+							AND
+								[m1].[Oferta_Fecha_Compra] = [m2].[Oferta_Fecha_Compra]
+							AND
+								[m2].[Oferta_Cantidad] IS NOT NULL
+							AND
+								[m2].[Oferta_Entregado_Fecha] IS NOT NULL
+							),
+						1
+			 FROM
+				[gd_esquema].[Maestra] [m1]
+			 WHERE 
+				[Oferta_Codigo] IS NOT NULL
 		)
 
 	UPDATE
@@ -667,20 +676,21 @@ AS
 BEGIN
 	INSERT INTO 
 		[LOS_GDDS].[facturas]([id_proveedor], [total], [fecha_desde], [fecha_hasta])
-		(SELECT
-			[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
-			SUM([Oferta_Precio]),
-			-- revisar de donde sacar la fecha DESDE
-			NULL,
-			[Factura_Fecha]
-		 FROM
-			[gd_esquema].[Maestra]
-		 WHERE 
-			[Factura_Fecha] IS NOT NULL
-		 GROUP BY
-			[Factura_nro],
-			[Provee_CUIT],
-			[Factura_Fecha]
+		(
+			SELECT
+				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
+				SUM([Oferta_Precio]),
+				-- revisar de donde sacar la fecha DESDE
+				NULL,
+				[Factura_Fecha]
+			 FROM
+				[gd_esquema].[Maestra]
+			 WHERE 
+				[Factura_Fecha] IS NOT NULL
+			 GROUP BY
+				[Factura_nro],
+				[Provee_CUIT],
+				[Factura_Fecha]
 		)
 END
 GO
