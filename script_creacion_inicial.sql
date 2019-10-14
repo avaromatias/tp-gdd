@@ -142,7 +142,8 @@ CREATE TABLE [LOS_GDDS].[facturacion_proveedor] (
 
 -- tabla facturas
 CREATE TABLE [LOS_GDDS].[facturas] (
-	id_factura NUMERIC(18,0) PRIMARY KEY IDENTITY,
+	id_factura INT PRIMARY KEY IDENTITY,
+	nro_factura NUMERIC(18,0) UNIQUE,
 	id_proveedor INT,
 	total NUMERIC(18,2),
 	fecha_emision DATETIME,
@@ -675,9 +676,10 @@ CREATE PROCEDURE [LOS_GDDS].[migrar_facturas]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[facturas]([id_proveedor], [total], [fecha_desde], [fecha_hasta])
+		[LOS_GDDS].[facturas]([nro_factura], [id_proveedor], [total], [fecha_desde], [fecha_hasta])
 		(
 			SELECT
+				[Factura_Nro],
 				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
 				SUM([Oferta_Precio]),
 				-- revisar de donde sacar la fecha DESDE
