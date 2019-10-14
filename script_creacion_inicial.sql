@@ -450,7 +450,7 @@ BEGIN
 		[saldo] +=
 				(
 					SELECT
-						SUM(ISNULL([cr].[monto], 0))
+						ISNULL(SUM([cr].[monto]), 0)
 					 FROM
 						[cargas_realizadas] [cr]
 					 WHERE
