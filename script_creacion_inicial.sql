@@ -690,9 +690,9 @@ BEGIN
 	FROM
 		(
 			SELECT
-				[f].[nro_factura] AS nro_factura,
-				MIN([Oferta_fecha_compra]) AS fecha_desde,
-				MAX([Oferta_fecha_compra]) AS fecha_hasta
+				[f].[nro_factura] AS [nro_factura],
+				MIN([Oferta_fecha_compra]) AS [fecha_desde],
+				MAX([Oferta_fecha_compra]) AS [fecha_hasta]
 			FROM
 				[LOS_GDDS].[facturas] [f]
 			LEFT JOIN
