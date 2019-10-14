@@ -703,10 +703,6 @@ BEGIN
 				[LOS_GDDS].[ofertas] [o]
 			ON
 				[o].[id_oferta] = [m].[Oferta_Codigo]
-			INNER JOIN
-				[LOS_GDDS].[compras] [c]
-			ON
-				[c].[id_oferta] = [o].[id_oferta]
 			GROUP BY
 				[f].[nro_factura]
 		) a
