@@ -5,7 +5,7 @@ GO
 CREATE SCHEMA [LOS_GDDS]
 GO
 
--- Creacion de las tablas 
+/* CREACIÓN TABLAS */
 -- tome como standard que el id de las tablas va a ser id_entidad en lugar de solamente Id
 -- hay algunas columnas en la tabla maestra que NO están siendo mapeadas, hay que revisarlas
 -- tambien queda pendiente hacer la tabla medios_pago y todo lo relacionado para manejar transacciones en efectivo
@@ -37,7 +37,7 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	id_cliente INT PRIMARY KEY IDENTITY,
 	nombre NVARCHAR(255),
 	apellido NVARCHAR(255),
-	dni NUMERIC(18,0) UNIQUE,
+	dni NUMERIC(18,0) UNIQUE NOT NULL,
 	mail NVARCHAR(255),
 	telefono NUMERIC(18,0),
 	direccion NVARCHAR(255),
@@ -46,7 +46,8 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	fecha_nacimiento DATETIME,
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
 	saldo NUMERIC(18,2),
-	ciudad NVARCHAR(255)
+	ciudad NVARCHAR(255),
+	CHECK ([saldo] >= 0)
 )
 
 -- tabla tipos_tarjeta
@@ -69,13 +70,13 @@ CREATE TABLE [LOS_GDDS].[tarjetas] (
 -- tabla medios_pago
 CREATE TABLE [LOS_GDDS].[medios_pago] (
 	id_medio_pago INT IDENTITY PRIMARY KEY,
-	descripcion VARCHAR(100),
+	descripcion NVARCHAR(100),
 )
 
 -- tabla cargas_realizadas
 CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	id_carga INT PRIMARY KEY IDENTITY,
-	id_cliente INT NOT NULL,
+	id_cliente INT,
 	id_tarjeta INT,
 	id_medio_pago INT,
 	fecha DATETIME,
@@ -102,7 +103,7 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	codigo_postal NVARCHAR(15),
 	ciudad NVARCHAR(255),
 	direccion NVARCHAR(100),
-	cuit NVARCHAR(20) UNIQUE,
+	cuit NVARCHAR(20) UNIQUE NOT NULL,
 	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
 	id_rubro INT
@@ -113,8 +114,8 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 -- para guardar la password use binary(32) como recomiendan aca https://stackoverflow.com/questions/247304/what-data-type-to-use-for-hashed-password-field-and-what-length
 CREATE TABLE [LOS_GDDS].[usuarios] (
 	id_usuario INT PRIMARY KEY IDENTITY,
-	username VARCHAR(100),
-	password BINARY(32),
+	username VARCHAR(100) NOT NULL,
+	password BINARY(32) NOT NULL,
 	habilitado BIT,
 	cantidad_logins_fallidos INT,
 	id_proveedor INT,
@@ -153,7 +154,7 @@ CREATE TABLE [LOS_GDDS].[facturas] (
 CREATE TABLE [LOS_GDDS].[ofertas] (
 	-- este ID es un NVARCHAR segun la tabla maestra
 	id_oferta NVARCHAR(50) PRIMARY KEY,
-	id_proveedor INT,
+	id_proveedor INT NOT NULL,
 	precio_lista NUMERIC(18,2),
 	precio_oferta NUMERIC(18,2),
 	stock NUMERIC(18,0),
@@ -162,7 +163,9 @@ CREATE TABLE [LOS_GDDS].[ofertas] (
 	descripcion NVARCHAR(255),
 	fecha_vencimiento DATETIME,
 	fecha_publicacion DATETIME,
-	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
+	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor),
+	CHECK ([stock] >= 0),
+	CHECK ([fecha_vencimiento] > [fecha_publicacion])
 )
 
 --tabla estados_compra
@@ -174,19 +177,144 @@ CREATE TABLE [LOS_GDDS].[estados_compra] (
 -- tabla compras
 CREATE TABLE [LOS_GDDS].[compras] (
 	id_compra INT PRIMARY KEY IDENTITY,
-	id_oferta NVARCHAR(50),
-	id_cliente INT,
-	id_estado INT,
-	fecha DATETIME,
+	id_oferta NVARCHAR(50) NOT NULL,
+	id_cliente INT NOT NULL,
+	id_estado INT NOT NULL,
+	fecha DATETIME NOT NULL,
 	fecha_consumo DATETIME,
 	cantidad NUMERIC(18,0),
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
-	FOREIGN KEY (id_estado) REFERENCES [LOS_GDDS].[estados_compra](id_estado_compra)
+	FOREIGN KEY (id_estado) REFERENCES [LOS_GDDS].[estados_compra](id_estado_compra),
+	CHECK([fecha_consumo] > [fecha])
 )
+GO
 
+/* CREACIÓN TRIGGERS */
+CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ON
+	[LOS_GDDS].[compras]
+AFTER
+	INSERT
+AS
+BEGIN
+	BEGIN TRANSACTION 
+	DECLARE 
+		@id_cliente INT,
+		@id_oferta NVARCHAR(50),
+		@cantidad NUMERIC(18,0)
+	SELECT
+		@id_cliente = [i].[id_cliente],
+		@id_oferta = [i].[id_oferta],
+		-- chequear que onda la cantidad, siempre esta en NULL actualmente
+		@cantidad = [i].[cantidad]
+	FROM
+		[inserted] [i]
 
-/* STORED PROCEDURES */
+	UPDATE
+		[LOS_GDDS].[clientes]
+	SET
+		[saldo] -=
+			((
+				SELECT
+					[precio_oferta]
+				FROM
+					[LOS_GDDS].[ofertas]
+				WHERE
+					[id_oferta] = @id_oferta
+			) * @cantidad)
+	WHERE
+		[clientes].[id_cliente] = @id_cliente
+	COMMIT TRANSACTION
+END
+GO
+
+DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ON [LOS_GDDS].[compras]
+GO
+	
+/* CREACIÓN FUNCTIONS */
+CREATE FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion] (@descripcion_rubro NVARCHAR(100))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_rubro INT
+	SELECT
+		@id_rubro = [id_rubro]
+		FROM 
+			[LOS_GDDS].[rubros]
+		WHERE 
+			[descripcion] = @descripcion_rubro
+	RETURN @id_rubro
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[obtener_cliente_by_dni] (@dni NUMERIC(18,0))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_cliente INT
+	SELECT
+		@id_cliente = [id_cliente]
+		FROM 
+			[LOS_GDDS].[clientes]
+		WHERE 
+			[dni] = @dni
+	RETURN @id_cliente
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit] (@cuit NVARCHAR(20))
+RETURNS INT
+AS
+BEGIN
+DECLARE @id_proveedor INT
+	SELECT
+		@id_proveedor = [id_proveedor]
+		FROM 
+			[LOS_GDDS].[proveedores]
+		WHERE 
+			[cuit] = @cuit
+	RETURN @id_proveedor
+END
+GO
+
+-- esta function está al pedo por ahora, pero hasta que revisemos bien los datos popor las dudas la dejo
+CREATE FUNCTION [LOS_GDDS].[buscar_fecha_entrega_oferta] (@codigo_oferta NVARCHAR(50), @dni_cliente NUMERIC(18,0))
+RETURNS DATETIME
+AS
+BEGIN
+	DECLARE @fecha_entrega_oferta DATETIME = NULL
+	SELECT
+		@fecha_entrega_oferta =
+		[Oferta_Entregado_Fecha]
+		FROM
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Oferta_Codigo] = @codigo_oferta
+			AND [Cli_Dni] = @dni_cliente
+			AND [Oferta_Entregado_Fecha] IS NOT NULL
+	RETURN @fecha_entrega_oferta
+END
+GO
+
+CREATE FUNCTION [LOS_GDDS].[get_medio_pago_by_descripcion] (@descripcion_medio_pago NVARCHAR(100))
+RETURNS INT
+AS
+BEGIN
+	DECLARE @id_medio_pago INT = NULL
+	SELECT
+		@id_medio_pago =
+		[id_medio_pago]
+		FROM
+			[LOS_GDDS].[medios_pago]
+		WHERE 
+			[descripcion] = @descripcion_medio_pago
+	RETURN @id_medio_pago
+END
+GO
+
+/* CREACIÓN STORED PROCEDURES */
 
 /* Validar login */
 USE [GD2C2019]
@@ -251,7 +379,7 @@ CREATE PROCEDURE [LOS_GDDS].[migrar_clientes]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[clientes]([apellido], [nombre], [dni], [direccion], [telefono], [mail], [fecha_nacimiento], [ciudad])
+		[LOS_GDDS].[clientes]([apellido], [nombre], [dni], [direccion], [telefono], [mail], [fecha_nacimiento], [ciudad], [saldo])
 		(SELECT
 			DISTINCT
 				[Cli_Apellido] ,
@@ -261,7 +389,8 @@ BEGIN
 				[Cli_Telefono],
 				[Cli_Mail],
 				[Cli_Fecha_Nac],
-				[Cli_Ciudad]
+				[Cli_Ciudad],
+				0
 		FROM 
 			[gd_esquema].[Maestra]
 		WHERE 
@@ -286,21 +415,6 @@ BEGIN
 END
 GO
 
-CREATE FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion] (@descripcion_rubro NVARCHAR(100))
-RETURNS INT
-AS
-BEGIN
-DECLARE @id_rubro INT
-	SELECT
-		@id_rubro = [id_rubro]
-		FROM 
-			[LOS_GDDS].[rubros]
-		WHERE 
-			[descripcion] = @descripcion_rubro
-	RETURN @id_rubro
-END
-GO
-
 CREATE PROCEDURE [LOS_GDDS].[migrar_proveedores]
 AS
 BEGIN
@@ -322,51 +436,44 @@ BEGIN
 END
 GO
 
-CREATE FUNCTION [LOS_GDDS].[obtener_cliente_by_dni] (@dni NUMERIC(18,0))
-RETURNS INT
+CREATE PROCEDURE [LOS_GDDS].[actualizar_saldos_clientes]
 AS
 BEGIN
-DECLARE @id_cliente INT
-	SELECT
-		@id_cliente = [id_cliente]
-		FROM 
-			[LOS_GDDS].[clientes]
-		WHERE 
-			[dni] = @dni
-	RETURN @id_cliente
+	UPDATE
+		[clientes]
+	SET
+		-- estoy actualizando el stock disponible en base a lo vendido y NO a lo entregado
+		[saldo] +=
+				(
+					SELECT
+						SUM(ISNULL([cr].[monto], 0))
+					 FROM
+						[cargas_realizadas] [cr]
+					 WHERE
+						[cr].[id_cliente] = [clientes].[id_cliente]
+				)
 END
 GO
+
+
 
 CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[cargas_realizadas]([id_cliente], [monto], [fecha])
+		[LOS_GDDS].[cargas_realizadas]([id_cliente], [monto], [fecha], [id_medio_pago])
 		(SELECT
 			DISTINCT
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
 				[Carga_credito],
-				[Carga_fecha]
+				[Carga_fecha],
+				[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
 			FROM 
 				[gd_esquema].[Maestra]
 			WHERE 
 				[Carga_credito] IS NOT NULL
 		)
-END
-GO
-
-CREATE FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit] (@cuit NVARCHAR(20))
-RETURNS INT
-AS
-BEGIN
-DECLARE @id_proveedor INT
-	SELECT
-		@id_proveedor = [id_proveedor]
-		FROM 
-			[LOS_GDDS].[proveedores]
-		WHERE 
-			[cuit] = @cuit
-	RETURN @id_proveedor
+	EXEC [LOS_GDDS].[actualizar_saldos_clientes]
 END
 GO
 
@@ -390,24 +497,6 @@ BEGIN
 				WHERE 
 						[Oferta_Codigo] IS NOT NULL
 		)
-END
-GO
-
-CREATE FUNCTION [LOS_GDDS].[buscar_fecha_entrega_oferta] (@codigo_oferta NVARCHAR(50), @dni_cliente NUMERIC(18,0))
-RETURNS DATETIME
-AS
-BEGIN
-	DECLARE @fecha_entrega_oferta DATETIME = NULL
-	SELECT
-		@fecha_entrega_oferta =
-		[Oferta_Entregado_Fecha]
-		FROM
-			[gd_esquema].[Maestra]
-		WHERE 
-			[Oferta_Codigo] = @codigo_oferta
-			AND [Cli_Dni] = @dni_cliente
-			AND [Oferta_Entregado_Fecha] IS NOT NULL
-	RETURN @fecha_entrega_oferta
 END
 GO
 
@@ -462,11 +551,63 @@ GO
 PRINT('insertando estados compra')
 SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] ON
 INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
-VALUES (1, 'pago')
+VALUES (1, 'Pago')
 INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
-VALUES (2, 'entregado')
+VALUES (2, 'Entregado')
 SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] OFF
 GO
+
+PRINT('insertando medios de pago')
+SET IDENTITY_INSERT [LOS_GDDS].[medios_pago] ON
+INSERT INTO [LOS_GDDS].[medios_pago](id_medio_pago, descripcion)
+VALUES (1, 'Efectivo')
+INSERT INTO [LOS_GDDS].[medios_pago](id_medio_pago, descripcion)
+VALUES (2, 'Crédito')
+SET IDENTITY_INSERT [LOS_GDDS].[medios_pago] OFF
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[actualizar_stock_ofertas]
+AS
+BEGIN
+	UPDATE
+		[LOS_GDDS].[ofertas]
+	SET
+		-- estoy actualizando el stock disponible en base a lo vendido y NO a lo entregado
+		[stock] -=
+				(
+					SELECT
+						ISNULL(COUNT(1), 0)
+					 FROM
+						[compras] [c]
+					 WHERE
+						[c].[id_oferta] = [ofertas].[id_oferta]
+				)
+END
+GO
+
+--CREATE PROCEDURE [LOS_GDDS].[actualizar_saldo_disponible_clientes]
+--AS
+--BEGIN
+--	UPDATE
+--		[LOS_GDDS].[clientes]
+--	SET
+--		[saldo] -=
+--					(
+--						SELECT
+--							SUM([o].[precio_oferta])
+--						FROM
+--							[LOS_GDDS].[compras] [c]
+--						INNER JOIN
+--							[LOS_GDDS].[ofertas] [o]
+--						ON
+--							[c].[id_oferta] = [o].[id_oferta]
+--						WHERE
+--							[clientes].[id_cliente] = [c].[id_cliente]
+--						GROUP BY
+--							[o].[id_oferta], [c].[id_cliente]
+--					)
+--END
+--GO
 
 CREATE PROCEDURE [LOS_GDDS].[migrar_compras]
 AS
@@ -475,7 +616,7 @@ BEGIN
 	DECLARE @estado_compra_entregado INT = 2
 
 	INSERT INTO 
-		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_estado], [fecha], [fecha_consumo])
+		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_estado], [fecha], [fecha_consumo], [cantidad])
 		(SELECT
 			DISTINCT
 					[Oferta_Codigo],
@@ -497,7 +638,8 @@ BEGIN
 							[m2].[Oferta_Cantidad] IS NOT NULL
 						AND
 							[m2].[Oferta_Entregado_Fecha] IS NOT NULL
-						)
+						),
+					1
 		 FROM
 			[gd_esquema].[Maestra] [m1]
 		 WHERE 
@@ -510,6 +652,9 @@ BEGIN
 			[id_estado] = @estado_compra_entregado
 		WHERE
 			[fecha_consumo] IS NOT NULL
+
+	EXEC [LOS_GDDS].[actualizar_stock_ofertas]
+--	EXEC [LOS_GDDS].[actualizar_saldo_disponible_clientes]
 END
 GO
 
@@ -589,6 +734,12 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_facturas]
 	PRINT('facturas migradas!')
 END
+GO
+
+ENABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ON [LOS_GDDS].[compras]
+GO
+	
 
 -- con el viejo approach (cursor) tarda 01:02:53
 -- con el nuevo approach (sub-query) tarda 00:00:17
