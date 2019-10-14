@@ -204,18 +204,22 @@ CREATE PROCEDURE [LOS_GDDS].[validar_login]
 	@Clave varchar(100),
 	@MaxIntentos numeric(3,0),
 	@Resultado INT OUT,
-	@Id INT OUT
+	@Id INT OUT,
+	@Rol INT OUT
 AS
 BEGIN
 DECLARE
 	@ClaveEncriptada varchar(255),
 	@Intentos numeric(3,0)
 	SELECT 
-		@Id = [id_usuario], 
-		@ClaveEncriptada = [password],
-		@Intentos = [cantidad_logins_fallidos] 
-	FROM [LOS_GDDS].[usuarios]
-WHERE [username] = @Usuario
+		@Id = [u].[id_usuario], 
+		@ClaveEncriptada = [u].[password],
+		@Intentos = [u].[cantidad_logins_fallidos],
+		@Rol = [ru].[id_rol]
+		FROM [LOS_GDDS].[usuarios] [u]
+		JOIN [LOS_GDDS].[roles_usuario] [ru]
+		ON [ru].[id_usuario] = [u].[id_usuario]
+	WHERE [username] = @Usuario
 
 SELECT @Resultado =
 CASE

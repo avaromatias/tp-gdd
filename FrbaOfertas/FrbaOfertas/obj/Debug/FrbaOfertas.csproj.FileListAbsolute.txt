@@ -16,3 +16,4 @@ C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.c
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.Properties.Resources.resources
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.csproj.GenerateResource.Cache
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormLogin.resources
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormMenuPrincipal.resources

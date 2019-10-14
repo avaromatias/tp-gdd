@@ -13,6 +13,7 @@ namespace FrbaOfertas
         public static FormLogin formLogin;
         public static String stringConexion = ConfigurationManager.ConnectionStrings["FrbaOfertas.Properties.Settings.Setting"].ConnectionString;
         public static int cantidadMaximaIntentosLogin = 3;
-        public static int usuario;
+        public static int id_usuario;
+        public static int id_rol;
     }
 }

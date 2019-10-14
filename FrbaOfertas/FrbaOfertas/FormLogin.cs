@@ -38,8 +38,10 @@ namespace FrbaOfertas
 
                     var resultado = validarLogin.Parameters.Add("@Resultado", SqlDbType.Int);
                     var idUsuario = validarLogin.Parameters.Add("@Id", SqlDbType.Int);
+                    var idRol = validarLogin.Parameters.Add("@Rol", SqlDbType.Int);
                     resultado.Direction = ParameterDirection.Output;
                     idUsuario.Direction = ParameterDirection.Output;
+                    idRol.Direction = ParameterDirection.Output;
 
                     SqlDataReader data = validarLogin.ExecuteReader();
 
@@ -62,8 +64,11 @@ namespace FrbaOfertas
                             MessageBox.Show("Excedió la cantidad de intentos permitidos.");
                             break;
                         case 4:
-                            Configuraciones.usuario = int.Parse(idUsuario.Value.ToString());
-                            MessageBox.Show("Login exitoso.");
+                            Configuraciones.id_usuario = int.Parse(idUsuario.Value.ToString());
+                            Configuraciones.id_rol = int.Parse(idRol.Value.ToString());
+                            FormMenuPrincipal form = new FormMenuPrincipal();
+                            form.Show();
+                            this.Hide();
                             break;
                     }
                 }
