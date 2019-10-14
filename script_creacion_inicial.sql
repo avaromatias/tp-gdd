@@ -391,15 +391,15 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-					[Cli_Apellido] ,
-					[Cli_Nombre],
-					[Cli_Dni],
-					[Cli_Direccion],
-					[Cli_Telefono],
-					[Cli_Mail],
-					[Cli_Fecha_Nac],
-					[Cli_Ciudad],
-					0
+				[Cli_Apellido] ,
+				[Cli_Nombre],
+				[Cli_Dni],
+				[Cli_Direccion],
+				[Cli_Telefono],
+				[Cli_Mail],
+				[Cli_Fecha_Nac],
+				[Cli_Ciudad],
+				0
 			FROM 
 				[gd_esquema].[Maestra]
 			WHERE 
@@ -416,7 +416,7 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-					[provee_rubro]
+				[provee_rubro]
 			 FROM 
 				[gd_esquema].[Maestra]
 			 WHERE
@@ -433,12 +433,12 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-					[Provee_RS],
-					[Provee_Dom],
-					[Provee_Ciudad],
-					[Provee_Telefono],
-					[Provee_CUIT],
-					[LOS_GDDS].[obtener_rubro_by_descripcion]([Provee_Rubro])
+				[Provee_RS],
+				[Provee_Dom],
+				[Provee_Ciudad],
+				[Provee_Telefono],
+				[Provee_CUIT],
+				[LOS_GDDS].[obtener_rubro_by_descripcion]([Provee_Rubro])
 			FROM 
 				[gd_esquema].[Maestra]
 			WHERE 
@@ -476,10 +476,10 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-					[Carga_credito],
-					[Carga_fecha],
-					[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
+				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+				[Carga_credito],
+				[Carga_fecha],
+				[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
 				FROM 
 					[gd_esquema].[Maestra]
 				WHERE 
@@ -497,18 +497,18 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-					[Oferta_Codigo],
-					[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
-					[Oferta_Precio_Ficticio],
-					[Oferta_Precio],
-					[Oferta_Cantidad],
-					[Oferta_Descripcion],
-					[Oferta_Fecha],
-					[Oferta_Fecha_Venc]
-					FROM 
-							[gd_esquema].[Maestra]
-					WHERE 
-							[Oferta_Codigo] IS NOT NULL
+				[Oferta_Codigo],
+				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
+				[Oferta_Precio_Ficticio],
+				[Oferta_Precio],
+				[Oferta_Cantidad],
+				[Oferta_Descripcion],
+				[Oferta_Fecha],
+				[Oferta_Fecha_Venc]
+			FROM 
+				[gd_esquema].[Maestra]
+			WHERE 
+				[Oferta_Codigo] IS NOT NULL
 		)
 END
 GO
@@ -524,15 +524,15 @@ BEGIN
 	FOR
 		SELECT
 			DISTINCT
-					[Oferta_Codigo],
-					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-					[Oferta_entregado_fecha]
-				FROM
-					[gd_esquema].[Maestra]
-				WHERE 
-					[Oferta_Codigo]	IS NOT NULL
-					AND [Cli_Dni] IS NOT NULL
-					AND [Oferta_Entregado_Fecha] IS NOT NULL
+			[Oferta_Codigo],
+			[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+			[Oferta_entregado_fecha]
+		FROM
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Oferta_Codigo]	IS NOT NULL
+			AND [Cli_Dni] IS NOT NULL
+			AND [Oferta_Entregado_Fecha] IS NOT NULL
 	
 	OPEN ofertas_cursor
 		FETCH NEXT FROM ofertas_cursor INTO
@@ -633,30 +633,30 @@ BEGIN
 		(
 			SELECT
 				DISTINCT
-						[Oferta_Codigo],
-						[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-						@estado_compra_pago,
-						[Oferta_fecha_compra],
-						(
-							SELECT	
-								[Oferta_Entregado_fecha]
-							FROM
-								[gd_esquema].[Maestra] [m2]
-							WHERE
-								[m1].[Oferta_Codigo] = [m2].[Oferta_Codigo]
-							AND
-								[m1].[Cli_Dni] = [m2].[Cli_Dni]
-							AND
-								[m1].[Oferta_Fecha_Compra] = [m2].[Oferta_Fecha_Compra]
-							AND
-								[m2].[Oferta_Cantidad] IS NOT NULL
-							AND
-								[m2].[Oferta_Entregado_Fecha] IS NOT NULL
-							),
-						1
-			 FROM
+				[Oferta_Codigo],
+				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+				@estado_compra_pago,
+				[Oferta_fecha_compra],
+				(
+					SELECT	
+						[Oferta_Entregado_fecha]
+					FROM
+						[gd_esquema].[Maestra] [m2]
+					WHERE
+						[m1].[Oferta_Codigo] = [m2].[Oferta_Codigo]
+					AND
+						[m1].[Cli_Dni] = [m2].[Cli_Dni]
+					AND
+						[m1].[Oferta_Fecha_Compra] = [m2].[Oferta_Fecha_Compra]
+					AND
+						[m2].[Oferta_Cantidad] IS NOT NULL
+					AND
+						[m2].[Oferta_Entregado_Fecha] IS NOT NULL
+				),
+				1
+			FROM
 				[gd_esquema].[Maestra] [m1]
-			 WHERE 
+			WHERE 
 				[Oferta_Codigo] IS NOT NULL
 		)
 
