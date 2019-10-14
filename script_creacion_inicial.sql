@@ -672,21 +672,53 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[actualizar_fecha_desde_fecha_hasta_facturas]
+AS
+BEGIN
+	UPDATE
+		[LOS_GDDS].[facturas]
+	SET
+		[fecha_desde] = a.fecha_desde,
+		[fecha_hasta] = a.fecha_hasta
+	FROM
+		(
+			SELECT
+				[f].[nro_factura] AS nro_factura,
+				MIN([Oferta_fecha_compra]) AS fecha_desde,
+				MAX([Oferta_fecha_compra]) AS fecha_hasta
+			FROM
+				[LOS_GDDS].[facturas] [f]
+			LEFT JOIN
+				[gd_esquema].[Maestra] [m]
+			ON
+				[m].[Factura_Nro] = [f].[nro_factura]
+			INNER JOIN
+				[LOS_GDDS].[ofertas] [o]
+			ON
+				[o].[id_oferta] = [m].[Oferta_Codigo]
+			INNER JOIN
+				[LOS_GDDS].[compras] [c]
+			ON
+				[c].[id_oferta] = [o].[id_oferta]
+			GROUP BY
+				[f].[nro_factura]
+		) a
+	WHERE
+		[a].[nro_factura] = [facturas].[nro_factura]
+END
+GO
+
 CREATE PROCEDURE [LOS_GDDS].[migrar_facturas]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[facturas]([nro_factura], [id_proveedor], [total], [fecha_emision], [fecha_desde], [fecha_hasta])
+		[LOS_GDDS].[facturas]([nro_factura], [id_proveedor], [total], [fecha_emision])
 		(
 			SELECT
 				[Factura_Nro],
 				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
 				SUM([Oferta_Precio]),
-				[Factura_Fecha],
-				-- cambiar de donde sacar la fecha DESDE
-				NULL,
-				-- cambiar de donde sacar la fecha HASTA
-				NULL
+				[Factura_Fecha]
 			 FROM
 				[gd_esquema].[Maestra]
 			 WHERE 
@@ -696,6 +728,7 @@ BEGIN
 				[Provee_CUIT],
 				[Factura_Fecha]
 		)
+	EXEC [LOS_GDDS].[actualizar_fecha_desde_fecha_hasta_facturas]
 END
 GO
 

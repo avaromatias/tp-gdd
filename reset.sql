@@ -136,6 +136,9 @@ DROP PROCEDURE [LOS_GDDS].[actualizar_saldos_clientes]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_saldo_disponible_clientes')
 DROP PROCEDURE [LOS_GDDS].[actualizar_saldo_disponible_clientes]
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_fecha_desde_fecha_hasta_facturas')
+DROP PROCEDURE [LOS_GDDS].[actualizar_fecha_desde_fecha_hasta_facturas]
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]
