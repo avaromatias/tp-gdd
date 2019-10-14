@@ -77,6 +77,12 @@ IF EXISTS (
     DROP FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion]
 
 IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[get_medio_pago_by_descripcion]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[get_medio_pago_by_descripcion]
+
+IF EXISTS (
     SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[buscar_fecha_entrega_oferta]') 
     AND xtype IN (N'FN', N'IF', N'TF')
 )
@@ -120,6 +126,15 @@ DROP PROCEDURE [LOS_GDDS].[migrar_compras]
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'migrar_facturas')
 DROP PROCEDURE [LOS_GDDS].[migrar_facturas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_stock_ofertas')
+DROP PROCEDURE [LOS_GDDS].[actualizar_stock_ofertas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_saldos_clientes')
+DROP PROCEDURE [LOS_GDDS].[actualizar_saldos_clientes]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_saldo_disponible_clientes')
+DROP PROCEDURE [LOS_GDDS].[actualizar_saldo_disponible_clientes]
 
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
