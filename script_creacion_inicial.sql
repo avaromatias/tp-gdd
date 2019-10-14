@@ -242,7 +242,7 @@ CREATE FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion] (@descripcion_rubro NV
 RETURNS INT
 AS
 BEGIN
-DECLARE @id_rubro INT
+	DECLARE @id_rubro INT
 	SELECT
 		@id_rubro = [id_rubro]
 		FROM 
@@ -257,7 +257,7 @@ CREATE FUNCTION [LOS_GDDS].[obtener_cliente_by_dni] (@dni NUMERIC(18,0))
 RETURNS INT
 AS
 BEGIN
-DECLARE @id_cliente INT
+	DECLARE @id_cliente INT
 	SELECT
 		@id_cliente = [id_cliente]
 		FROM 
@@ -272,7 +272,7 @@ CREATE FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit] (@cuit NVARCHAR(20))
 RETURNS INT
 AS
 BEGIN
-DECLARE @id_proveedor INT
+	DECLARE @id_proveedor INT
 	SELECT
 		@id_proveedor = [id_proveedor]
 		FROM 
