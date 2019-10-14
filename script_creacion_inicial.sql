@@ -676,15 +676,17 @@ CREATE PROCEDURE [LOS_GDDS].[migrar_facturas]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[facturas]([nro_factura], [id_proveedor], [total], [fecha_desde], [fecha_hasta])
+		[LOS_GDDS].[facturas]([nro_factura], [id_proveedor], [total], [fecha_emision], [fecha_desde], [fecha_hasta])
 		(
 			SELECT
 				[Factura_Nro],
 				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
 				SUM([Oferta_Precio]),
-				-- revisar de donde sacar la fecha DESDE
+				[Factura_Fecha],
+				-- cambiar de donde sacar la fecha DESDE
 				NULL,
-				[Factura_Fecha]
+				-- cambiar de donde sacar la fecha HASTA
+				NULL
 			 FROM
 				[gd_esquema].[Maestra]
 			 WHERE 
