@@ -296,8 +296,10 @@ BEGIN
 			[gd_esquema].[Maestra]
 		WHERE 
 			[Oferta_Codigo] = @codigo_oferta
-			AND [Cli_Dni] = @dni_cliente
-			AND [Oferta_Entregado_Fecha] IS NOT NULL
+		AND 
+			[Cli_Dni] = @dni_cliente
+		AND 
+			[Oferta_Entregado_Fecha] IS NOT NULL
 	RETURN @fecha_entrega_oferta
 END
 GO
@@ -483,10 +485,10 @@ BEGIN
 				[Carga_credito],
 				[Carga_fecha],
 				[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
-				FROM 
-					[gd_esquema].[Maestra]
-				WHERE 
-					[Carga_credito] IS NOT NULL
+			FROM 
+				[gd_esquema].[Maestra]
+			WHERE 
+				[Carga_credito] IS NOT NULL
 		)
 	EXEC [LOS_GDDS].[actualizar_saldos_clientes]
 END
@@ -534,8 +536,10 @@ BEGIN
 			[gd_esquema].[Maestra]
 		WHERE 
 			[Oferta_Codigo]	IS NOT NULL
-			AND [Cli_Dni] IS NOT NULL
-			AND [Oferta_Entregado_Fecha] IS NOT NULL
+		AND
+			[Cli_Dni] IS NOT NULL
+		AND 
+			[Oferta_Entregado_Fecha] IS NOT NULL
 	
 	OPEN ofertas_cursor
 		FETCH NEXT FROM ofertas_cursor INTO
