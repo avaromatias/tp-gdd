@@ -685,8 +685,8 @@ BEGIN
 	UPDATE
 		[LOS_GDDS].[facturas]
 	SET
-		[fecha_desde] = a.fecha_desde,
-		[fecha_hasta] = a.fecha_hasta
+		[fecha_desde] = [a].[fecha_desde],
+		[fecha_hasta] = [a].[fecha_hasta]
 	FROM
 		(
 			SELECT
@@ -705,7 +705,7 @@ BEGIN
 				[o].[id_oferta] = [m].[Oferta_Codigo]
 			GROUP BY
 				[f].[nro_factura]
-		) a
+		) [a]
 	WHERE
 		[a].[nro_factura] = [facturas].[nro_factura]
 END
