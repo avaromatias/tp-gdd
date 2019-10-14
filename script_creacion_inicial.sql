@@ -446,7 +446,7 @@ BEGIN
 	UPDATE
 		[clientes]
 	SET
-		-- estoy actualizando el stock disponible en base a lo vendido y NO a lo entregado
+		-- estoy actualizando el saldo disponible en base a lo vendido y NO a lo entregado
 		[saldo] +=
 				(
 					SELECT
