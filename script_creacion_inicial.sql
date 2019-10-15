@@ -123,13 +123,6 @@ CREATE TABLE [LOS_GDDS].[roles_usuario] (
 	FOREIGN KEY (id_rol) REFERENCES [LOS_GDDS].[roles](id_rol)
 )
 
--- tabla facturacion_proveedor
-CREATE TABLE [LOS_GDDS].[facturacion_proveedor] (
-	id_proveedor INT PRIMARY KEY,
-	total_facturado NUMERIC(18,2)
-	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
-)
-
 -- tabla facturas
 CREATE TABLE [LOS_GDDS].[facturas] (
 	id_factura INT PRIMARY KEY IDENTITY,
