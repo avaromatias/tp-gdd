@@ -100,6 +100,18 @@ IF EXISTS (
 )
     DROP FUNCTION [LOS_GDDS].[obtener_proveedor_by_cuit]
 
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[get_tarjeta_by_id_cliente]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[get_tarjeta_by_id_cliente]
+
+IF EXISTS (
+    SELECT * FROM sysobjects WHERE id = object_id(N'[LOS_GDDS].[get_tipo_tarjeta_by_descripcion]') 
+    AND xtype IN (N'FN', N'IF', N'TF')
+)
+    DROP FUNCTION [LOS_GDDS].[get_tipo_tarjeta_by_descripcion]
+
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'validar_login')
 DROP PROCEDURE [LOS_GDDS].[validar_login]
 
@@ -138,6 +150,15 @@ DROP PROCEDURE [LOS_GDDS].[actualizar_saldo_disponible_clientes]
 
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'actualizar_fecha_desde_fecha_hasta_facturas')
 DROP PROCEDURE [LOS_GDDS].[actualizar_fecha_desde_fecha_hasta_facturas]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'generar_tipos_tarjeta')
+DROP PROCEDURE [LOS_GDDS].[generar_tipos_tarjeta]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'generar_tarjetas_clientes')
+DROP PROCEDURE  [LOS_GDDS].[generar_tarjetas_clientes]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'crear_usuarios_para_clientes_con_tarjeta')
+DROP PROCEDURE  [LOS_GDDS].[crear_usuarios_para_clientes_con_tarjeta]
 
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN

@@ -50,18 +50,19 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 -- tabla tipos_tarjeta
 CREATE TABLE [LOS_GDDS].[tipos_tarjeta] (
 	id_tipo_tarjeta INT PRIMARY KEY IDENTITY,
-	descripcion VARCHAR(100)
+	descripcion NVARCHAR(100)
 )
 
 -- tabla tarjetas
 CREATE TABLE [LOS_GDDS].[tarjetas] (
 	id_tarjeta INT PRIMARY KEY IDENTITY,
-	id_usuario INT,
+	id_cliente INT,
 	numero INT,
 	fecha_vencimiento DATETIME,
 	codigo_seguridad INT,
 	id_tipo_tarjeta INT,
-	FOREIGN KEY (id_tipo_tarjeta) REFERENCES [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta)
+	FOREIGN KEY (id_tipo_tarjeta) REFERENCES [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta),
+	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente)
 )
 
 -- tabla cargas_realizadas
@@ -69,7 +70,6 @@ CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	id_carga INT PRIMARY KEY IDENTITY,
 	id_cliente INT,
 	id_tarjeta INT,
-	id_medio_pago INT,
 	fecha DATETIME,
 	monto NUMERIC(18,2)
 	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta),
@@ -165,7 +165,6 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	id_compra INT PRIMARY KEY IDENTITY,
 	id_oferta NVARCHAR(50) NOT NULL,
 	id_cliente INT NOT NULL,
-	id_estado INT NOT NULL,
 	fecha DATETIME NOT NULL,
 	fecha_consumo DATETIME,
 	cantidad NUMERIC(18,0),
@@ -297,14 +296,27 @@ BEGIN
 		[t].[id_tarjeta]
 		FROM
 			[LOS_GDDS].[tarjetas] [t]
-		JOIN [LOS_GDDS].[usuarios] [u]
-		ON [u].id_cliente = @id_cliente
 		WHERE
-			[t].id_usuario = [u].[id_usuario]
+			[t].[id_cliente] = @id_cliente
 	RETURN @id_tarjeta
 END
 GO
 
+
+CREATE FUNCTION [LOS_GDDS].[get_tipo_tarjeta_by_descripcion] (@descripcion_tarjeta NVARCHAR(100))
+RETURNS INT
+AS
+BEGIN
+	DECLARE @id_tipo_tarjeta INT = NULL
+	SELECT
+		@id_tipo_tarjeta = [tt].[id_tipo_tarjeta]
+		FROM
+			[LOS_GDDS].[tipos_tarjeta] [tt]
+		WHERE
+			[tt].[descripcion] = @descripcion_tarjeta
+	RETURN @id_tipo_tarjeta
+END
+GO
 /* CREACIÓN STORED PROCEDURES */
 
 /* Validar login */
@@ -456,48 +468,102 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[generar_tipos_tarjeta]
+AS
+BEGIN
+	SET IDENTITY_INSERT [LOS_GDDS].[tipos_tarjeta] ON
+	INSERT INTO [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta, descripcion)
+		VALUES
+			(	
+				1,
+				'Crédito'
+			)
 
+	INSERT INTO [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta, descripcion)
+		VALUES
+			(
+				2,
+				'Débito'
+			)
+	SET IDENTITY_INSERT [LOS_GDDS].[tipos_tarjeta] OFF
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[generar_tarjetas_clientes]
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[tarjetas](id_cliente, fecha_vencimiento, id_tipo_tarjeta)
+	(
+		SELECT
+			DISTINCT
+			[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+			GETDATE(),
+			[LOS_GDDS].[get_tipo_tarjeta_by_descripcion]([Tipo_Pago_Desc])
+		FROM 
+			[gd_esquema].[Maestra]
+		WHERE 
+			[Carga_credito] IS NOT NULL
+		AND
+			[LOS_GDDS].[get_tipo_tarjeta_by_descripcion]([Tipo_Pago_Desc]) IS NOT NULL
+	)
+END
+GO
+
+--CREATE PROCEDURE [LOS_GDDS].[crear_usuarios_para_clientes_con_tarjeta]
+--AS
+--BEGIN
+--	INSERT INTO
+--		[LOS_GDDS].[usuarios](username, password, habilitado, cantidad_logins_fallidos, id_cliente)
+--	(
+--		SELECT
+--			DISTINCT
+--			UPPER(CONCAT([c].[nombre], [c].[apellido])),
+--			HASHBYTES('SHA2_256', CAST([c].[dni] AS VARCHAR(8))),
+--			1,
+--			0,
+--			[c].[id_cliente]
+--		FROM 
+--			[LOS_GDDS].[cargas_realizadas] [cr]
+--		INNER JOIN
+--			[LOS_GDDS].[tarjetas] [t]
+--		ON
+--			[t].[id_tarjeta] = [cr].[id_tarjeta]
+--		INNER JOIN
+--			[LOS_GDDS].[clientes] [c]
+--		ON
+--			[c].[id_cliente] = [cr].[id_cliente]
+--	)
+--END
+--GO
 
 CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
 AS
 BEGIN
-	DECLARE @tipo_pago NVARCHAR(100)
-
-		INSERT INTO
-			[LOS_GDDS].[cargas_realizadas]([id_cliente], [id_tarjeta], [fecha], [monto])
-			(
-				SELECT
-					DISTINCT
-					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-					[LOS_GDDS].[get_tarjeta_by_id_cliente]([LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni])),
-					[Carga_fecha],
-					[Carga_credito]
-				FROM 
-					[gd_esquema].[Maestra]
-				WHERE 
-					[Carga_credito] IS NOT NULL
-				AND
-					[Tipo_Pago_Desc] = 'Crédito'
-			)
-			EXEC [LOS_GDDS].[actualizar_saldos_clientes]
-		END
-
-		INSERT INTO
-		[LOS_GDDS].[cargas_realizadas]([id_cliente], [fecha], [monto])
+	EXEC [LOS_GDDS].[generar_tipos_tarjeta]
+	EXEC [LOS_GDDS].[generar_tarjetas_clientes]
+	INSERT INTO
+		[LOS_GDDS].[cargas_realizadas]([id_cliente], [id_tarjeta], [fecha], [monto])
 		(
 			SELECT
 				DISTINCT
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+				CASE
+					WHEN 
+						[Tipo_Pago_Desc] = 'Efectivo'
+						THEN
+							NULL
+					ELSE
+						[LOS_GDDS].[get_tarjeta_by_id_cliente]([LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]))
+				END,
 				[Carga_fecha],
 				[Carga_credito]
 			FROM 
 				[gd_esquema].[Maestra]
 			WHERE 
 				[Carga_credito] IS NOT NULL
-			AND
-				[Tipo_Pago_Desc] = 'Efectivo'
 		)
-		EXEC [LOS_GDDS].[actualizar_saldos_clientes]
+	EXEC [LOS_GDDS].[actualizar_saldos_clientes]
 END
 GO
 
@@ -620,17 +686,13 @@ GO
 CREATE PROCEDURE [LOS_GDDS].[migrar_compras]
 AS
 BEGIN
-	DECLARE @estado_compra_pago INT = 1
-	DECLARE @estado_compra_entregado INT = 2
-
 	INSERT INTO 
-		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_estado], [fecha], [fecha_consumo], [cantidad])
+		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [fecha], [fecha_consumo], [cantidad])
 		(
 			SELECT
 				DISTINCT
 				[Oferta_Codigo],
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-				@estado_compra_pago,
 				[Oferta_fecha_compra],
 				(
 					SELECT	
@@ -654,13 +716,6 @@ BEGIN
 			WHERE 
 				[Oferta_Codigo] IS NOT NULL
 		)
-
-	UPDATE
-		[LOS_GDDS].[compras]
-		SET
-			[id_estado] = @estado_compra_entregado
-		WHERE
-			[fecha_consumo] IS NOT NULL
 
 	EXEC [LOS_GDDS].[actualizar_stock_ofertas]
 --	EXEC [LOS_GDDS].[actualizar_saldo_disponible_clientes]
@@ -749,30 +804,6 @@ END
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[cargas_realizadas]) = 0)
 BEGIN
 	PRINT('migrando cargas realizadas')
-
-	/* LLENAR DATOS EN LA DB */
-	-- tabla tipos_tarjeta
-	INSERT INTO [LOS_GDDS].[tipos_tarjeta](descripcion)
-		VALUES
-			(
-				'Crédito'
-			)
-
-	INSERT INTO [LOS_GDDS].[tipos_tarjeta](descripcion)
-		VALUES
-			(
-				'Dédito'
-			)
-
-	-- tabla tarjetas
-	INSERT INTO [LOS_GDDS].[tarjetas](id_usuario, fecha_vencimiento, id_tipo_tarjeta)
-		VALUES
-			(
-				192, --Sacar este hardcodeo horrible
-				GETDATE(),
-				1
-			)
-
 	EXEC [LOS_GDDS].[migrar_cargas_realizadas]
 	PRINT('cargas realizadas migradas!')
 END
