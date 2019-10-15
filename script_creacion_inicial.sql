@@ -6,9 +6,6 @@ CREATE SCHEMA [LOS_GDDS]
 GO
 
 /* CREACIÓN TABLAS */
--- tome como standard que el id de las tablas va a ser id_entidad en lugar de solamente Id
--- hay algunas columnas en la tabla maestra que NO están siendo mapeadas, hay que revisarlas
--- tambien queda pendiente hacer la tabla medios_pago y todo lo relacionado para manejar transacciones en efectivo
 
 --tabla funcionalidades
 CREATE TABLE [LOS_GDDS].[funcionalidades] (
@@ -67,12 +64,6 @@ CREATE TABLE [LOS_GDDS].[tarjetas] (
 	FOREIGN KEY (id_tipo_tarjeta) REFERENCES [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta)
 )
 
--- tabla medios_pago
-CREATE TABLE [LOS_GDDS].[medios_pago] (
-	id_medio_pago INT IDENTITY PRIMARY KEY,
-	descripcion NVARCHAR(100),
-)
-
 -- tabla cargas_realizadas
 CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	id_carga INT PRIMARY KEY IDENTITY,
@@ -82,7 +73,6 @@ CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	fecha DATETIME,
 	monto NUMERIC(18,2)
 	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta),
-	FOREIGN KEY (id_medio_pago) REFERENCES [LOS_GDDS].[medios_pago](id_medio_pago),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente)
 )
 
@@ -170,12 +160,6 @@ CREATE TABLE [LOS_GDDS].[ofertas] (
 	CHECK ([fecha_vencimiento] > [fecha_publicacion])
 )
 
---tabla estados_compra
-CREATE TABLE [LOS_GDDS].[estados_compra] (
-	id_estado_compra INT PRIMARY KEY IDENTITY,
-	descripcion VARCHAR(100)
-)
-
 -- tabla compras
 CREATE TABLE [LOS_GDDS].[compras] (
 	id_compra INT PRIMARY KEY IDENTITY,
@@ -187,7 +171,6 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	cantidad NUMERIC(18,0),
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
-	FOREIGN KEY (id_estado) REFERENCES [LOS_GDDS].[estados_compra](id_estado_compra),
 	CHECK([fecha_consumo] > [fecha])
 )
 GO
@@ -304,19 +287,21 @@ BEGIN
 END
 GO
 
-CREATE FUNCTION [LOS_GDDS].[get_medio_pago_by_descripcion] (@descripcion_medio_pago NVARCHAR(100))
+CREATE FUNCTION [LOS_GDDS].[get_tarjeta_by_id_cliente] (@id_cliente INT)
 RETURNS INT
 AS
 BEGIN
-	DECLARE @id_medio_pago INT = NULL
-	SELECT
-		@id_medio_pago =
-		[id_medio_pago]
+	DECLARE @id_tarjeta INT = NULL
+	SELECT TOP 1
+		@id_tarjeta =
+		[t].[id_tarjeta]
 		FROM
-			[LOS_GDDS].[medios_pago]
-		WHERE 
-			[descripcion] = @descripcion_medio_pago
-	RETURN @id_medio_pago
+			[LOS_GDDS].[tarjetas] [t]
+		JOIN [LOS_GDDS].[usuarios] [u]
+		ON [u].id_cliente = @id_cliente
+		WHERE
+			[t].id_usuario = [u].[id_usuario]
+	RETURN @id_tarjeta
 END
 GO
 
@@ -476,21 +461,43 @@ GO
 CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
 AS
 BEGIN
-	INSERT INTO 
-		[LOS_GDDS].[cargas_realizadas]([id_cliente], [monto], [fecha], [id_medio_pago])
+	DECLARE @tipo_pago NVARCHAR(100)
+
+		INSERT INTO
+			[LOS_GDDS].[cargas_realizadas]([id_cliente], [id_tarjeta], [fecha], [monto])
+			(
+				SELECT
+					DISTINCT
+					[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+					[LOS_GDDS].[get_tarjeta_by_id_cliente]([LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni])),
+					[Carga_fecha],
+					[Carga_credito]
+				FROM 
+					[gd_esquema].[Maestra]
+				WHERE 
+					[Carga_credito] IS NOT NULL
+				AND
+					[Tipo_Pago_Desc] = 'Crédito'
+			)
+			EXEC [LOS_GDDS].[actualizar_saldos_clientes]
+		END
+
+		INSERT INTO
+		[LOS_GDDS].[cargas_realizadas]([id_cliente], [fecha], [monto])
 		(
 			SELECT
 				DISTINCT
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
-				[Carga_credito],
 				[Carga_fecha],
-				[LOS_GDDS].[get_medio_pago_by_descripcion]([Tipo_Pago_Desc])
+				[Carga_credito]
 			FROM 
 				[gd_esquema].[Maestra]
 			WHERE 
 				[Carga_credito] IS NOT NULL
+			AND
+				[Tipo_Pago_Desc] = 'Efectivo'
 		)
-	EXEC [LOS_GDDS].[actualizar_saldos_clientes]
+		EXEC [LOS_GDDS].[actualizar_saldos_clientes]
 END
 GO
 
@@ -565,25 +572,6 @@ BEGIN
 	CLOSE ofertas_cursor
 	DEALLOCATE ofertas_cursor
 END
-GO
-
-
-PRINT('insertando estados compra')
-SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] ON
-INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
-VALUES (1, 'Pago')
-INSERT INTO [LOS_GDDS].[estados_compra](id_estado_compra, descripcion)
-VALUES (2, 'Entregado')
-SET IDENTITY_INSERT [LOS_GDDS].[estados_compra] OFF
-GO
-
-PRINT('insertando medios de pago')
-SET IDENTITY_INSERT [LOS_GDDS].[medios_pago] ON
-INSERT INTO [LOS_GDDS].[medios_pago](id_medio_pago, descripcion)
-VALUES (1, 'Efectivo')
-INSERT INTO [LOS_GDDS].[medios_pago](id_medio_pago, descripcion)
-VALUES (2, 'Crédito')
-SET IDENTITY_INSERT [LOS_GDDS].[medios_pago] OFF
 GO
 
 CREATE PROCEDURE [LOS_GDDS].[actualizar_stock_ofertas]
@@ -761,6 +749,30 @@ END
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[cargas_realizadas]) = 0)
 BEGIN
 	PRINT('migrando cargas realizadas')
+
+	/* LLENAR DATOS EN LA DB */
+	-- tabla tipos_tarjeta
+	INSERT INTO [LOS_GDDS].[tipos_tarjeta](descripcion)
+		VALUES
+			(
+				'Crédito'
+			)
+
+	INSERT INTO [LOS_GDDS].[tipos_tarjeta](descripcion)
+		VALUES
+			(
+				'Dédito'
+			)
+
+	-- tabla tarjetas
+	INSERT INTO [LOS_GDDS].[tarjetas](id_usuario, fecha_vencimiento, id_tipo_tarjeta)
+		VALUES
+			(
+				192, --Sacar este hardcodeo horrible
+				GETDATE(),
+				1
+			)
+
 	EXEC [LOS_GDDS].[migrar_cargas_realizadas]
 	PRINT('cargas realizadas migradas!')
 END
