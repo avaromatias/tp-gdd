@@ -563,24 +563,11 @@ GO
 CREATE PROCEDURE [LOS_GDDS].[migrar_ofertas]
 AS
 BEGIN
-	INSERT INTO 
-		[LOS_GDDS].[ofertas]([id_oferta], [id_proveedor], [precio_lista], [precio_oferta], [stock], [descripcion], [fecha_publicacion], [fecha_vencimiento])
-		(
-			SELECT
-				DISTINCT
-				[Oferta_Codigo],
-				[LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]),
-				[Oferta_Precio_Ficticio],
-				[Oferta_Precio],
-				[Oferta_Cantidad],
-				[Oferta_Descripcion],
-				[Oferta_Fecha],
-				[Oferta_Fecha_Venc]
-			FROM 
-				[gd_esquema].[Maestra]
-			WHERE 
-				[Oferta_Codigo] IS NOT NULL
-		)
+	INSERT INTO LOS_GDDS.ofertas (id_proveedor, precio_lista, precio_oferta, stock, descripcion, fecha_vencimiento, fecha_publicacion)
+		(SELECT [LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]) as id_proveedor, Oferta_Precio_Ficticio, Oferta_Precio, Oferta_Cantidad, Oferta_Descripcion, Oferta_Fecha, Oferta_Fecha_Venc
+			FROM gd_esquema.Maestra
+			WHERE Oferta_Descripcion IS NOT NULL
+			GROUP BY Oferta_Descripcion,  [LOS_GDDS].[obtener_proveedor_by_cuit]([Provee_CUIT]), Oferta_Precio, Oferta_Precio_Ficticio, Oferta_Cantidad, Oferta_Fecha, Oferta_Fecha_Venc)
 END
 GO
 
