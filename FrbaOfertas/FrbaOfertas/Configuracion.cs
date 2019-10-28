@@ -8,12 +8,24 @@ using System.Data.SqlClient;
 
 namespace FrbaOfertas
 {
-    class Configuraciones
+    class Configuracion
     {
+        /* LOGIN */
         public static FormLogin formLogin;
         public static String stringConexion = ConfigurationManager.ConnectionStrings["FrbaOfertas.Properties.Settings.Setting"].ConnectionString;
         public static int cantidadMaximaIntentosLogin = 3;
-        public static int id_usuario;
-        public static int id_rol;
+        public static int idUsuario;
+        public static int idRol;
+
+        /* FUNCIONALIDADES */
+        public const int abmRoles = 1,
+            abmClientes = 2,
+            abmProveedor = 3,
+            cargarCredito = 4,
+            altaOferta = 5,
+            comprarOferta = 6,
+            consumirOferta = 7,
+            facturarProveedor = 8,
+            listadoEstadistico = 9;
     }
 }

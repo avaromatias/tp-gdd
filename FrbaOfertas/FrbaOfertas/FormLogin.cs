@@ -19,8 +19,8 @@ namespace FrbaOfertas
         public FormLogin()
         {
             InitializeComponent();
-            conexion = new SqlConnection(Configuraciones.stringConexion);
-            Configuraciones.formLogin = this;
+            conexion = new SqlConnection(Configuracion.stringConexion);
+            Configuracion.formLogin = this;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -34,7 +34,7 @@ namespace FrbaOfertas
                     validarLogin.CommandType = CommandType.StoredProcedure;
                     validarLogin.Parameters.AddWithValue("@Usuario", txtUsername.Text);
                     validarLogin.Parameters.AddWithValue("@Clave", txtPassword.Text);
-                    validarLogin.Parameters.AddWithValue("@MaxIntentos", Configuraciones.cantidadMaximaIntentosLogin);
+                    validarLogin.Parameters.AddWithValue("@MaxIntentos", Configuracion.cantidadMaximaIntentosLogin);
 
                     var resultado = validarLogin.Parameters.Add("@Resultado", SqlDbType.Int);
                     var idUsuario = validarLogin.Parameters.Add("@Id", SqlDbType.Int);
@@ -47,7 +47,8 @@ namespace FrbaOfertas
 
                     switch (int.Parse(resultado.Value.ToString()))
                     {
-                        /* 0: El usuario no existe
+                        /* 
+                         * 0: El usuario no existe
                          * 1: Intentos excedidos
                          * 2: La password no coincide
                          * 3: El usuario no está habilitado
@@ -64,8 +65,8 @@ namespace FrbaOfertas
                             MessageBox.Show("Excedió la cantidad de intentos permitidos.");
                             break;
                         case 4:
-                            Configuraciones.id_usuario = int.Parse(idUsuario.Value.ToString());
-                            Configuraciones.id_rol = int.Parse(idRol.Value.ToString());
+                            Configuracion.idUsuario = int.Parse(idUsuario.Value.ToString());
+                            Configuracion.idRol = int.Parse(idRol.Value.ToString());
                             FormMenuPrincipal form = new FormMenuPrincipal();
                             form.Show();
                             this.Hide();

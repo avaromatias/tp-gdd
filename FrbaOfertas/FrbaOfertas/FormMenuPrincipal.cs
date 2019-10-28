@@ -20,7 +20,7 @@ namespace FrbaOfertas
         public FormMenuPrincipal()
         {
             InitializeComponent();
-            conexion = new SqlConnection(Configuraciones.stringConexion);
+            conexion = new SqlConnection(Configuracion.stringConexion);
         }
 
         private void FormMenuPrincipal_Load(object sender, EventArgs e)
@@ -33,7 +33,7 @@ namespace FrbaOfertas
 
         private void cargarUsuario()
         {
-            String query = "SELECT username FROM LOS_GDDS.usuarios WHERE id_usuario = " + Configuraciones.id_usuario;
+            String query = "SELECT username FROM LOS_GDDS.usuarios WHERE id_usuario = " + Configuracion.idUsuario;
 
             SqlCommand listar = new SqlCommand(query, conexion);
 
@@ -50,7 +50,7 @@ namespace FrbaOfertas
 
         private void cargarFuncionalidades()
         {
-            String query = "SELECT f.id_funcionalidad, f.nombre FROM LOS_GDDS.funcionalidades f JOIN LOS_GDDS.funcionalidades_rol fr ON fr.id_funcionalidad = f.id_funcionalidad WHERE fr.id_rol = " + Configuraciones.id_rol;
+            String query = "SELECT f.id_funcionalidad, f.nombre FROM LOS_GDDS.funcionalidades f JOIN LOS_GDDS.funcionalidades_rol fr ON fr.id_funcionalidad = f.id_funcionalidad WHERE fr.id_rol = " + Configuracion.idRol;
 
             SqlCommand listar = new SqlCommand(query, conexion);
 
@@ -66,11 +66,9 @@ namespace FrbaOfertas
                 pnlOpciones.Controls.Add(crearBoton(tabla.Rows[i]["nombre"].ToString(), decimal.Parse(tabla.Rows[i]["id_funcionalidad"].ToString())));
             }
 
-            if (this.Height != alturaOriginalForm)
-            {
-                this.Height += 10;
-                pnlOpciones.Height += 10;
-            }
+            // Agrego un poco de espacio entre el último botón y el borde inferior de la ventana
+            this.Height += 10;
+            pnlOpciones.Height += 10;
         }
 
         private Button crearBoton(String descripcion, decimal funcionalidad)
@@ -91,12 +89,42 @@ namespace FrbaOfertas
 
             proximaPosicionEnY += alturaBoton;
 
+            boton.Click += new EventHandler(this.abrirFuncionalidad);
             return boton;
+        }
+
+        private void abrirFuncionalidad(object sender, System.EventArgs e)
+        {
+            Button botonClickeado = sender as Button;
+
+            switch ((int.Parse(botonClickeado.Tag.ToString())))
+            {
+                case Configuracion.abmRoles:
+                    AbmRol.FormABMRol abmRol = new AbmRol.FormABMRol();
+                    abmRol.ShowDialog();
+                    break;
+                case Configuracion.abmClientes:
+                    break;
+                case Configuracion.abmProveedor:
+                    break;
+                case Configuracion.cargarCredito:
+                    break;
+                case Configuracion.altaOferta:
+                    break;
+                case Configuracion.comprarOferta:
+                    break;
+                case Configuracion.consumirOferta:
+                    break;
+                case Configuracion.facturarProveedor:
+                    break;
+                case Configuracion.listadoEstadistico:
+                    break;
+            }
         }
 
         private void lnkLogout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Configuraciones.formLogin.Show();
+            Configuracion.formLogin.Show();
             this.Close();
         }
 
