@@ -15,7 +15,7 @@ namespace FrbaOfertas
     {
 
         SqlConnection conexion;
-        int ProximaPosicionEnX = 0, ProximaPosicionEnY = 0;
+        int posicionEnX = 0, proximaPosicionEnY = 0;
 
         public FormMenuPrincipal()
         {
@@ -59,27 +59,37 @@ namespace FrbaOfertas
             adapter.SelectCommand = listar;
             adapter.Fill(tabla);
 
+            int alturaOriginalForm = this.Height;
+
             for (int i = 0; i < tabla.Rows.Count; i++)
             {
                 pnlOpciones.Controls.Add(crearBoton(tabla.Rows[i]["nombre"].ToString(), decimal.Parse(tabla.Rows[i]["id_funcionalidad"].ToString())));
+            }
+
+            if (this.Height != alturaOriginalForm)
+            {
+                this.Height += 10;
+                pnlOpciones.Height += 10;
             }
         }
 
         private Button crearBoton(String descripcion, decimal funcionalidad)
         {
             Button boton = new Button();
+            int alturaBoton = 30;
             boton.Text = descripcion;
-            boton.Width = 235;
-            boton.Height = 30;
             boton.Tag = funcionalidad;
+            boton.Width = 235;
+            boton.Height = alturaBoton;
 
-            boton.Location = new Point(ProximaPosicionEnX, ProximaPosicionEnY);
-            ProximaPosicionEnY += boton.Height;
-            if (ProximaPosicionEnY > pnlOpciones.Height - 50)
+            boton.Location = new Point(posicionEnX, proximaPosicionEnY);
+            if (proximaPosicionEnY > pnlOpciones.Height)
             {
-                ProximaPosicionEnY = 0;
-                ProximaPosicionEnX += boton.Width;
+                this.Height += boton.Height;
+                pnlOpciones.Height += boton.Height;
             }
+
+            proximaPosicionEnY += alturaBoton;
 
             return boton;
         }

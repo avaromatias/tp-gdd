@@ -69,6 +69,8 @@ namespace FrbaOfertas
                             FormMenuPrincipal form = new FormMenuPrincipal();
                             form.Show();
                             this.Hide();
+                            txtUsername.Text = "";
+                            txtPassword.Text = "";
                             break;
                     }
                 }

@@ -55,14 +55,14 @@
             // 
             this.pnlOpciones.Location = new System.Drawing.Point(12, 40);
             this.pnlOpciones.Name = "pnlOpciones";
-            this.pnlOpciones.Size = new System.Drawing.Size(315, 210);
+            this.pnlOpciones.Size = new System.Drawing.Size(315, 30);
             this.pnlOpciones.TabIndex = 4;
             // 
             // FormMenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(339, 262);
+            this.ClientSize = new System.Drawing.Size(339, 79);
             this.Controls.Add(this.pnlOpciones);
             this.Controls.Add(this.lnkLogout);
             this.Controls.Add(this.lblUsername);
