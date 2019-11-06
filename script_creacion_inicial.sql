@@ -804,6 +804,18 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[cargar_roles] (@rol varchar(255))
+AS
+BEGIN
+	SELECT
+		[nombre]
+	FROM
+		[LOS_GDDS].[roles]
+	WHERE
+		[nombre] LIKE '%' + ISNULL(@rol, '') + '%'
+	RETURN
+END
+
 
 -- este workaround es para que se migren los datos únicamente una vez por tabla
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[clientes]) = 0)

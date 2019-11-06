@@ -24,14 +24,32 @@ namespace FrbaOfertas.AbmRol
 
         private void cargarRoles()
         {
-            String query = "SELECT nombre FROM LOS_GDDS.roles";
-            SqlCommand listar = new SqlCommand(query, conexion);
+            conexion.Open();
+            SqlCommand listar = new SqlCommand("[LOS_GDDS].[cargar_roles]", conexion);
+            listar.CommandType = CommandType.StoredProcedure;
+            listar.Parameters.Add("@rol", SqlDbType.VarChar).Value = txtRol.Text;
             SqlDataAdapter adapter = new SqlDataAdapter(listar);
             DataTable tabla = new DataTable();
             adapter.Fill(tabla);
             gvwRoles.DataSource = tabla;
             gvwRoles.Columns[0].Width = 500;
             conexion.Close();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            this.cargarRoles();
+        }
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtRol.Text = "";
+            this.cargarRoles();
         }
     }
 }

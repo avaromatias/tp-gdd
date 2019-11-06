@@ -32,7 +32,13 @@
             this.btnAlta = new System.Windows.Forms.Button();
             this.btnModificacion = new System.Windows.Forms.Button();
             this.btnBaja = new System.Windows.Forms.Button();
+            this.gbxFiltros = new System.Windows.Forms.GroupBox();
+            this.txtRol = new System.Windows.Forms.TextBox();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
+            this.lblRol = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gvwRoles)).BeginInit();
+            this.gbxFiltros.SuspendLayout();
             this.SuspendLayout();
             // 
             // gvwRoles
@@ -46,7 +52,7 @@
             this.gvwRoles.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvwRoles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvwRoles.ColumnHeadersVisible = false;
-            this.gvwRoles.Location = new System.Drawing.Point(12, 12);
+            this.gvwRoles.Location = new System.Drawing.Point(12, 81);
             this.gvwRoles.Name = "gvwRoles";
             this.gvwRoles.ReadOnly = true;
             this.gvwRoles.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -58,7 +64,7 @@
             // 
             // btnAlta
             // 
-            this.btnAlta.Location = new System.Drawing.Point(12, 161);
+            this.btnAlta.Location = new System.Drawing.Point(12, 230);
             this.btnAlta.Name = "btnAlta";
             this.btnAlta.Size = new System.Drawing.Size(241, 30);
             this.btnAlta.TabIndex = 1;
@@ -67,7 +73,7 @@
             // 
             // btnModificacion
             // 
-            this.btnModificacion.Location = new System.Drawing.Point(253, 161);
+            this.btnModificacion.Location = new System.Drawing.Point(253, 230);
             this.btnModificacion.Name = "btnModificacion";
             this.btnModificacion.Size = new System.Drawing.Size(241, 30);
             this.btnModificacion.TabIndex = 2;
@@ -76,18 +82,69 @@
             // 
             // btnBaja
             // 
-            this.btnBaja.Location = new System.Drawing.Point(494, 161);
+            this.btnBaja.Location = new System.Drawing.Point(494, 230);
             this.btnBaja.Name = "btnBaja";
             this.btnBaja.Size = new System.Drawing.Size(241, 30);
             this.btnBaja.TabIndex = 3;
             this.btnBaja.Text = "Eliminar";
             this.btnBaja.UseVisualStyleBackColor = true;
             // 
+            // gbxFiltros
+            // 
+            this.gbxFiltros.Controls.Add(this.lblRol);
+            this.gbxFiltros.Controls.Add(this.btnLimpiar);
+            this.gbxFiltros.Controls.Add(this.btnBuscar);
+            this.gbxFiltros.Controls.Add(this.txtRol);
+            this.gbxFiltros.Location = new System.Drawing.Point(12, 12);
+            this.gbxFiltros.Name = "gbxFiltros";
+            this.gbxFiltros.Size = new System.Drawing.Size(723, 63);
+            this.gbxFiltros.TabIndex = 4;
+            this.gbxFiltros.TabStop = false;
+            this.gbxFiltros.Text = "Filtros de búsqueda";
+            this.gbxFiltros.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // txtRol
+            // 
+            this.txtRol.Location = new System.Drawing.Point(46, 26);
+            this.txtRol.Name = "txtRol";
+            this.txtRol.Size = new System.Drawing.Size(385, 22);
+            this.txtRol.TabIndex = 0;
+            // 
+            // btnBuscar
+            // 
+            this.btnBuscar.Location = new System.Drawing.Point(437, 25);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(137, 23);
+            this.btnBuscar.TabIndex = 1;
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // btnLimpiar
+            // 
+            this.btnLimpiar.Location = new System.Drawing.Point(580, 25);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(137, 23);
+            this.btnLimpiar.TabIndex = 2;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
+            // 
+            // lblRol
+            // 
+            this.lblRol.AutoSize = true;
+            this.lblRol.Location = new System.Drawing.Point(7, 27);
+            this.lblRol.Name = "lblRol";
+            this.lblRol.Size = new System.Drawing.Size(33, 17);
+            this.lblRol.TabIndex = 3;
+            this.lblRol.Text = "Rol:";
+            // 
             // FormABMRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(747, 197);
+            this.ClientSize = new System.Drawing.Size(747, 267);
+            this.Controls.Add(this.gbxFiltros);
             this.Controls.Add(this.btnBaja);
             this.Controls.Add(this.btnModificacion);
             this.Controls.Add(this.btnAlta);
@@ -96,6 +153,8 @@
             this.Name = "FormABMRol";
             this.Text = "FRBA Ofertas - ABM de Roles";
             ((System.ComponentModel.ISupportInitialize)(this.gvwRoles)).EndInit();
+            this.gbxFiltros.ResumeLayout(false);
+            this.gbxFiltros.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -106,5 +165,10 @@
         private System.Windows.Forms.Button btnAlta;
         private System.Windows.Forms.Button btnModificacion;
         private System.Windows.Forms.Button btnBaja;
+        private System.Windows.Forms.GroupBox gbxFiltros;
+        private System.Windows.Forms.Label lblRol;
+        private System.Windows.Forms.Button btnLimpiar;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.TextBox txtRol;
     }
 }
