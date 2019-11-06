@@ -158,11 +158,13 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	id_compra INT PRIMARY KEY IDENTITY,
 	id_oferta NVARCHAR(50) NOT NULL,
 	id_cliente INT NOT NULL,
+	id_factura INT DEFAULT NULL,
 	fecha DATETIME NOT NULL,
 	fecha_consumo DATETIME,
 	cantidad NUMERIC(18,0),
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
+	FOREIGN KEY (id_factura) REFERENCES [LOS_GDDS].[facturas](id_factura),
 	CHECK([fecha_consumo] > [fecha])
 )
 GO
@@ -210,6 +212,47 @@ GO
 
 DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
 ON [LOS_GDDS].[compras]
+GO
+
+CREATE TRIGGER [LOS_GDDS].[update_compra]
+ON
+	[LOS_GDDS].[facturas]
+AFTER
+	INSERT
+AS
+BEGIN
+	BEGIN TRANSACTION
+	DECLARE
+		@id_factura INT,
+		@id_proveedor INT,
+		@fecha_desde DATETIME,
+		@fecha_hasta DATETIME
+	SELECT
+		@id_factura = [i].[id_factura],
+		@id_proveedor = [i].[id_proveedor],
+		@fecha_desde = [i].[fecha_desde],
+		@fecha_hasta = [i].[fecha_hasta]
+	FROM
+		[inserted] [i]
+
+	UPDATE
+		[LOS_GDDS].[compras]
+	SET
+		[id_factura] = @id_factura
+	WHERE
+		[id_factura] IS NULL AND
+		[fecha_consumo] >= @fecha_desde AND
+		[fecha_consumo] < @fecha_hasta AND
+		[id_oferta] IN (
+						SELECT
+							[id_oferta]
+						FROM
+							[LOS_GDDS].[ofertas]
+						WHERE
+							[id_proveedor] = @id_proveedor
+						)
+	COMMIT TRANSACTION
+END
 GO
 	
 /* CREACIÓN FUNCTIONS */
@@ -311,17 +354,6 @@ BEGIN
 END
 GO
 /* CREACIÓN STORED PROCEDURES */
-
-/* Validar login */
-USE [GD2C2019]
-GO
-
-/****** Object:  StoredProcedure [LOS_GDDS].[validar_login]    Script Date: 10/10/2019 14:56:35 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
 
 CREATE PROCEDURE [LOS_GDDS].[validar_login] 
 	@Usuario varchar(100),
@@ -680,12 +712,13 @@ CREATE PROCEDURE [LOS_GDDS].[migrar_compras]
 AS
 BEGIN
 	INSERT INTO 
-		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [fecha], [fecha_consumo], [cantidad])
+		[LOS_GDDS].[compras]([id_oferta], [id_cliente], [id_factura], [fecha], [fecha_consumo], [cantidad])
 		(
 			SELECT
 				DISTINCT
 				[Oferta_Codigo],
 				[LOS_GDDS].[obtener_cliente_by_dni]([Cli_Dni]),
+				NULL,
 				[Oferta_fecha_compra],
 				(
 					SELECT	
