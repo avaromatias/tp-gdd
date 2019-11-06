@@ -105,7 +105,7 @@ namespace FrbaOfertas
                     break;
                 case Configuracion.abmClientes:
                     break;
-                case Configuracion.abmProveedor:
+                case Configuracion.abmProveedores:
                     break;
                 case Configuracion.cargarCredito:
                     break;

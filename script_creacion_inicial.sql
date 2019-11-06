@@ -387,7 +387,7 @@ CASE
 	--Intentos excedidos
 	WHEN @Intentos >= @MaxIntentos THEN 1
 	--La password no coincide
-	WHEN @ClaveEncriptada <> CAST(@Clave AS binary(32)) THEN 2
+	WHEN @ClaveEncriptada <> CAST(HASHBYTES('SHA2_256', @Clave) AS binary(32)) THEN 2
 	--El usuario no está habilitado
 	WHEN (SELECT [habilitado] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = @Id) = 0 THEN 3
 	--Login exitoso
