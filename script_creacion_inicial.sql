@@ -726,6 +726,8 @@ BEGIN
 		[f].[fecha_hasta]
 	FROM
 		[LOS_GDDS].[facturas] f
+
+	-- esta condicion es para SIEMPRE procesar ÚNICAMENTE lo pendiente (que nunca fue procesado)
 	WHERE
 		NOT EXISTS (SELECT
 						1
