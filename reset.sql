@@ -163,6 +163,9 @@ DROP PROCEDURE  [LOS_GDDS].[crear_usuarios_para_clientes_con_tarjeta]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_roles')
 DROP PROCEDURE  [LOS_GDDS].[cargar_roles]
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'asociar_facturas_compras')
+DROP PROCEDURE  [LOS_GDDS].[asociar_facturas_compras]
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]

@@ -182,93 +182,8 @@ CREATE TABLE [LOS_GDDS].[compras] (
 )
 GO
 
-/* CREACIÓN TRIGGERS */
-CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
-ON
-	[LOS_GDDS].[compras]
-AFTER
-	INSERT
-AS
-BEGIN
-	BEGIN TRANSACTION 
-	DECLARE 
-		@id_cliente INT,
-		@id_oferta NVARCHAR(50),
-		@cantidad NUMERIC(18,0)
-	SELECT
-		@id_cliente = [i].[id_cliente],
-		@id_oferta = [i].[id_oferta],
-		-- chequear que onda la cantidad, siempre esta en NULL actualmente
-		@cantidad = [i].[cantidad]
-	FROM
-		[inserted] [i]
-
-	UPDATE
-		[LOS_GDDS].[clientes]
-	SET
-		[saldo] -=
-			(
-				(
-					SELECT
-						[precio_oferta]
-					FROM
-						[LOS_GDDS].[ofertas]
-					WHERE
-						[id_oferta] = @id_oferta
-				) * @cantidad
-			)
-	WHERE
-		[clientes].[id_cliente] = @id_cliente
-	COMMIT TRANSACTION
-END
-GO
-
-DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
-ON [LOS_GDDS].[compras]
-GO
-
-CREATE TRIGGER [LOS_GDDS].[update_compra]
-ON
-	[LOS_GDDS].[facturas]
-AFTER
-	INSERT
-AS
-BEGIN
-	BEGIN TRANSACTION
-	DECLARE
-		@id_factura INT,
-		@id_proveedor INT,
-		@fecha_desde DATETIME,
-		@fecha_hasta DATETIME
-	SELECT
-		@id_factura = [i].[id_factura],
-		@id_proveedor = [i].[id_proveedor],
-		@fecha_desde = [i].[fecha_desde],
-		@fecha_hasta = [i].[fecha_hasta]
-	FROM
-		[inserted] [i]
-
-	UPDATE
-		[LOS_GDDS].[compras]
-	SET
-		[id_factura] = @id_factura
-	WHERE
-		[id_factura] IS NULL AND
-		[fecha_consumo] >= @fecha_desde AND
-		[fecha_consumo] < @fecha_hasta AND
-		[id_oferta] IN (
-						SELECT
-							[id_oferta]
-						FROM
-							[LOS_GDDS].[ofertas]
-						WHERE
-							[id_proveedor] = @id_proveedor
-						)
-	COMMIT TRANSACTION
-END
-GO
-	
 /* CREACIÓN FUNCTIONS */
+
 CREATE FUNCTION [LOS_GDDS].[obtener_rubro_by_descripcion] (@descripcion_rubro NVARCHAR(100))
 RETURNS INT
 AS
@@ -366,6 +281,7 @@ BEGIN
 	RETURN @id_tipo_tarjeta
 END
 GO
+
 /* CREACIÓN STORED PROCEDURES */
 
 CREATE PROCEDURE [LOS_GDDS].[validar_login] 
@@ -793,6 +709,68 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[asociar_facturas_compras]
+AS
+BEGIN
+	DECLARE
+		@id_factura INT,
+		@id_proveedor INT,
+		@fecha_desde DATETIME,
+		@fecha_hasta DATETIME
+	DECLARE facturas_cursor CURSOR FOR
+	SELECT
+		DISTINCT
+		[f].[id_factura],
+		[f].[id_proveedor],
+		[f].[fecha_desde],
+		[f].[fecha_hasta]
+	FROM
+		[LOS_GDDS].[facturas] f
+	WHERE
+		NOT EXISTS (SELECT
+						1
+					FROM
+						[LOS_GDDS].[compras] c
+					WHERE
+						[c].[id_factura] = [f].[id_factura]
+					)
+	
+	OPEN facturas_cursor
+	FETCH NEXT FROM facturas_cursor	INTO
+	@id_factura,
+	@id_proveedor,
+	@fecha_desde,
+	@fecha_hasta
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		UPDATE
+			[LOS_GDDS].[compras]
+		SET
+			[id_factura] = @id_factura
+		WHERE
+			[id_factura] IS NULL AND
+			[fecha_consumo] >= @fecha_desde AND
+			[fecha_consumo] < @fecha_hasta AND
+			[id_oferta] IN (
+							SELECT
+								[id_oferta]
+							FROM
+								[LOS_GDDS].[ofertas]
+							WHERE
+								[id_proveedor] = @id_proveedor
+							)
+		FETCH NEXT FROM facturas_cursor	INTO
+		@id_factura,
+		@id_proveedor,
+		@fecha_desde,
+		@fecha_hasta
+	END
+	CLOSE facturas_cursor
+	DEALLOCATE facturas_cursor
+END
+GO
+
 CREATE PROCEDURE [LOS_GDDS].[migrar_facturas]
 AS
 BEGIN
@@ -814,6 +792,7 @@ BEGIN
 				[Factura_Fecha]
 		)
 	EXEC [LOS_GDDS].[actualizar_fecha_desde_fecha_hasta_facturas]
+	EXEC [LOS_GDDS].[asociar_facturas_compras]
 END
 GO
 
@@ -828,6 +807,68 @@ BEGIN
 		[nombre] LIKE '%' + ISNULL(@rol, '') + '%'
 	RETURN
 END
+GO
+
+/* CREACIÓN TRIGGERS */
+
+CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ON
+	[LOS_GDDS].[compras]
+AFTER
+	INSERT
+AS
+BEGIN
+	BEGIN TRANSACTION 
+	DECLARE 
+		@id_cliente INT,
+		@id_oferta NVARCHAR(50),
+		@cantidad NUMERIC(18,0)
+	SELECT
+		@id_cliente = [i].[id_cliente],
+		@id_oferta = [i].[id_oferta],
+		-- chequear que onda la cantidad, siempre esta en NULL actualmente
+		@cantidad = [i].[cantidad]
+	FROM
+		[inserted] [i]
+
+	UPDATE
+		[LOS_GDDS].[clientes]
+	SET
+		[saldo] -=
+			(
+				(
+					SELECT
+						[precio_oferta]
+					FROM
+						[LOS_GDDS].[ofertas]
+					WHERE
+						[id_oferta] = @id_oferta
+				) * @cantidad
+			)
+	WHERE
+		[clientes].[id_cliente] = @id_cliente
+	COMMIT TRANSACTION
+END
+GO
+
+CREATE TRIGGER [LOS_GDDS].[update_compra]
+ON
+	[LOS_GDDS].[facturas]
+AFTER
+	INSERT
+AS
+BEGIN
+	EXEC [LOS_GDDS].[asociar_facturas_compras]
+END
+GO
+
+-- deshabilito los triggers para que no ejecuten durante la migracion
+DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ON [LOS_GDDS].[compras]
+GO
+
+DISABLE TRIGGER [LOS_GDDS].[update_compra]
+ON [LOS_GDDS].[facturas]
 GO
 
 -- este workaround es para que se migren los datos únicamente una vez por tabla
@@ -890,10 +931,14 @@ BEGIN
 END
 GO
 
+-- habilito los triggers para que ejecuten durante la ejecución de la app
 ENABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
 ON [LOS_GDDS].[compras]
 GO
-	
+
+ENABLE TRIGGER [LOS_GDDS].[update_compra]
+ON [LOS_GDDS].[facturas]
+GO
 
 -- con el viejo approach (cursor) tarda 01:02:53
 -- con el nuevo approach (sub-query) tarda 00:00:17
