@@ -12,6 +12,7 @@ CREATE TABLE [LOS_GDDS].[funcionalidades] (
 	id_funcionalidad INT PRIMARY KEY IDENTITY,
 	nombre VARCHAR(100)
 )
+GO
 
 --tabla roles
 CREATE TABLE [LOS_GDDS].[roles] (
@@ -19,6 +20,7 @@ CREATE TABLE [LOS_GDDS].[roles] (
 	nombre VARCHAR(100),
 	habilitado BIT
 )
+GO
 
 -- tabla funcionalidades_rol
 CREATE TABLE [LOS_GDDS].[funcionalidades_rol] (
@@ -28,6 +30,7 @@ CREATE TABLE [LOS_GDDS].[funcionalidades_rol] (
 	FOREIGN KEY (id_rol) REFERENCES [LOS_GDDS].[roles](id_rol),
 	FOREIGN KEY (id_funcionalidad) REFERENCES [LOS_GDDS].[funcionalidades](id_funcionalidad)
 )
+GO
 
 -- tabla clientes
 CREATE TABLE [LOS_GDDS].[clientes] (
@@ -46,12 +49,14 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	ciudad NVARCHAR(255),
 	CHECK ([saldo] >= 0)
 )
+GO
 
 -- tabla tipos_tarjeta
 CREATE TABLE [LOS_GDDS].[tipos_tarjeta] (
 	id_tipo_tarjeta INT PRIMARY KEY IDENTITY,
 	descripcion NVARCHAR(100)
 )
+GO
 
 -- tabla tarjetas
 CREATE TABLE [LOS_GDDS].[tarjetas] (
@@ -64,6 +69,7 @@ CREATE TABLE [LOS_GDDS].[tarjetas] (
 	FOREIGN KEY (id_tipo_tarjeta) REFERENCES [LOS_GDDS].[tipos_tarjeta](id_tipo_tarjeta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente)
 )
+GO
 
 -- tabla cargas_realizadas
 CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
@@ -75,12 +81,14 @@ CREATE TABLE [LOS_GDDS].[cargas_realizadas] (
 	FOREIGN KEY (id_tarjeta) REFERENCES [LOS_GDDS].[tarjetas](id_tarjeta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente)
 )
+GO
 
 -- tabla rubros
 CREATE TABLE [LOS_GDDS].[rubros] (
 	id_rubro INT IDENTITY PRIMARY KEY,
 	descripcion VARCHAR(100)
 )
+GO
 
 -- tabla proveedores
 CREATE TABLE [LOS_GDDS].[proveedores] (
@@ -99,6 +107,7 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	id_rubro INT
 	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro)
 )
+GO
 
 -- tabla usuarios
 -- para guardar la password use binary(32) como recomiendan aca https://stackoverflow.com/questions/247304/what-data-type-to-use-for-hashed-password-field-and-what-length
@@ -113,6 +122,7 @@ CREATE TABLE [LOS_GDDS].[usuarios] (
 	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
 )
+GO
 
 -- tabla roles_usuario
 CREATE TABLE [LOS_GDDS].[roles_usuario] (
@@ -122,6 +132,7 @@ CREATE TABLE [LOS_GDDS].[roles_usuario] (
 	FOREIGN KEY (id_usuario) REFERENCES [LOS_GDDS].[usuarios](id_usuario),
 	FOREIGN KEY (id_rol) REFERENCES [LOS_GDDS].[roles](id_rol)
 )
+GO
 
 -- tabla facturas
 CREATE TABLE [LOS_GDDS].[facturas] (
@@ -134,6 +145,7 @@ CREATE TABLE [LOS_GDDS].[facturas] (
 	fecha_hasta DATETIME
 	FOREIGN KEY (id_proveedor) REFERENCES [LOS_GDDS].[proveedores](id_proveedor)
 )
+GO
 
 -- tabla ofertas
 CREATE TABLE [LOS_GDDS].[ofertas] (
@@ -152,6 +164,7 @@ CREATE TABLE [LOS_GDDS].[ofertas] (
 	CHECK ([stock] >= 0),
 	CHECK ([fecha_vencimiento] > [fecha_publicacion])
 )
+GO
 
 -- tabla compras
 CREATE TABLE [LOS_GDDS].[compras] (
@@ -815,7 +828,7 @@ BEGIN
 		[nombre] LIKE '%' + ISNULL(@rol, '') + '%'
 	RETURN
 END
-
+GO
 
 -- este workaround es para que se migren los datos únicamente una vez por tabla
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[clientes]) = 0)
@@ -824,6 +837,7 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_clientes]
 	PRINT('clientes migrados!')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[rubros]) = 0)
 BEGIN
@@ -831,6 +845,7 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_rubros]
 	PRINT('rubros migrados!')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[proveedores]) = 0)
 BEGIN
@@ -838,6 +853,7 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_proveedores]
 	PRINT('proveedores migrados!')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[cargas_realizadas]) = 0)
 BEGIN
@@ -845,6 +861,7 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_cargas_realizadas]
 	PRINT('cargas realizadas migradas!')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[ofertas]) = 0)
 BEGIN
@@ -852,6 +869,7 @@ BEGIN
 	EXEC [LOS_GDDS].[migrar_ofertas]
 	PRINT('ofertas migradas!')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[compras]) = 0)
 BEGIN
@@ -862,6 +880,7 @@ BEGIN
 	--EXEC [LOS_GDDS].[actualizar_fecha_entrega_ofertas]
 	--PRINT('fecha de entrega de compras actualizadas')
 END
+GO
 
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[facturas]) = 0)
 BEGIN
