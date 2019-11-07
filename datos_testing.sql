@@ -130,3 +130,10 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
      VALUES
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Baja de usuario'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Cliente')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Cargar crédito'))

@@ -18,3 +18,4 @@ C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.c
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormLogin.resources
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormMenuPrincipal.resources
 C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.AbmRol.FormABMRol.resources
+C:\Users\Matias\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.AbmRol.FormModificarRol.resources

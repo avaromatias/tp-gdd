@@ -33,10 +33,10 @@
             this.btnModificacion = new System.Windows.Forms.Button();
             this.btnBaja = new System.Windows.Forms.Button();
             this.gbxFiltros = new System.Windows.Forms.GroupBox();
-            this.txtRol = new System.Windows.Forms.TextBox();
-            this.btnBuscar = new System.Windows.Forms.Button();
-            this.btnLimpiar = new System.Windows.Forms.Button();
             this.lblRol = new System.Windows.Forms.Label();
+            this.btnLimpiar = new System.Windows.Forms.Button();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.txtRol = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.gvwRoles)).BeginInit();
             this.gbxFiltros.SuspendLayout();
             this.SuspendLayout();
@@ -79,6 +79,7 @@
             this.btnModificacion.TabIndex = 2;
             this.btnModificacion.Text = "Modificar";
             this.btnModificacion.UseVisualStyleBackColor = true;
+            this.btnModificacion.Click += new System.EventHandler(this.btnModificacion_Click);
             // 
             // btnBaja
             // 
@@ -103,22 +104,14 @@
             this.gbxFiltros.Text = "Filtros de búsqueda";
             this.gbxFiltros.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
-            // txtRol
+            // lblRol
             // 
-            this.txtRol.Location = new System.Drawing.Point(46, 26);
-            this.txtRol.Name = "txtRol";
-            this.txtRol.Size = new System.Drawing.Size(385, 22);
-            this.txtRol.TabIndex = 0;
-            // 
-            // btnBuscar
-            // 
-            this.btnBuscar.Location = new System.Drawing.Point(437, 25);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(137, 23);
-            this.btnBuscar.TabIndex = 1;
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.UseVisualStyleBackColor = true;
-            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            this.lblRol.AutoSize = true;
+            this.lblRol.Location = new System.Drawing.Point(7, 27);
+            this.lblRol.Name = "lblRol";
+            this.lblRol.Size = new System.Drawing.Size(33, 17);
+            this.lblRol.TabIndex = 3;
+            this.lblRol.Text = "Rol:";
             // 
             // btnLimpiar
             // 
@@ -130,14 +123,22 @@
             this.btnLimpiar.UseVisualStyleBackColor = true;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // lblRol
+            // btnBuscar
             // 
-            this.lblRol.AutoSize = true;
-            this.lblRol.Location = new System.Drawing.Point(7, 27);
-            this.lblRol.Name = "lblRol";
-            this.lblRol.Size = new System.Drawing.Size(33, 17);
-            this.lblRol.TabIndex = 3;
-            this.lblRol.Text = "Rol:";
+            this.btnBuscar.Location = new System.Drawing.Point(437, 25);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(137, 23);
+            this.btnBuscar.TabIndex = 1;
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // txtRol
+            // 
+            this.txtRol.Location = new System.Drawing.Point(46, 26);
+            this.txtRol.Name = "txtRol";
+            this.txtRol.Size = new System.Drawing.Size(385, 22);
+            this.txtRol.TabIndex = 0;
             // 
             // FormABMRol
             // 

@@ -798,15 +798,71 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [LOS_GDDS].[cargar_roles] (@rol varchar(255))
+CREATE PROCEDURE [LOS_GDDS].[cargar_roles]
+	@Rol varchar(255)
 AS
 BEGIN
 	SELECT
+		[id_rol],
 		[nombre]
 	FROM
 		[LOS_GDDS].[roles]
 	WHERE
-		[nombre] LIKE '%' + ISNULL(@rol, '') + '%'
+		[nombre] LIKE '%' + ISNULL(@Rol, '') + '%'
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_disponibles_rol]
+	@IdRol INT
+AS
+BEGIN
+	SELECT
+		[f].[id_funcionalidad],
+		[f].[nombre]
+	FROM
+		[LOS_GDDS].[funcionalidades] f
+	LEFT JOIN
+		[LOS_GDDS].[funcionalidades_rol] fr
+	ON
+		[fr].[id_funcionalidad] = [f].[id_funcionalidad]
+	WHERE
+		[f].[id_funcionalidad] NOT IN	(
+											SELECT
+												[id_funcionalidad]
+											FROM
+												[LOS_GDDS].[funcionalidades_rol]
+											WHERE
+												[id_rol] = @IdRol
+										)
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_de_rol]
+	@IdRol INT
+AS
+BEGIN
+	SELECT
+		[f].[id_funcionalidad],
+		[f].[nombre]
+	FROM
+		[LOS_GDDS].[funcionalidades] f
+	LEFT JOIN
+		[LOS_GDDS].[funcionalidades_rol] fr
+	ON
+		[fr].[id_funcionalidad] = [f].[id_funcionalidad]
+	WHERE
+		[f].[id_funcionalidad] IN	(
+											SELECT
+												[id_funcionalidad]
+											FROM
+												[LOS_GDDS].[funcionalidades_rol]
+											WHERE
+												[id_rol] = @IdRol
+									)
+
 	RETURN
 END
 GO
