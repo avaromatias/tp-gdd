@@ -102,7 +102,6 @@
             this.gbxFiltros.TabIndex = 4;
             this.gbxFiltros.TabStop = false;
             this.gbxFiltros.Text = "Filtros de búsqueda";
-            this.gbxFiltros.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // lblRol
             // 

@@ -37,11 +37,6 @@ namespace FrbaOfertas.AbmRol
             conexion.Close();
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             this.cargarRoles();

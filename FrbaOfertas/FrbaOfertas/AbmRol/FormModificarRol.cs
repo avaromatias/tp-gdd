@@ -15,8 +15,6 @@ namespace FrbaOfertas.AbmRol
     {
         SqlConnection conexion;
         int idRol;
-        List<String> funcionalidades = new List<String>();
-        List<String> funcionalidadesViejas = new List<String>();
 
         public FormModificarRol(int unIdRol)
         {
@@ -113,8 +111,9 @@ namespace FrbaOfertas.AbmRol
 
             for (int i = 0; i < lbxFuncionalidadesRol.Items.Count; i++)
             {
-                DataRowView funcionalidad = (DataRowView) lbxFuncionalidadesRol.Items[i];
-                queryInsert = "INSERT INTO [LOS_GDDS].[funcionalidades_rol] VALUES (" + idRol + ", " + funcionalidad.Row["id_funcionalidad"] + ")";
+                DataRowView funcionalidad = (DataRowView)lbxFuncionalidadesRol.Items[i];
+                idFuncionalidad = funcionalidad.Row["id_funcionalidad"].ToString();
+                queryInsert = "INSERT INTO [LOS_GDDS].[funcionalidades_rol] VALUES (" + idRol + ", " + idFuncionalidad + ")";
                 insertar = new SqlCommand(queryInsert, conexion);
                 insertar.ExecuteNonQuery();
             }
