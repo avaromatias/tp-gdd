@@ -92,14 +92,26 @@ namespace FrbaOfertas.AbmRol
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            lbxFuncionalidadesRol.Items.Add((DataRowView)lbxFuncionalidadesTodas.SelectedItem);
-            lbxFuncionalidadesTodas.Items.Remove((DataRowView)lbxFuncionalidadesTodas.SelectedItem);
+            DataTable dataRol = (DataTable) lbxFuncionalidadesRol.DataSource;
+            DataRow rowRol = dataRol.NewRow();
+            DataRowView dataRowViewTodas = (DataRowView) lbxFuncionalidadesTodas.SelectedItem;
+            rowRol["id_funcionalidad"] = dataRowViewTodas.Row["id_funcionalidad"];
+            rowRol["nombre"] = dataRowViewTodas.Row["nombre"];
+            dataRol.Rows.Add(rowRol);
+            lbxFuncionalidadesRol.DataSource = dataRol;
+            dataRowViewTodas.Row.Delete();
         }
 
         private void btnQuitar_Click(object sender, EventArgs e)
         {
-            lbxFuncionalidadesTodas.Items.Add((DataRowView)lbxFuncionalidadesRol.SelectedItem);
-            lbxFuncionalidadesRol.Items.Remove((DataRowView)lbxFuncionalidadesRol.SelectedItem);
+            DataTable dataTodas = (DataTable)lbxFuncionalidadesTodas.DataSource;
+            DataRow rowRol = dataTodas.NewRow();
+            DataRowView dataRowViewRol = (DataRowView)lbxFuncionalidadesRol.SelectedItem;
+            rowRol["id_funcionalidad"] = dataRowViewRol.Row["id_funcionalidad"];
+            rowRol["nombre"] = dataRowViewRol.Row["nombre"];
+            dataTodas.Rows.Add(rowRol);
+            lbxFuncionalidadesTodas.DataSource = dataTodas;
+            dataRowViewRol.Row.Delete();
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
