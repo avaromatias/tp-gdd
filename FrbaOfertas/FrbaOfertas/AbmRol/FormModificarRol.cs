@@ -71,25 +71,6 @@ namespace FrbaOfertas.AbmRol
             conexion.Close();
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
-        {
-            if (camposCompletos())
-            {
-
-            }
-        }
-
-        private void guardarDatos()
-        {
-            conexion.Open();
-            conexion.Close();
-        }
-
-        private bool camposCompletos()
-        {
-            return true;
-        }
-
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             DataTable dataRol = (DataTable) lbxFuncionalidadesRol.DataSource;
@@ -117,6 +98,46 @@ namespace FrbaOfertas.AbmRol
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void guardarDatos()
+        {
+            conexion.Open();
+
+            string queryDelete = "DELETE [LOS_GDDS].[funcionalidades_rol] WHERE [id_rol] = " + idRol;
+            SqlCommand ejecutar = new SqlCommand(queryDelete, conexion);
+            ejecutar.ExecuteNonQuery();
+
+            string queryInsert, idFuncionalidad;
+            SqlCommand insertar;
+
+            for (int i = 0; i < lbxFuncionalidadesRol.Items.Count; i++)
+            {
+                DataRowView funcionalidad = (DataRowView) lbxFuncionalidadesRol.Items[i];
+                queryInsert = "INSERT INTO [LOS_GDDS].[funcionalidades_rol] VALUES (" + idRol + ", " + funcionalidad.Row["id_funcionalidad"] + ")";
+                insertar = new SqlCommand(queryInsert, conexion);
+                insertar.ExecuteNonQuery();
+            }
+
+            conexion.Close();
+        }
+
+        private bool camposCompletos()
+        {
+            return txtRol.Text != "";
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            if (this.camposCompletos())
+            {
+                guardarDatos();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Debe ingresar un nombre para el rol.");
+            }
         }
     }
 }

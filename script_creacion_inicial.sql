@@ -867,6 +867,36 @@ BEGIN
 END
 GO
 
+/*CREATE PROCEDURE [LOS_GDDS].[sacar_funcionalidades_a_rol]
+	@IdRol INT
+AS
+BEGIN
+	DELETE
+		[LOS_GDDS].[funcionalidades_rol]
+	WHERE
+		[id_rol] = @IdRol
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_funcionalidad_rol]
+	@IdRol INT,
+	@IdFuncionalidad INT
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[funcionalidades_rol]
+	VALUES
+		(
+			@IdRol,
+			@IdFuncionalidad
+		)
+
+	RETURN
+END
+GO*/
+
 /* CREACIÓN TRIGGERS */
 
 CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
