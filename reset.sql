@@ -166,6 +166,21 @@ DROP PROCEDURE  [LOS_GDDS].[cargar_roles]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'asociar_facturas_compras')
 DROP PROCEDURE  [LOS_GDDS].[asociar_facturas_compras]
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_funcionalidades_de_rol')
+DROP PROCEDURE  [LOS_GDDS].[cargar_funcionalidades_de_rol]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_funcionalidades_disponibles_rol')
+DROP PROCEDURE  [LOS_GDDS].[cargar_funcionalidades_disponibles_rol]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_funcionalidad_rol')
+DROP PROCEDURE  [LOS_GDDS].[insertar_funcionalidad_rol]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_rol')
+DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_rol]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'sacar_funcionalidades_a_rol')
+DROP PROCEDURE  [LOS_GDDS].[sacar_funcionalidades_a_rol]
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]
