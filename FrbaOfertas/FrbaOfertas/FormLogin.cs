@@ -30,7 +30,7 @@ namespace FrbaOfertas
                 try
                 {
                     conexion.Open();
-                    SqlCommand validarLogin = new SqlCommand("LOS_GDDS.validar_login", conexion);
+                    SqlCommand validarLogin = new SqlCommand("[LOS_GDDS].[validar_login]", conexion);
                     validarLogin.CommandType = CommandType.StoredProcedure;
                     validarLogin.Parameters.AddWithValue("@Usuario", txtUsername.Text);
                     validarLogin.Parameters.AddWithValue("@Clave", txtPassword.Text);

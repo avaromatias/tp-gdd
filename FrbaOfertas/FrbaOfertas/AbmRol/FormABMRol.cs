@@ -51,9 +51,32 @@ namespace FrbaOfertas.AbmRol
         private void btnModificacion_Click(object sender, EventArgs e)
         {
             int idRol = int.Parse(gvwRoles.SelectedRows[0].Cells[0].Value.ToString());
-            FormModificarRol form = new FormModificarRol(idRol);
+            FormAltaModificacionRol form = new FormAltaModificacionRol(idRol);
             form.Tag = "Modificar";
             form.ShowDialog();
+        }
+
+        private void btnAlta_Click(object sender, EventArgs e)
+        {
+            FormAltaModificacionRol form = new FormAltaModificacionRol();
+            form.Tag = "Alta";
+            form.ShowDialog();
+        }
+
+        private void btnBaja_Click(object sender, EventArgs e)
+        {
+            DialogResult seleccionUsuario = MessageBox.Show("¿Está seguro de que desea eliminar este rol?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (seleccionUsuario == DialogResult.Yes)
+            {
+                conexion.Open();
+
+                string idRol = gvwRoles.SelectedRows[0].Cells[0].Value.ToString();
+                string queryBajaLogicaRol = "UPDATE [LOS_GDDS].[roles] SET [habilitado] = 0 WHERE [id_rol] = " + idRol;
+                SqlCommand ejecutar = new SqlCommand(queryBajaLogicaRol, conexion);
+                ejecutar.ExecuteNonQuery();
+
+                conexion.Close();
+            }
         }
     }
 }

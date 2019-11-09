@@ -57,11 +57,11 @@
     <Compile Include="AbmProveedor\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmRol\FormModificarRol.cs">
+    <Compile Include="AbmRol\FormAltaModificacionRol.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmRol\FormModificarRol.Designer.cs">
-      <DependentUpon>FormModificarRol.cs</DependentUpon>
+    <Compile Include="AbmRol\FormAltaModificacionRol.Designer.cs">
+      <DependentUpon>FormAltaModificacionRol.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmRol\FormABMRol.cs">
       <SubType>Form</SubType>
@@ -114,8 +114,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AbmRol\FormModificarRol.resx">
-      <DependentUpon>FormModificarRol.cs</DependentUpon>
+    <EmbeddedResource Include="AbmRol\FormAltaModificacionRol.resx">
+      <DependentUpon>FormAltaModificacionRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\FormABMRol.resx">
       <DependentUpon>FormABMRol.cs</DependentUpon>

@@ -70,6 +70,7 @@
             this.btnAlta.TabIndex = 1;
             this.btnAlta.Text = "Agregar";
             this.btnAlta.UseVisualStyleBackColor = true;
+            this.btnAlta.Click += new System.EventHandler(this.btnAlta_Click);
             // 
             // btnModificacion
             // 
@@ -89,6 +90,7 @@
             this.btnBaja.TabIndex = 3;
             this.btnBaja.Text = "Eliminar";
             this.btnBaja.UseVisualStyleBackColor = true;
+            this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
             // gbxFiltros
             // 

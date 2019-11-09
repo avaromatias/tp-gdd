@@ -808,7 +808,8 @@ BEGIN
 	FROM
 		[LOS_GDDS].[roles]
 	WHERE
-		[nombre] LIKE '%' + ISNULL(@Rol, '') + '%'
+		[nombre] LIKE '%' + ISNULL(@Rol, '') + '%' AND
+		[habilitado] = 1
 	RETURN
 END
 GO
@@ -896,6 +897,26 @@ BEGIN
 	RETURN
 END
 GO*/
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_rol]
+	@Nombre VARCHAR(255),
+	@Habilitado BIT,
+	@IdRol INT OUT
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[roles] ([nombre], [habilitado])
+	VALUES
+		(
+			@Nombre,
+			@Habilitado
+		)
+
+	SET @IdRol = SCOPE_IDENTITY();
+
+	RETURN
+END
+GO
 
 /* CREACIÓN TRIGGERS */
 
