@@ -13,26 +13,27 @@ namespace FrbaOfertas.AbmRol
 {
     public partial class FormAltaModificacionRol : Form
     {
-        SqlConnection conexion;
+        SqlConnection conexion = new SqlConnection(Configuracion.stringConexion);
         int idRol;
         Boolean esAlta;
+        FormABMRol padre;
 
-        public FormAltaModificacionRol()
+        public FormAltaModificacionRol(FormABMRol padre)
         {
             InitializeComponent();
-            conexion = new SqlConnection(Configuracion.stringConexion);
             this.cargarTodasLasFuncionalidades();
             this.cargarEstructuraTabla();
             esAlta = true;
+            this.padre = padre;
         }
 
-        public FormAltaModificacionRol(int unIdRol)
+        public FormAltaModificacionRol(FormABMRol padre, int unIdRol)
         {
             InitializeComponent();
-            conexion = new SqlConnection(Configuracion.stringConexion);
             idRol = unIdRol;
             this.cargarDatos();
             esAlta = false;
+            this.padre = padre;
         }
 
         private void cargarTodasLasFuncionalidades()
@@ -73,7 +74,7 @@ namespace FrbaOfertas.AbmRol
             lbxFuncionalidadesTodas.DisplayMember = "nombre";
         }
 
-        private void cargarFuncionalidadesRestantes()
+        private void cargarFuncionalidadesDeRol()
         {
             SqlCommand listar = new SqlCommand("[LOS_GDDS].[cargar_funcionalidades_de_rol]", conexion);
             listar.CommandType = CommandType.StoredProcedure;
@@ -100,7 +101,7 @@ namespace FrbaOfertas.AbmRol
             conexion.Open();
 
             this.cargarFuncionalidadesDisponibles();
-            this.cargarFuncionalidadesRestantes();
+            this.cargarFuncionalidadesDeRol();
             this.cargarNombre();
 
             conexion.Close();
@@ -193,6 +194,7 @@ namespace FrbaOfertas.AbmRol
                     conexion.Close();
                 }
             }
+            padre.cargarRoles();
         }
 
         private bool camposCompletos()

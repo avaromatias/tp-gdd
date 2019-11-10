@@ -818,7 +818,7 @@ CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_disponibles_rol]
 	@IdRol INT
 AS
 BEGIN
-	SELECT
+	SELECT DISTINCT
 		[f].[id_funcionalidad],
 		[f].[nombre]
 	FROM
@@ -845,7 +845,7 @@ CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_de_rol]
 	@IdRol INT
 AS
 BEGIN
-	SELECT
+	SELECT DISTINCT
 		[f].[id_funcionalidad],
 		[f].[nombre]
 	FROM
