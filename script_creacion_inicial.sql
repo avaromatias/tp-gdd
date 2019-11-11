@@ -752,8 +752,8 @@ BEGIN
 			[id_factura] = @id_factura
 		WHERE
 			[id_factura] IS NULL AND
-			[fecha_consumo] >= @fecha_desde AND
-			[fecha_consumo] < @fecha_hasta AND
+			[fecha] >= @fecha_desde AND
+			[fecha] < @fecha_hasta AND
 			[id_oferta] IN (
 							SELECT
 								[id_oferta]
