@@ -109,5 +109,12 @@ namespace FrbaOfertas
             }
             return true;
         }
+
+        private void lnkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            formRegistrarUsuario form = new formRegistrarUsuario(this);
+            this.Visible = false;
+            form.ShowDialog();
+        }
     }
 }

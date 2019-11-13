@@ -22,7 +22,7 @@ namespace FrbaOfertas.AbmRol
             cargarRoles();
         }
 
-        public void cargarRoles()
+        private void cargarRoles()
         {
             conexion.Open();
             SqlCommand listar = new SqlCommand("[LOS_GDDS].[cargar_roles]", conexion);
@@ -51,14 +51,14 @@ namespace FrbaOfertas.AbmRol
         private void btnModificacion_Click(object sender, EventArgs e)
         {
             int idRol = int.Parse(gvwRoles.SelectedRows[0].Cells[0].Value.ToString());
-            FormAltaModificacionRol form = new FormAltaModificacionRol(this, idRol);
+            FormAltaModificacionRol form = new FormAltaModificacionRol(idRol);
             form.Tag = "Modificar";
             form.ShowDialog();
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            FormAltaModificacionRol form = new FormAltaModificacionRol(this);
+            FormAltaModificacionRol form = new FormAltaModificacionRol();
             form.Tag = "Alta";
             form.ShowDialog();
         }
@@ -76,8 +76,6 @@ namespace FrbaOfertas.AbmRol
                 ejecutar.ExecuteNonQuery();
 
                 conexion.Close();
-
-                this.cargarRoles();
             }
         }
     }

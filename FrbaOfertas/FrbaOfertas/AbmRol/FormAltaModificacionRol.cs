@@ -16,24 +16,21 @@ namespace FrbaOfertas.AbmRol
         SqlConnection conexion = new SqlConnection(Configuracion.stringConexion);
         int idRol;
         Boolean esAlta;
-        FormABMRol padre;
 
-        public FormAltaModificacionRol(FormABMRol padre)
+        public FormAltaModificacionRol()
         {
             InitializeComponent();
             this.cargarTodasLasFuncionalidades();
             this.cargarEstructuraTabla();
             esAlta = true;
-            this.padre = padre;
         }
 
-        public FormAltaModificacionRol(FormABMRol padre, int unIdRol)
+        public FormAltaModificacionRol(int unIdRol)
         {
             InitializeComponent();
             idRol = unIdRol;
             this.cargarDatos();
             esAlta = false;
-            this.padre = padre;
         }
 
         private void cargarTodasLasFuncionalidades()
@@ -74,7 +71,7 @@ namespace FrbaOfertas.AbmRol
             lbxFuncionalidadesTodas.DisplayMember = "nombre";
         }
 
-        private void cargarFuncionalidadesDeRol()
+        private void cargarFuncionalidadesRestantes()
         {
             SqlCommand listar = new SqlCommand("[LOS_GDDS].[cargar_funcionalidades_de_rol]", conexion);
             listar.CommandType = CommandType.StoredProcedure;
@@ -101,7 +98,7 @@ namespace FrbaOfertas.AbmRol
             conexion.Open();
 
             this.cargarFuncionalidadesDisponibles();
-            this.cargarFuncionalidadesDeRol();
+            this.cargarFuncionalidadesRestantes();
             this.cargarNombre();
 
             conexion.Close();
@@ -194,7 +191,6 @@ namespace FrbaOfertas.AbmRol
                     conexion.Close();
                 }
             }
-            padre.cargarRoles();
         }
 
         private bool camposCompletos()
