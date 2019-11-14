@@ -106,5 +106,10 @@ namespace FrbaOfertas
         }
 
         #endregion
+
+        private void btnCrearCuenta_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
