@@ -13,25 +13,38 @@ namespace FrbaOfertas.AbmRol
 {
     public partial class FormAltaModificacionRol : Form
     {
-        SqlConnection conexion = new SqlConnection(Configuracion.stringConexion);
+        #region Variables
+
+        SqlConnection conexion;
+        FormABMRol padre;
         int idRol;
         Boolean esAlta;
 
-        public FormAltaModificacionRol()
+        #endregion
+
+        // Constructor Alta
+        public FormAltaModificacionRol(FormABMRol padre)
         {
             InitializeComponent();
+            conexion = new SqlConnection(Configuracion.stringConexion);
+            this.padre = padre;
             this.cargarTodasLasFuncionalidades();
             this.cargarEstructuraTabla();
             esAlta = true;
         }
 
-        public FormAltaModificacionRol(int unIdRol)
+        // Constructor modificación
+        public FormAltaModificacionRol(FormABMRol padre, int unIdRol)
         {
             InitializeComponent();
+            conexion = new SqlConnection(Configuracion.stringConexion);
+            this.padre = padre;
             idRol = unIdRol;
             this.cargarDatos();
             esAlta = false;
         }
+
+        #region Métodos
 
         private void cargarTodasLasFuncionalidades()
         {
@@ -104,35 +117,6 @@ namespace FrbaOfertas.AbmRol
             conexion.Close();
         }
 
-        private void btnAgregar_Click(object sender, EventArgs e)
-        {
-            DataTable dataRol = (DataTable)lbxFuncionalidadesRol.DataSource;
-            DataRow rowRol = dataRol.NewRow();
-            DataRowView dataRowViewTodas = (DataRowView) lbxFuncionalidadesTodas.SelectedItem;
-            rowRol["id_funcionalidad"] = dataRowViewTodas.Row["id_funcionalidad"];
-            rowRol["nombre"] = dataRowViewTodas.Row["nombre"];
-            dataRol.Rows.Add(rowRol);
-            lbxFuncionalidadesRol.DataSource = dataRol;
-            dataRowViewTodas.Row.Delete();
-        }
-
-        private void btnQuitar_Click(object sender, EventArgs e)
-        {
-            DataTable dataTodas = (DataTable)lbxFuncionalidadesTodas.DataSource;
-            DataRow rowRol = dataTodas.NewRow();
-            DataRowView dataRowViewRol = (DataRowView)lbxFuncionalidadesRol.SelectedItem;
-            rowRol["id_funcionalidad"] = dataRowViewRol.Row["id_funcionalidad"];
-            rowRol["nombre"] = dataRowViewRol.Row["nombre"];
-            dataTodas.Rows.Add(rowRol);
-            lbxFuncionalidadesTodas.DataSource = dataTodas;
-            dataRowViewRol.Row.Delete();
-        }
-
-        private void btnCancelar_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void guardarDatos()
         {
             if (!esAlta)
@@ -182,7 +166,7 @@ namespace FrbaOfertas.AbmRol
                 {
                     conexion.Open();
 
-                    DataRowView funcionalidad = (DataRowView) lbxFuncionalidadesRol.Items[i];
+                    DataRowView funcionalidad = (DataRowView)lbxFuncionalidadesRol.Items[i];
                     idFuncionalidad = funcionalidad.Row["id_funcionalidad"].ToString();
                     queryInsertFuncionalidades = "INSERT INTO [LOS_GDDS].[funcionalidades_rol] VALUES (" + idNuevoRol + ", " + idFuncionalidad + ")";
                     insertarFuncionalidad = new SqlCommand(queryInsertFuncionalidades, conexion);
@@ -198,17 +182,53 @@ namespace FrbaOfertas.AbmRol
             return txtRol.Text != "";
         }
 
+        #endregion
+
+        #region Eventos
+
+        private void btnAgregar_Click(object sender, EventArgs e)
+        {
+            DataTable dataRol = (DataTable)lbxFuncionalidadesRol.DataSource;
+            DataRow rowRol = dataRol.NewRow();
+            DataRowView dataRowViewTodas = (DataRowView)lbxFuncionalidadesTodas.SelectedItem;
+            rowRol["id_funcionalidad"] = dataRowViewTodas.Row["id_funcionalidad"];
+            rowRol["nombre"] = dataRowViewTodas.Row["nombre"];
+            dataRol.Rows.Add(rowRol);
+            lbxFuncionalidadesRol.DataSource = dataRol;
+            dataRowViewTodas.Row.Delete();
+        }
+
+        private void btnQuitar_Click(object sender, EventArgs e)
+        {
+            DataTable dataTodas = (DataTable)lbxFuncionalidadesTodas.DataSource;
+            DataRow rowRol = dataTodas.NewRow();
+            DataRowView dataRowViewRol = (DataRowView)lbxFuncionalidadesRol.SelectedItem;
+            rowRol["id_funcionalidad"] = dataRowViewRol.Row["id_funcionalidad"];
+            rowRol["nombre"] = dataRowViewRol.Row["nombre"];
+            dataTodas.Rows.Add(rowRol);
+            lbxFuncionalidadesTodas.DataSource = dataTodas;
+            dataRowViewRol.Row.Delete();
+        }
+
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             if (this.camposCompletos())
             {
                 guardarDatos();
                 this.Close();
+                this.padre.cargarRoles();
             }
             else
             {
                 MessageBox.Show("Debe ingresar un nombre para el rol.");
             }
         }
+
+        #endregion
     }
 }

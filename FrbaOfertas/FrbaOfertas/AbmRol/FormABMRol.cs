@@ -13,16 +13,21 @@ namespace FrbaOfertas.AbmRol
 {
     public partial class FormABMRol : Form
     {
+        #region Variables
+
         SqlConnection conexion;
+
+        #endregion
 
         public FormABMRol()
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);
-            cargarRoles();
         }
 
-        private void cargarRoles()
+        #region Métodos
+
+        public void cargarRoles()
         {
             conexion.Open();
             SqlCommand listar = new SqlCommand("[LOS_GDDS].[cargar_roles]", conexion);
@@ -36,6 +41,10 @@ namespace FrbaOfertas.AbmRol
             gvwRoles.Columns[1].Width = 500;
             conexion.Close();
         }
+
+        #endregion
+
+        #region Eventos
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
@@ -51,14 +60,14 @@ namespace FrbaOfertas.AbmRol
         private void btnModificacion_Click(object sender, EventArgs e)
         {
             int idRol = int.Parse(gvwRoles.SelectedRows[0].Cells[0].Value.ToString());
-            FormAltaModificacionRol form = new FormAltaModificacionRol(idRol);
+            FormAltaModificacionRol form = new FormAltaModificacionRol(this, idRol);
             form.Tag = "Modificar";
             form.ShowDialog();
         }
 
         private void btnAlta_Click(object sender, EventArgs e)
         {
-            FormAltaModificacionRol form = new FormAltaModificacionRol();
+            FormAltaModificacionRol form = new FormAltaModificacionRol(this);
             form.Tag = "Alta";
             form.ShowDialog();
         }
@@ -78,5 +87,12 @@ namespace FrbaOfertas.AbmRol
                 conexion.Close();
             }
         }
+
+        private void FormABMRol_Load(object sender, EventArgs e)
+        {
+            cargarRoles();
+        }
+
+        #endregion
     }
 }

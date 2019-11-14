@@ -13,8 +13,11 @@ namespace FrbaOfertas
 {
     public partial class FormLogin : Form
     {
+        #region Variables
 
         static SqlConnection conexion;
+
+        #endregion
 
         public FormLogin()
         {
@@ -23,9 +26,39 @@ namespace FrbaOfertas
             Configuracion.formLogin = this;
         }
 
+        #region Métodos
+
+        private Boolean validarCampos()
+        {
+            if (txtUsername.Text.Equals("") && txtPassword.Text.Equals(""))
+            {
+                MessageBox.Show("Debe ingresar un nombre de usuario y contraseña.");
+                return false;
+            }
+            else
+            {
+                if (txtUsername.Text.Equals(""))
+                {
+                    MessageBox.Show("Debe ingresar un nombre de usuario.");
+                    return false;
+                }
+
+                if (txtPassword.Text.Equals(""))
+                {
+                    MessageBox.Show("Debe ingresar una contraseña.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Eventos
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if(validarCampos())
+            if (validarCampos())
             {
                 try
                 {
@@ -67,7 +100,7 @@ namespace FrbaOfertas
                         case 4:
                             Configuracion.idUsuario = int.Parse(idUsuario.Value.ToString());
                             Configuracion.idRol = int.Parse(idRol.Value.ToString());
-                            FormMenuPrincipal form = new FormMenuPrincipal();
+                            FormMenuPrincipal form = new FormMenuPrincipal(this);
                             form.Show();
                             this.Hide();
                             txtUsername.Text = "";
@@ -86,35 +119,13 @@ namespace FrbaOfertas
             }
         }
 
-        private Boolean validarCampos()
-        {
-            if (txtUsername.Text.Equals("") && txtPassword.Text.Equals(""))
-            {
-                MessageBox.Show("Debe ingresar un nombre de usuario y contraseña.");
-                return false;
-            }
-            else
-            {
-                if (txtUsername.Text.Equals(""))
-                {
-                    MessageBox.Show("Debe ingresar un nombre de usuario.");
-                    return false;
-                }
-
-                if (txtPassword.Text.Equals(""))
-                {
-                    MessageBox.Show("Debe ingresar una contraseña.");
-                    return false;
-                }
-            }
-            return true;
-        }
-
         private void lnkRegistro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            formRegistrarUsuario form = new formRegistrarUsuario(this);
+            FormRegistrarUsuario form = new FormRegistrarUsuario(this);
             this.Visible = false;
             form.ShowDialog();
         }
+
+        #endregion
     }
 }

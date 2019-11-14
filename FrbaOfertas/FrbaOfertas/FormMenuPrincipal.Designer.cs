@@ -35,17 +35,19 @@
             // 
             // lblUsername
             // 
-            this.lblUsername.Location = new System.Drawing.Point(12, 9);
+            this.lblUsername.Location = new System.Drawing.Point(9, 7);
+            this.lblUsername.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(216, 17);
+            this.lblUsername.Size = new System.Drawing.Size(162, 14);
             this.lblUsername.TabIndex = 2;
             // 
             // lnkLogout
             // 
             this.lnkLogout.AutoSize = true;
-            this.lnkLogout.Location = new System.Drawing.Point(234, 9);
+            this.lnkLogout.Location = new System.Drawing.Point(176, 7);
+            this.lnkLogout.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lnkLogout.Name = "lnkLogout";
-            this.lnkLogout.Size = new System.Drawing.Size(93, 17);
+            this.lnkLogout.Size = new System.Drawing.Size(68, 13);
             this.lnkLogout.TabIndex = 3;
             this.lnkLogout.TabStop = true;
             this.lnkLogout.Text = "Cerrar sesión";
@@ -53,23 +55,26 @@
             // 
             // pnlOpciones
             // 
-            this.pnlOpciones.Location = new System.Drawing.Point(12, 40);
+            this.pnlOpciones.Location = new System.Drawing.Point(9, 32);
+            this.pnlOpciones.Margin = new System.Windows.Forms.Padding(2);
             this.pnlOpciones.Name = "pnlOpciones";
-            this.pnlOpciones.Size = new System.Drawing.Size(315, 30);
+            this.pnlOpciones.Size = new System.Drawing.Size(236, 24);
             this.pnlOpciones.TabIndex = 4;
             // 
             // FormMenuPrincipal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(339, 79);
+            this.ClientSize = new System.Drawing.Size(254, 64);
             this.Controls.Add(this.pnlOpciones);
             this.Controls.Add(this.lnkLogout);
             this.Controls.Add(this.lblUsername);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FRBA Ofertas - Menú principal";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMenuPrincipal_FormClosed);
             this.Load += new System.EventHandler(this.FormMenuPrincipal_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

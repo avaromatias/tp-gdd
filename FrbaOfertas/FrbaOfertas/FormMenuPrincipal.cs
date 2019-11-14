@@ -13,23 +13,22 @@ namespace FrbaOfertas
 {
     public partial class FormMenuPrincipal : Form
     {
+        #region Variables
 
         SqlConnection conexion;
+        Form padre;
         int posicionEnX = 0, proximaPosicionEnY = 0;
 
-        public FormMenuPrincipal()
+        #endregion
+
+        public FormMenuPrincipal(Form padre)
         {
             InitializeComponent();
+            this.padre = padre;
             conexion = new SqlConnection(Configuracion.stringConexion);
         }
 
-        private void FormMenuPrincipal_Load(object sender, EventArgs e)
-        {
-            conexion.Open();
-            cargarUsuario();
-            cargarFuncionalidades();
-            conexion.Close();
-        }
+        #region Métodos
 
         private void cargarUsuario()
         {
@@ -122,11 +121,30 @@ namespace FrbaOfertas
             }
         }
 
+        #endregion
+
+        #region Eveentos
+
         private void lnkLogout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Configuracion.formLogin.Show();
             this.Close();
         }
+
+        private void FormMenuPrincipal_Load(object sender, EventArgs e)
+        {
+            conexion.Open();
+            cargarUsuario();
+            cargarFuncionalidades();
+            conexion.Close();
+        }
+
+        private void FormMenuPrincipal_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.padre.Visible = true;
+        }
+
+        #endregion
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FrbaOfertas
 {
-    partial class formRegistrarUsuario
+    partial class FormRegistrarUsuario
     {
         /// <summary>
         /// Variable del diseñador requerida.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formRegistrarUsuario));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormRegistrarUsuario));
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblNombreApp = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
@@ -552,7 +552,7 @@
             this.lblRazonSocial.TabIndex = 11;
             this.lblRazonSocial.Text = "Razón social:";
             // 
-            // formRegistrarUsuario
+            // FormRegistrarUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -569,10 +569,11 @@
             this.Controls.Add(this.txtUsername);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "formRegistrarUsuario";
+            this.Name = "FormRegistrarUsuario";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FRBA Ofertas - Registro";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.formRegistrarUsuario_FormClosed);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormRegistrarUsuario_FormClosed);
+            this.Load += new System.EventHandler(this.FormRegistrarUsuario_Load);
             this.pnlClientes.ResumeLayout(false);
             this.pnlClientes.PerformLayout();
             this.pnlProveedores.ResumeLayout(false);
