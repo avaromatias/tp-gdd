@@ -81,6 +81,8 @@ namespace FrbaOfertas
 
         private void cmbRoles_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            this.Height = 390;
+            this.btnCrearCuenta.Location = new Point(this.btnCrearCuenta.Location.X, 324);
             this.seleccionarPanelAMostrar();
         }
 
