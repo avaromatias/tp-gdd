@@ -43,6 +43,10 @@ namespace FrbaOfertas
                     pnlClientes.Visible = false;
                     break;
                 default:
+                    this.Height = 200;
+                    this.btnCrearCuenta.Location = new Point(this.btnCrearCuenta.Location.X, 135);
+                    pnlProveedores.Visible = false;
+                    pnlClientes.Visible = false;
                     break;
             }
         }
