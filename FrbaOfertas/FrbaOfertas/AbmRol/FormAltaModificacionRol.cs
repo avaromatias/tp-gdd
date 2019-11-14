@@ -123,9 +123,13 @@ namespace FrbaOfertas.AbmRol
             {
                 conexion.Open();
 
+                string queryUpdateNombre = "UPDATE [LOS_GDDS].[roles] SET [nombre] = '" + txtRol.Text + "' WHERE [id_rol] = " + idRol;
+                SqlCommand ejecutarUpdate = new SqlCommand(queryUpdateNombre, conexion);
+                ejecutarUpdate.ExecuteNonQuery();
+
                 string queryDelete = "DELETE [LOS_GDDS].[funcionalidades_rol] WHERE [id_rol] = " + idRol;
-                SqlCommand ejecutar = new SqlCommand(queryDelete, conexion);
-                ejecutar.ExecuteNonQuery();
+                SqlCommand ejecutarDelete = new SqlCommand(queryDelete, conexion);
+                ejecutarDelete.ExecuteNonQuery();
 
                 string queryInsert, idFuncionalidad;
                 SqlCommand insertar;

@@ -74,7 +74,7 @@
             this.Name = "FormMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FRBA Ofertas - Menú principal";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMenuPrincipal_FormClosed);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMenuPrincipal_FormClosing);
             this.Load += new System.EventHandler(this.FormMenuPrincipal_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

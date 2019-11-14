@@ -85,12 +85,14 @@ namespace FrbaOfertas.AbmRol
                 ejecutar.ExecuteNonQuery();
 
                 conexion.Close();
+
+                this.cargarRoles();
             }
         }
 
         private void FormABMRol_Load(object sender, EventArgs e)
         {
-            cargarRoles();
+            this.cargarRoles();
         }
 
         #endregion

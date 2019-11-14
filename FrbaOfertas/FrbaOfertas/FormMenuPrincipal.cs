@@ -127,7 +127,6 @@ namespace FrbaOfertas
 
         private void lnkLogout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Configuracion.formLogin.Show();
             this.Close();
         }
 
@@ -139,12 +138,20 @@ namespace FrbaOfertas
             conexion.Close();
         }
 
-        private void FormMenuPrincipal_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            this.padre.Visible = true;
-        }
-
         #endregion
+
+        private void FormMenuPrincipal_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult seleccionUsuario = MessageBox.Show("¿Cerrar sesión?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (seleccionUsuario == DialogResult.Yes)
+            {
+                this.padre.Visible = true;
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
 
     }
 }
