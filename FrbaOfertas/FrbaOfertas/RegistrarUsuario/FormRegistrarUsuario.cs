@@ -93,7 +93,7 @@ namespace FrbaOfertas
 
             conexion.Open();
             // Cargo los roles existentes
-            SqlCommand cargarRoles = new SqlCommand("SELECT [id_rol], [nombre] FROM [LOS_GDDS].[Roles] WHERE [nombre] <> 'Administrador'", conexion);
+            SqlCommand cargarRoles = new SqlCommand("SELECT [id_rol], [nombre] FROM [LOS_GDDS].[Roles] WHERE [nombre] <> 'Administrador' AND [habilitado] = 1", conexion);
             SqlDataAdapter adapter = new SqlDataAdapter(cargarRoles);
             conexion.Close();
             DataTable table = new DataTable();
