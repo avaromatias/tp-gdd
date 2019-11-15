@@ -181,6 +181,18 @@ DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_rol]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'sacar_funcionalidades_a_rol')
 DROP PROCEDURE  [LOS_GDDS].[sacar_funcionalidades_a_rol]
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'existe_usuario')
+DROP PROCEDURE  [LOS_GDDS].[existe_usuario]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_cliente')
+DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_cliente]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_proveedor')
+DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_proveedor]
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_usuario')
+DROP PROCEDURE  [LOS_GDDS].insertar_nuevo_usuario
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]

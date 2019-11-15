@@ -1085,6 +1085,84 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER [LOS_GDDS].[generar_usuario_cliente]
+ON [LOS_GDDS].[clientes]
+AFTER
+	INSERT
+AS
+BEGIN
+	DECLARE @mail_cliente NVARCHAR(255),
+			@dni_cliente VARCHAR(18),
+			@id_cliente INT
+
+	DECLARE clientes_cursor CURSOR FOR
+		SELECT
+			[mail],
+			CAST([dni] AS VARCHAR(18)),
+			[id_cliente]
+		FROM
+			[inserted]
+		ORDER BY
+			[inserted].[id_cliente]
+
+	OPEN clientes_cursor
+	FETCH NEXT FROM clientes_cursor INTO
+		@mail_cliente,
+		@dni_cliente,
+		@id_cliente
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @mail_cliente, @dni_cliente, NULL, @id_cliente, NULL
+
+		FETCH NEXT FROM clientes_cursor INTO
+		@mail_cliente,
+		@dni_cliente,
+		@id_cliente
+	END
+	CLOSE clientes_cursor
+	DEALLOCATE clientes_cursor
+END
+GO
+
+CREATE TRIGGER [LOS_GDDS].[generar_usuario_proveedor]
+ON [LOS_GDDS].[proveedores]
+AFTER
+	INSERT
+AS
+BEGIN
+	DECLARE @razon_social NVARCHAR(100),
+			@cuit VARCHAR(20),
+			@id_proveedor INT
+
+	DECLARE proveedores_cursor CURSOR FOR
+		SELECT
+			[razon_social],
+			[cuit],
+			[id_proveedor]
+		FROM
+			[inserted]
+		ORDER BY
+			[inserted].[id_proveedor]
+
+	OPEN proveedores_cursor
+	FETCH NEXT FROM proveedores_cursor INTO
+		@razon_social,
+		@cuit,
+		@id_proveedor
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @razon_social, @cuit, @id_proveedor, NULL, NULL
+
+		FETCH NEXT FROM proveedores_cursor INTO
+		@razon_social,
+		@cuit,
+		@id_proveedor
+	END
+	CLOSE proveedores_cursor
+	DEALLOCATE proveedores_cursor
+END
+GO
+
 -- deshabilito los triggers para que no ejecuten durante la migracion
 DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
 ON [LOS_GDDS].[compras]
