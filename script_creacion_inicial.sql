@@ -1241,6 +1241,26 @@ ENABLE TRIGGER [LOS_GDDS].[update_compra]
 ON [LOS_GDDS].[facturas]
 GO
 
--- con el viejo approach (cursor) tarda 01:02:53
--- con el nuevo approach (sub-query) tarda 00:00:17
--- hay que verificar los resultados pero parece que esta todo andando
+-- Hay que verificar el tema de la asociar el usuario con el cliente
+-- existen distintos clientes con igual mail lo que nos puede llegar a dar problemas
+-- probar con estas queries
+	--SELECT u.id_proveedor, p.id_proveedor FROM
+	--	LOS_GDDS.usuarios U
+	--INNER JOIN
+	--	[LOS_GDDS].[proveedores] p
+	--ON
+	--	p.razon_social = U.username
+	--WHERE
+	--	u.id_proveedor <> p.id_proveedor
+	--	order by 1
+
+
+	--SELECT u.id_cliente, c.id_cliente FROM
+	--	LOS_GDDS.usuarios U
+	--INNER JOIN
+	--	[LOS_GDDS].clientes c
+	--ON
+	--	c.mail = U.username
+	--WHERE
+	--	u.id_cliente <> c.id_cliente
+	--	order by 1,2
