@@ -37,6 +37,10 @@
             this.lblRol = new System.Windows.Forms.Label();
             this.cmbRoles = new System.Windows.Forms.ComboBox();
             this.pnlClientes = new System.Windows.Forms.Panel();
+            this.mtxtTelefonoCliente = new System.Windows.Forms.MaskedTextBox();
+            this.txtMailCliente = new System.Windows.Forms.TextBox();
+            this.txtApellido = new System.Windows.Forms.TextBox();
+            this.txtNombreCliente = new System.Windows.Forms.TextBox();
             this.mtxtCP = new System.Windows.Forms.MaskedTextBox();
             this.mtxtDni = new System.Windows.Forms.MaskedTextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -49,6 +53,11 @@
             this.lblApellido = new System.Windows.Forms.Label();
             this.lblNombre = new System.Windows.Forms.Label();
             this.pnlProveedores = new System.Windows.Forms.Panel();
+            this.cmbRubros = new System.Windows.Forms.ComboBox();
+            this.mtxtCuit = new System.Windows.Forms.MaskedTextBox();
+            this.txtCiudad = new System.Windows.Forms.TextBox();
+            this.txtMailProveedor = new System.Windows.Forms.TextBox();
+            this.txtRazonSocial = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.lblRubro = new System.Windows.Forms.Label();
             this.txtNombreProveedor = new System.Windows.Forms.TextBox();
@@ -60,16 +69,7 @@
             this.txtDireccionProveedor = new System.Windows.Forms.TextBox();
             this.lblMailProveedor = new System.Windows.Forms.Label();
             this.lblRazonSocial = new System.Windows.Forms.Label();
-            this.txtNombreCliente = new System.Windows.Forms.TextBox();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.txtMailCliente = new System.Windows.Forms.TextBox();
-            this.mtxtNacimiento = new System.Windows.Forms.MaskedTextBox();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
-            this.txtRazonSocial = new System.Windows.Forms.TextBox();
-            this.txtMailProveedor = new System.Windows.Forms.TextBox();
-            this.txtCiudad = new System.Windows.Forms.TextBox();
-            this.mtxtCuit = new System.Windows.Forms.MaskedTextBox();
-            this.cmbRubros = new System.Windows.Forms.ComboBox();
+            this.dtpFechaNacimiento = new System.Windows.Forms.DateTimePicker();
             this.pnlClientes.SuspendLayout();
             this.pnlProveedores.SuspendLayout();
             this.SuspendLayout();
@@ -157,11 +157,11 @@
             // 
             // pnlClientes
             // 
-            this.pnlClientes.Controls.Add(this.maskedTextBox1);
+            this.pnlClientes.Controls.Add(this.dtpFechaNacimiento);
+            this.pnlClientes.Controls.Add(this.mtxtTelefonoCliente);
             this.pnlClientes.Controls.Add(this.txtMailCliente);
             this.pnlClientes.Controls.Add(this.txtApellido);
             this.pnlClientes.Controls.Add(this.txtNombreCliente);
-            this.pnlClientes.Controls.Add(this.mtxtNacimiento);
             this.pnlClientes.Controls.Add(this.mtxtCP);
             this.pnlClientes.Controls.Add(this.mtxtDni);
             this.pnlClientes.Controls.Add(this.label3);
@@ -178,6 +178,46 @@
             this.pnlClientes.Size = new System.Drawing.Size(316, 187);
             this.pnlClientes.TabIndex = 20;
             this.pnlClientes.Visible = false;
+            // 
+            // mtxtTelefonoCliente
+            // 
+            this.mtxtTelefonoCliente.AllowPromptAsInput = false;
+            this.mtxtTelefonoCliente.HidePromptOnLeave = true;
+            this.mtxtTelefonoCliente.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.mtxtTelefonoCliente.Location = new System.Drawing.Point(130, 93);
+            this.mtxtTelefonoCliente.Mask = "99999999";
+            this.mtxtTelefonoCliente.Name = "mtxtTelefonoCliente";
+            this.mtxtTelefonoCliente.PromptChar = '#';
+            this.mtxtTelefonoCliente.Size = new System.Drawing.Size(167, 20);
+            this.mtxtTelefonoCliente.TabIndex = 7;
+            this.mtxtTelefonoCliente.ValidatingType = typeof(int);
+            // 
+            // txtMailCliente
+            // 
+            this.txtMailCliente.Location = new System.Drawing.Point(130, 70);
+            this.txtMailCliente.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMailCliente.Name = "txtMailCliente";
+            this.txtMailCliente.Size = new System.Drawing.Size(167, 20);
+            this.txtMailCliente.TabIndex = 6;
+            this.txtMailCliente.Tag = "";
+            // 
+            // txtApellido
+            // 
+            this.txtApellido.Location = new System.Drawing.Point(130, 24);
+            this.txtApellido.Margin = new System.Windows.Forms.Padding(2);
+            this.txtApellido.Name = "txtApellido";
+            this.txtApellido.Size = new System.Drawing.Size(167, 20);
+            this.txtApellido.TabIndex = 4;
+            this.txtApellido.Tag = "";
+            // 
+            // txtNombreCliente
+            // 
+            this.txtNombreCliente.Location = new System.Drawing.Point(130, 1);
+            this.txtNombreCliente.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNombreCliente.Name = "txtNombreCliente";
+            this.txtNombreCliente.Size = new System.Drawing.Size(167, 20);
+            this.txtNombreCliente.TabIndex = 3;
+            this.txtNombreCliente.Tag = "";
             // 
             // mtxtCP
             // 
@@ -318,6 +358,55 @@
             this.pnlProveedores.TabIndex = 21;
             this.pnlProveedores.Visible = false;
             // 
+            // cmbRubros
+            // 
+            this.cmbRubros.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbRubros.FormattingEnabled = true;
+            this.cmbRubros.Location = new System.Drawing.Point(130, 139);
+            this.cmbRubros.Name = "cmbRubros";
+            this.cmbRubros.Size = new System.Drawing.Size(167, 21);
+            this.cmbRubros.TabIndex = 22;
+            // 
+            // mtxtCuit
+            // 
+            this.mtxtCuit.AllowPromptAsInput = false;
+            this.mtxtCuit.HidePromptOnLeave = true;
+            this.mtxtCuit.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
+            this.mtxtCuit.Location = new System.Drawing.Point(130, 116);
+            this.mtxtCuit.Mask = "99-99999999-9";
+            this.mtxtCuit.Name = "mtxtCuit";
+            this.mtxtCuit.PromptChar = '#';
+            this.mtxtCuit.Size = new System.Drawing.Size(167, 20);
+            this.mtxtCuit.TabIndex = 38;
+            // 
+            // txtCiudad
+            // 
+            this.txtCiudad.Location = new System.Drawing.Point(130, 93);
+            this.txtCiudad.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCiudad.MaxLength = 255;
+            this.txtCiudad.Name = "txtCiudad";
+            this.txtCiudad.Size = new System.Drawing.Size(167, 20);
+            this.txtCiudad.TabIndex = 37;
+            this.txtCiudad.Tag = "";
+            // 
+            // txtMailProveedor
+            // 
+            this.txtMailProveedor.Location = new System.Drawing.Point(130, 24);
+            this.txtMailProveedor.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMailProveedor.Name = "txtMailProveedor";
+            this.txtMailProveedor.Size = new System.Drawing.Size(167, 20);
+            this.txtMailProveedor.TabIndex = 36;
+            this.txtMailProveedor.Tag = "";
+            // 
+            // txtRazonSocial
+            // 
+            this.txtRazonSocial.Location = new System.Drawing.Point(130, 1);
+            this.txtRazonSocial.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRazonSocial.Name = "txtRazonSocial";
+            this.txtRazonSocial.Size = new System.Drawing.Size(167, 20);
+            this.txtRazonSocial.TabIndex = 11;
+            this.txtRazonSocial.Tag = "";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -430,107 +519,15 @@
             this.lblRazonSocial.TabIndex = 11;
             this.lblRazonSocial.Text = "Razón social:";
             // 
-            // txtNombreCliente
+            // dtpFechaNacimiento
             // 
-            this.txtNombreCliente.Location = new System.Drawing.Point(130, 1);
-            this.txtNombreCliente.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNombreCliente.Name = "txtNombreCliente";
-            this.txtNombreCliente.Size = new System.Drawing.Size(167, 20);
-            this.txtNombreCliente.TabIndex = 3;
-            this.txtNombreCliente.Tag = "";
-            // 
-            // txtApellido
-            // 
-            this.txtApellido.Location = new System.Drawing.Point(130, 24);
-            this.txtApellido.Margin = new System.Windows.Forms.Padding(2);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(167, 20);
-            this.txtApellido.TabIndex = 4;
-            this.txtApellido.Tag = "";
-            // 
-            // txtMailCliente
-            // 
-            this.txtMailCliente.Location = new System.Drawing.Point(130, 70);
-            this.txtMailCliente.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMailCliente.Name = "txtMailCliente";
-            this.txtMailCliente.Size = new System.Drawing.Size(167, 20);
-            this.txtMailCliente.TabIndex = 6;
-            this.txtMailCliente.Tag = "";
-            // 
-            // mtxtNacimiento
-            // 
-            this.mtxtNacimiento.AllowPromptAsInput = false;
-            this.mtxtNacimiento.HidePromptOnLeave = true;
-            this.mtxtNacimiento.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.mtxtNacimiento.Location = new System.Drawing.Point(130, 162);
-            this.mtxtNacimiento.Mask = "00/00/0000";
-            this.mtxtNacimiento.Name = "mtxtNacimiento";
-            this.mtxtNacimiento.PromptChar = ' ';
-            this.mtxtNacimiento.Size = new System.Drawing.Size(167, 20);
-            this.mtxtNacimiento.TabIndex = 10;
-            this.mtxtNacimiento.ValidatingType = typeof(System.DateTime);
-            // 
-            // maskedTextBox1
-            // 
-            this.maskedTextBox1.AllowPromptAsInput = false;
-            this.maskedTextBox1.HidePromptOnLeave = true;
-            this.maskedTextBox1.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.maskedTextBox1.Location = new System.Drawing.Point(130, 93);
-            this.maskedTextBox1.Mask = "99999999";
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.PromptChar = '#';
-            this.maskedTextBox1.Size = new System.Drawing.Size(167, 20);
-            this.maskedTextBox1.TabIndex = 7;
-            this.maskedTextBox1.ValidatingType = typeof(int);
-            // 
-            // txtRazonSocial
-            // 
-            this.txtRazonSocial.Location = new System.Drawing.Point(130, 1);
-            this.txtRazonSocial.Margin = new System.Windows.Forms.Padding(2);
-            this.txtRazonSocial.Name = "txtRazonSocial";
-            this.txtRazonSocial.Size = new System.Drawing.Size(167, 20);
-            this.txtRazonSocial.TabIndex = 11;
-            this.txtRazonSocial.Tag = "";
-            // 
-            // txtMailProveedor
-            // 
-            this.txtMailProveedor.Location = new System.Drawing.Point(130, 24);
-            this.txtMailProveedor.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMailProveedor.Name = "txtMailProveedor";
-            this.txtMailProveedor.Size = new System.Drawing.Size(167, 20);
-            this.txtMailProveedor.TabIndex = 36;
-            this.txtMailProveedor.Tag = "";
-            // 
-            // txtCiudad
-            // 
-            this.txtCiudad.Location = new System.Drawing.Point(130, 93);
-            this.txtCiudad.Margin = new System.Windows.Forms.Padding(2);
-            this.txtCiudad.MaxLength = 255;
-            this.txtCiudad.Name = "txtCiudad";
-            this.txtCiudad.Size = new System.Drawing.Size(167, 20);
-            this.txtCiudad.TabIndex = 37;
-            this.txtCiudad.Tag = "";
-            // 
-            // mtxtCuit
-            // 
-            this.mtxtCuit.AllowPromptAsInput = false;
-            this.mtxtCuit.HidePromptOnLeave = true;
-            this.mtxtCuit.InsertKeyMode = System.Windows.Forms.InsertKeyMode.Insert;
-            this.mtxtCuit.Location = new System.Drawing.Point(130, 116);
-            this.mtxtCuit.Mask = "99-99999999-9";
-            this.mtxtCuit.Name = "mtxtCuit";
-            this.mtxtCuit.PromptChar = '#';
-            this.mtxtCuit.Size = new System.Drawing.Size(167, 20);
-            this.mtxtCuit.TabIndex = 38;
-            // 
-            // cmbRubros
-            // 
-            this.cmbRubros.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbRubros.FormattingEnabled = true;
-            this.cmbRubros.Location = new System.Drawing.Point(130, 139);
-            this.cmbRubros.Name = "cmbRubros";
-            this.cmbRubros.Size = new System.Drawing.Size(167, 21);
-            this.cmbRubros.TabIndex = 22;
+            this.dtpFechaNacimiento.CustomFormat = "";
+            this.dtpFechaNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFechaNacimiento.Location = new System.Drawing.Point(130, 162);
+            this.dtpFechaNacimiento.MaxDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
+            this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
+            this.dtpFechaNacimiento.Size = new System.Drawing.Size(167, 20);
+            this.dtpFechaNacimiento.TabIndex = 10;
             // 
             // FormRegistrarUsuario
             // 
@@ -600,13 +597,13 @@
         private System.Windows.Forms.TextBox txtNombreCliente;
         private System.Windows.Forms.TextBox txtApellido;
         private System.Windows.Forms.TextBox txtMailCliente;
-        private System.Windows.Forms.MaskedTextBox mtxtNacimiento;
-        private System.Windows.Forms.MaskedTextBox maskedTextBox1;
+        private System.Windows.Forms.MaskedTextBox mtxtTelefonoCliente;
         private System.Windows.Forms.MaskedTextBox mtxtCuit;
         private System.Windows.Forms.TextBox txtCiudad;
         private System.Windows.Forms.TextBox txtMailProveedor;
         private System.Windows.Forms.TextBox txtRazonSocial;
         private System.Windows.Forms.ComboBox cmbRubros;
+        private System.Windows.Forms.DateTimePicker dtpFechaNacimiento;
 
     }
 }

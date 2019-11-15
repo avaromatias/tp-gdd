@@ -918,6 +918,120 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[existe_usuario]
+	@Username VARCHAR(255),
+	@Respuesta INT OUT
+AS
+BEGIN
+		IF EXISTS(SELECT 1 FROM [LOS_GDDS].[usuarios] WHERE [username] = @Username)
+		BEGIN
+			SET @Respuesta = 1
+		END
+		ELSE
+		BEGIN
+			SET @Respuesta = 0
+		END
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_usuario]
+	@Username VARCHAR(255),
+	@Password VARCHAR(255),
+	@IdProveedor INT,
+	@IdCliente INT,
+	@IdUsuario INT OUT
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[usuarios] ([username], [password], [habilitado], [cantidad_logins_fallidos],
+		[id_proveedor], [id_cliente])
+	VALUES
+		(
+			@Username,
+			CAST(HASHBYTES('SHA2_256', @Password) AS binary(32)),
+			1,
+			0,
+			@IdProveedor,
+			@IdCliente
+		)
+
+	SET @IdUsuario = SCOPE_IDENTITY();
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_cliente]
+	@Nombre VARCHAR(255),
+	@Apellido VARCHAR(255),
+	@Dni NUMERIC(18, 0),
+	@Mail NVARCHAR(255),
+	@Telefono NUMERIC(18, 0),
+	@Direccion NVARCHAR(255),
+	@CodigoPostal NVARCHAR(15),
+	@FechaNacimiento DATETIME,
+	@IdCliente INT OUT
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[clientes] ([nombre], [apellido], [dni], [mail], [telefono], [direccion],
+		[codigo_postal], [fecha_nacimiento], [saldo])
+	VALUES
+		(
+			@Nombre,
+			@Apellido,
+			@Dni,
+			@Mail,
+			@Telefono,
+			@Direccion,
+			@CodigoPostal,
+			@FechaNacimiento,
+			200
+		)
+
+	SET @IdCliente = SCOPE_IDENTITY();
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_proveedor]
+	@RazonSocial NVARCHAR(100),
+	@Mail NVARCHAR(255),
+	@Telefono NUMERIC(18, 0),
+	@CodigoPostal NVARCHAR(255),
+	@Ciudad NVARCHAR(255),
+	@Direccion NVARCHAR(100),
+	@Cuit NVARCHAR(20),
+	@NombreContacto NVARCHAR(100),
+	@Rubro INT,
+	@IdProveedor INT OUT
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[proveedores] ([razon_social], [mail], [telefono], [codigo_postal], [ciudad],
+		[direccion], [cuit], [nombre_contacto], [id_rubro])
+	VALUES
+		(
+			@RazonSocial,
+			@Mail,
+			@Telefono,
+			@CodigoPostal,
+			@Ciudad,
+			@Direccion,
+			@Cuit,
+			@NombreContacto,
+			@Rubro
+		)
+
+	SET @IdProveedor = SCOPE_IDENTITY();
+
+	RETURN
+END
+GO
+
 /* CREACIÓN TRIGGERS */
 
 CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]

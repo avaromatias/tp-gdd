@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace FrbaOfertas
 {
@@ -32,6 +33,7 @@ namespace FrbaOfertas
         private void seleccionarPanelAMostrar()
         {
             string rolSeleccionado = cmbRoles.Text;
+
             switch (rolSeleccionado)
             {
                 case "Cliente":
@@ -53,26 +55,186 @@ namespace FrbaOfertas
 
         private Boolean validarCampos()
         {
-            if (txtUsername.Text.Equals("") && txtPassword.Text.Equals(""))
-            {
-                MessageBox.Show("Debe ingresar un nombre de usuario y contraseña.");
-                return false;
-            }
-            else
-            {
-                if (txtUsername.Text.Equals(""))
-                {
-                    MessageBox.Show("Debe ingresar un nombre de usuario.");
-                    return false;
-                }
+            string rolSeleccionado = cmbRoles.Text;
 
-                if (txtPassword.Text.Equals(""))
-                {
-                    MessageBox.Show("Debe ingresar una contraseña.");
+            switch (rolSeleccionado)
+            {
+                case "Cliente":
+                    if (txtUsername.Text.Equals("") || txtPassword.Text.Equals("") || txtNombreCliente.Text.Equals("") ||
+                        txtApellido.Text.Equals("") || mtxtDni.Text.Equals("") || txtMailCliente.Text.Equals("") ||
+                        mtxtTelefonoCliente.Text.Equals("") || txtDireccionCliente.Text.Equals("") || mtxtCP.Text.Equals(""))
+                    {
+                        MessageBox.Show("Debe completar todos los campos para continuar.");
+                        return false;
+                    }
+                    else
+                    {
+                        conexion.Open();
+                        SqlCommand existeUsuario = new SqlCommand("[LOS_GDDS].[existe_usuario]", conexion);
+                        existeUsuario.CommandType = CommandType.StoredProcedure;
+                        existeUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                        var respuesta = existeUsuario.Parameters.Add("@Respuesta", SqlDbType.Int);
+                        respuesta.Direction = ParameterDirection.Output;
+                        SqlDataReader data = existeUsuario.ExecuteReader();
+                        conexion.Close();
+
+                        if (respuesta.Value.Equals(1))
+                        {
+                            MessageBox.Show("Ya existe una cuenta con ese usuario.");
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                case "Proveedor":
+                    if (txtUsername.Text.Equals("") || txtPassword.Text.Equals("") || txtRazonSocial.Text.Equals("") ||
+                        txtMailProveedor.Text.Equals("") || mtxtTelefonoProveedor.Text.Equals("") || txtDireccionProveedor.Text.Equals("") ||
+                        txtCiudad.Text.Equals("") || mtxtCuit.Text.Equals("") || cmbRubros.Text.Equals("") ||
+                        txtNombreProveedor.Text.Equals(""))
+                    {
+                        MessageBox.Show("Debe completar todos los campos para continuar.");
+                        return false;
+                    }
+                    else
+                    {
+                        conexion.Open();
+                        SqlCommand existeUsuario = new SqlCommand("[LOS_GDDS].[existe_usuario]", conexion);
+                        existeUsuario.CommandType = CommandType.StoredProcedure;
+                        existeUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                        var resultado = existeUsuario.Parameters.Add("@Resultado", SqlDbType.Int);
+                        resultado.Direction = ParameterDirection.Output;
+                        SqlDataReader data = existeUsuario.ExecuteReader();
+                        conexion.Close();
+
+                        if (resultado.Equals(1))
+                        {
+                            MessageBox.Show("Ya existe una cuenta con ese usuario.");
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                default:
+                    MessageBox.Show("No es posible registrar usuarios con este rol por el momento.");
                     return false;
-                }
             }
-            return true;
+        }
+
+        private void guardarDatos()
+        {
+            if (cmbRoles.Text.Equals("Cliente"))
+            {
+                // INSERTAR CLIENTE
+                conexion.Open();
+
+                SqlCommand insertarCliente = new SqlCommand("[LOS_GDDS].[insertar_nuevo_cliente]", conexion);
+                insertarCliente.CommandType = CommandType.StoredProcedure;
+                insertarCliente.Parameters.AddWithValue("@Nombre", txtNombreCliente.Text);
+                insertarCliente.Parameters.AddWithValue("@Apellido", txtApellido.Text);
+                insertarCliente.Parameters.AddWithValue("@Dni", int.Parse(mtxtDni.Text));
+                insertarCliente.Parameters.AddWithValue("@Mail", txtMailCliente.Text);
+                insertarCliente.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoCliente.Text));
+                insertarCliente.Parameters.AddWithValue("@Direccion", txtDireccionCliente.Text);
+                insertarCliente.Parameters.AddWithValue("@CodigoPostal", mtxtCP.Text);
+                insertarCliente.Parameters.AddWithValue("@FechaNacimiento", dtpFechaNacimiento.Value);
+                // Agregar parámetro ciudad
+                var idCliente = insertarCliente.Parameters.Add("@IdCliente", SqlDbType.Int);
+                idCliente.Direction = ParameterDirection.Output;
+                SqlDataReader dataCliente = insertarCliente.ExecuteReader();
+                string idNuevoCliente = idCliente.Value.ToString();
+
+                conexion.Close();
+
+                // INSERTAR USUARIO
+                conexion.Open();
+
+                SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
+                insertarUsuario.CommandType = CommandType.StoredProcedure;
+                insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
+                insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoCliente);
+                insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
+                var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
+                idUsuario.Direction = ParameterDirection.Output;
+                SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
+                string idNuevoUsuario = idUsuario.Value.ToString();
+
+                conexion.Close();
+
+                // INSERTAR RELACIÓN ROL-USUARIO
+                conexion.Open();
+                
+                DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
+                int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
+                string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
+                SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
+                ejecutarInsertRolesUsuario.ExecuteNonQuery();
+
+                conexion.Close();
+
+                this.Close();
+                MessageBox.Show("El usuario se creó satisfactoriamente.");
+                this.padre.Visible = true;
+            }
+            else if (cmbRoles.Text.Equals("Proveedor"))
+            {
+                // INSERTAR PROVEEDOR
+                conexion.Open();
+                SqlCommand insertarProveedor = new SqlCommand("[LOS_GDDS].[insertar_nuevo_proveedor]", conexion);
+                insertarProveedor.CommandType = CommandType.StoredProcedure;
+                insertarProveedor.Parameters.AddWithValue("@RazonSocial", txtRazonSocial.Text);
+                insertarProveedor.Parameters.AddWithValue("@Mail", txtMailProveedor.Text);
+                insertarProveedor.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoProveedor.Text));
+                insertarProveedor.Parameters.AddWithValue("@CodigoPostal", txtMailCliente.Text); //Fixear
+                insertarProveedor.Parameters.AddWithValue("@Ciudad", txtCiudad.Text);
+                insertarProveedor.Parameters.AddWithValue("@Direccion", txtDireccionProveedor.Text);
+                insertarProveedor.Parameters.AddWithValue("@Cuit", mtxtCuit.Text);
+                insertarProveedor.Parameters.AddWithValue("@NombreContacto", txtNombreProveedor.Text);
+                DataRowView rubroSeleccionado = (DataRowView)cmbRubros.SelectedItem;
+                int idRubroSeleccionado = (int)rubroSeleccionado.Row["id_rubro"];
+                insertarProveedor.Parameters.AddWithValue("@Rubro", idRubroSeleccionado);
+                var idProveedor = insertarProveedor.Parameters.Add("@IdProveedor", SqlDbType.Int);
+                idProveedor.Direction = ParameterDirection.Output;
+                SqlDataReader dataProveedor = insertarProveedor.ExecuteReader();
+                string idNuevoProveedor = idProveedor.Value.ToString();
+
+                conexion.Close();
+
+                // INSERTAR USUARIO
+                conexion.Open();
+
+                SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
+                insertarUsuario.CommandType = CommandType.StoredProcedure;
+                insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
+                insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoProveedor);
+                insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
+                var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
+                idUsuario.Direction = ParameterDirection.Output;
+                SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
+                string idNuevoUsuario = idUsuario.Value.ToString();
+
+                conexion.Close();
+
+                // INSERTAR RELACIÓN ROL-USUARIO
+                conexion.Open();
+
+                DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
+                int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
+                string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
+                SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
+                ejecutarInsertRolesUsuario.ExecuteNonQuery();
+
+                conexion.Close();
+
+                this.Close();
+                MessageBox.Show("El usuario se creó satisfactoriamente.");
+                this.padre.Visible = true;
+            }
         }
 
         #endregion
@@ -111,11 +273,14 @@ namespace FrbaOfertas
             this.seleccionarPanelAMostrar();
         }
 
-        #endregion
-
         private void btnCrearCuenta_Click(object sender, EventArgs e)
         {
-
+            if (this.validarCampos())
+            {
+                this.guardarDatos();
+            }
         }
+
+        #endregion
     }
 }
