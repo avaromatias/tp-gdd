@@ -959,6 +959,38 @@ BEGIN
 
 	SET @IdUsuario = SCOPE_IDENTITY();
 
+	IF(@IdCliente IS NOT NULL)
+		BEGIN
+			DECLARE @id_rol_cliente INT
+
+			SELECT TOP 1
+				@id_rol_cliente = [id_rol]
+			FROM
+				[LOS_GDDS].[roles]
+			WHERE
+				[nombre] = 'Cliente'
+		
+			INSERT INTO 
+				[LOS_GDDS].[roles_usuario]
+			VALUES
+				(@IdUsuario,@id_rol_cliente)
+		END
+	ELSE IF(@IdProveedor IS NOT NULL)
+		BEGIN
+			DECLARE @id_rol_proveedor INT
+
+				SELECT TOP 1
+					@id_rol_proveedor = [id_rol]
+				FROM
+					[LOS_GDDS].[roles]
+				WHERE
+					[nombre] = 'Proveedor'
+		
+				INSERT INTO 
+					[LOS_GDDS].[roles_usuario]
+				VALUES
+					(@IdUsuario,@id_rol_proveedor)
+		END
 	RETURN
 END
 GO
@@ -1094,19 +1126,11 @@ BEGIN
 	DECLARE @mail_cliente NVARCHAR(255),
 			@dni_cliente VARCHAR(18),
 			@id_cliente INT,
-			@id_usuario INT,
-			@id_rol_cliente INT
-
-	SELECT TOP 1
-		@id_rol_cliente = [id_rol]
-	FROM
-		[LOS_GDDS].[roles]
-	WHERE
-		[nombre] = 'Cliente'
+			@id_usuario INT
 
 	DECLARE clientes_cursor CURSOR FOR
 		SELECT
-			[mail],
+			CAST([mail] AS VARCHAR(100)),
 			CAST([dni] AS VARCHAR(18)),
 			[id_cliente]
 		FROM
@@ -1121,14 +1145,7 @@ BEGIN
 		@id_cliente
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @mail_cliente, @dni_cliente, NULL, @id_cliente, @id_usuario OUT
-
-		INSERT INTO
-			[LOS_GDDS].[roles_usuario]
-		VALUES	(
-					@id_usuario,
-					@id_rol_cliente
-				)
+		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @dni_cliente, @mail_cliente, NULL, @id_cliente, @id_usuario OUT
 
 		FETCH NEXT FROM clientes_cursor INTO
 		@mail_cliente,
@@ -1149,15 +1166,7 @@ BEGIN
 	DECLARE @razon_social NVARCHAR(100),
 			@cuit VARCHAR(20),
 			@id_proveedor INT,
-			@id_usuario INT,
-			@id_rol_proveedor INT
-
-	SELECT TOP 1
-		@id_rol_proveedor = [id_rol]
-	FROM
-		[LOS_GDDS].[roles]
-	WHERE
-		[nombre] = 'Proveedor'
+			@id_usuario INT
 
 	DECLARE proveedores_cursor CURSOR FOR
 		SELECT
@@ -1177,13 +1186,6 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @razon_social, @cuit, @id_proveedor, NULL, @id_usuario OUT
-
-		INSERT INTO
-			[LOS_GDDS].[roles_usuario]
-		VALUES	(
-					@id_usuario,
-					@id_rol_proveedor
-				)
 
 		FETCH NEXT FROM proveedores_cursor INTO
 		@razon_social,
