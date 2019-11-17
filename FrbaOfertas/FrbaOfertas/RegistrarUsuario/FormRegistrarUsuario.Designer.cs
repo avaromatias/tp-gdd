@@ -37,6 +37,7 @@
             this.lblRol = new System.Windows.Forms.Label();
             this.cmbRoles = new System.Windows.Forms.ComboBox();
             this.pnlClientes = new System.Windows.Forms.Panel();
+            this.dtpFechaNacimiento = new System.Windows.Forms.DateTimePicker();
             this.mtxtTelefonoCliente = new System.Windows.Forms.MaskedTextBox();
             this.txtMailCliente = new System.Windows.Forms.TextBox();
             this.txtApellido = new System.Windows.Forms.TextBox();
@@ -69,7 +70,6 @@
             this.txtDireccionProveedor = new System.Windows.Forms.TextBox();
             this.lblMailProveedor = new System.Windows.Forms.Label();
             this.lblRazonSocial = new System.Windows.Forms.Label();
-            this.dtpFechaNacimiento = new System.Windows.Forms.DateTimePicker();
             this.pnlClientes.SuspendLayout();
             this.pnlProveedores.SuspendLayout();
             this.SuspendLayout();
@@ -179,6 +179,16 @@
             this.pnlClientes.TabIndex = 20;
             this.pnlClientes.Visible = false;
             // 
+            // dtpFechaNacimiento
+            // 
+            this.dtpFechaNacimiento.CustomFormat = "";
+            this.dtpFechaNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFechaNacimiento.Location = new System.Drawing.Point(130, 162);
+            this.dtpFechaNacimiento.MaxDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
+            this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
+            this.dtpFechaNacimiento.Size = new System.Drawing.Size(167, 20);
+            this.dtpFechaNacimiento.TabIndex = 10;
+            // 
             // mtxtTelefonoCliente
             // 
             this.mtxtTelefonoCliente.AllowPromptAsInput = false;
@@ -247,7 +257,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 165);
+            this.label3.Location = new System.Drawing.Point(15, 165);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(109, 13);
@@ -518,16 +528,6 @@
             this.lblRazonSocial.Size = new System.Drawing.Size(71, 13);
             this.lblRazonSocial.TabIndex = 11;
             this.lblRazonSocial.Text = "Razón social:";
-            // 
-            // dtpFechaNacimiento
-            // 
-            this.dtpFechaNacimiento.CustomFormat = "";
-            this.dtpFechaNacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFechaNacimiento.Location = new System.Drawing.Point(130, 162);
-            this.dtpFechaNacimiento.MaxDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
-            this.dtpFechaNacimiento.Name = "dtpFechaNacimiento";
-            this.dtpFechaNacimiento.Size = new System.Drawing.Size(167, 20);
-            this.dtpFechaNacimiento.TabIndex = 10;
             // 
             // FormRegistrarUsuario
             // 

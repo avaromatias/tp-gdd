@@ -107,6 +107,13 @@ namespace FrbaOfertas
                 case Configuracion.abmProveedores:
                     break;
                 case Configuracion.cargarCredito:
+                    conexion.Open();
+                    string query = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
+                    SqlCommand ejecutar = new SqlCommand(query, conexion);
+                    int idCliente = (int) ejecutar.ExecuteScalar();
+                    conexion.Close();
+                    FormCargarCredito formCargarCredito = new FormCargarCredito(idCliente);
+                    formCargarCredito.ShowDialog();
                     break;
                 case Configuracion.altaOferta:
                     break;

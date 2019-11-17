@@ -69,6 +69,12 @@
     <Compile Include="AbmRol\FormABMRol.Designer.cs">
       <DependentUpon>FormABMRol.cs</DependentUpon>
     </Compile>
+    <Compile Include="CargarCredito\FormCargarCredito.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CargarCredito\FormCargarCredito.Designer.cs">
+      <DependentUpon>FormCargarCredito.cs</DependentUpon>
+    </Compile>
     <Compile Include="ComprarOferta\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,12 +87,6 @@
     </Compile>
     <Compile Include="FormMenuPrincipal.Designer.cs">
       <DependentUpon>FormMenuPrincipal.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CargarCredito\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CargarCredito\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="CrearOferta\Form1.cs">
       <SubType>Form</SubType>
@@ -125,6 +125,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\FormABMRol.resx">
       <DependentUpon>FormABMRol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CargarCredito\FormCargarCredito.resx">
+      <DependentUpon>FormCargarCredito.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenuPrincipal.resx">
       <DependentUpon>FormMenuPrincipal.cs</DependentUpon>
