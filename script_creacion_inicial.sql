@@ -1197,6 +1197,47 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER [LOS_GDDS].[aplicar_carga_en_saldo_cliente]
+ON
+	[LOS_GDDS].[cargas_realizadas]
+AFTER
+	INSERT
+AS
+BEGIN
+	DECLARE 
+		@id_cliente INT,
+		@monto NUMERIC(18,0)
+
+	DECLARE cargas_cursor CURSOR FOR
+	SELECT
+		[id_cliente],
+		[monto]
+	FROM
+		[inserted]
+
+	OPEN cargas_cursor
+	FETCH NEXT FROM cargas_cursor INTO
+		@id_cliente,
+		@monto
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		UPDATE
+			[LOS_GDDS].[clientes]
+		SET
+			[saldo] += @monto
+		WHERE
+			[id_cliente] = @id_cliente
+
+	FETCH NEXT FROM cargas_cursor INTO
+		@id_cliente,
+		@monto
+	END
+	CLOSE cargas_cursor
+	DEALLOCATE cargas_cursor
+END
+GO
+
 -- deshabilito los triggers para que no ejecuten durante la migracion
 DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
 ON [LOS_GDDS].[compras]

@@ -33,16 +33,18 @@ namespace FrbaOfertas
         {
             if (txtMonto.Text.Equals(""))
             {
-                MessageBox.Show("Debe ingresar un nombre de usuario y contraseña.");
+                MessageBox.Show("Debe ingresar un monto.");
                 return false;
             }
-            else
+            else if (int.Parse(txtMonto.Text) < 0)
             {
-                if (txtMonto.Text.Equals(""))
-                {
-                    MessageBox.Show("Debe ingresar un nombre de usuario.");
-                    return false;
-                }
+                MessageBox.Show("Debe ingresar un monto válido.");
+                return false;
+            }
+            else if (cmbTiposPago.SelectedIndex < 0 || cmbTiposPago.SelectedIndex > 2)
+            {
+                MessageBox.Show("Seleccione un tipo de pago válido.");
+                return false;
             }
             return true;
         }
@@ -58,48 +60,17 @@ namespace FrbaOfertas
                 try
                 {
                     conexion.Open();
-                    SqlCommand validarLogin = new SqlCommand("[LOS_GDDS].[validar_login]", conexion);
-                    validarLogin.CommandType = CommandType.StoredProcedure;
-                    validarLogin.Parameters.AddWithValue("@Usuario", txtMonto.Text);
-                    validarLogin.Parameters.AddWithValue("@MaxIntentos", Configuracion.cantidadMaximaIntentosLogin);
-
-                    var resultado = validarLogin.Parameters.Add("@Resultado", SqlDbType.Int);
-                    var idUsuario = validarLogin.Parameters.Add("@Id", SqlDbType.Int);
-                    var idRol = validarLogin.Parameters.Add("@Rol", SqlDbType.Int);
-                    resultado.Direction = ParameterDirection.Output;
-                    idUsuario.Direction = ParameterDirection.Output;
-                    idRol.Direction = ParameterDirection.Output;
-
-                    SqlDataReader data = validarLogin.ExecuteReader();
-
-                    switch (int.Parse(resultado.Value.ToString()))
+                    if(cmbTiposPago.SelectedIndex == 0) // Efectivo
                     {
-                        /* 
-                         * 0: El usuario no existe
-                         * 1: Intentos excedidos
-                         * 2: La password no coincide
-                         * 3: El usuario no está habilitado
-                         * 4: Login exitoso
-                        */
-                        case 0:
-                        case 2:
-                            MessageBox.Show("Los datos ingresados son incorrectos.");
-                            break;
-                        case 3:
-                            MessageBox.Show("El usuario se encuentra inhabilitado.");
-                            break;
-                        case 1:
-                            MessageBox.Show("Excedió la cantidad de intentos permitidos.");
-                            break;
-                        case 4:
-                            Configuracion.idUsuario = int.Parse(idUsuario.Value.ToString());
-                            Configuracion.idRol = int.Parse(idRol.Value.ToString());
-                            FormMenuPrincipal form = new FormMenuPrincipal(this);
-                            form.Show();
-                            this.Hide();
-                            txtMonto.Text = "";
-                            break;
+                        string queryInsert = "INSERT INTO [LOS_GDDS].[cargas_realizadas] VALUES (" + this.idCliente + ", NULL, " + "(CONVERT(DATETIME, '" + Configuracion.fecha + "', 105)), " + txtMonto.Text + ")";
+                        SqlCommand ejecutarInsertCargasRealizadas = new SqlCommand(queryInsert, conexion);
+                        ejecutarInsertCargasRealizadas.ExecuteNonQuery();
                     }
+                    //DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
+                    //int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
+                    //string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
+                    //SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
+                    //ejecutarInsertRolesUsuario.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
@@ -118,8 +89,6 @@ namespace FrbaOfertas
             this.Height = 130;
         }
 
-        #endregion
-
         private void cmbTiposPago_SelectionChangeCommitted(object sender, EventArgs e)
         {
             int tipoDePagoSeleccionado = cmbTiposPago.SelectedIndex;
@@ -127,7 +96,7 @@ namespace FrbaOfertas
             DataTable table = new DataTable();
             SqlDataAdapter adapter;
             SqlCommand cargarTarjetas;
-            switch(tipoDePagoSeleccionado)
+            switch (tipoDePagoSeleccionado)
             {
                 case 0: //Efectivo
                     pnlTarjeta.Visible = false;
@@ -173,5 +142,16 @@ namespace FrbaOfertas
             this.txtNumeroTarjeta.Text = numeroTarjetaSeleccionada;
             this.txtVencimientoTarjeta.Text = fechaVencimientoTarjetaSeleccionada;
         }
+
+        // Para que el textbox solo acepte números
+        private void txtMonto_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && !Char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        #endregion
     }
 }

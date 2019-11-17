@@ -193,6 +193,9 @@ DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_proveedor]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_usuario')
 DROP PROCEDURE  [LOS_GDDS].insertar_nuevo_usuario
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'aplicar_carga_en_saldo_cliente')
+DROP PROCEDURE  [LOS_GDDS].aplicar_carga_en_saldo_cliente
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]

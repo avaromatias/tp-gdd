@@ -22,6 +22,17 @@ namespace FrbaOfertas.Properties {
                 return defaultInstance;
             }
         }
+
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2019-12-02 00:00:00.000")]
+        public global::System.DateTime fecha
+        {
+            get
+            {
+                return ((global::System.DateTime)(this["fecha"]));
+            }
+        }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

@@ -52,6 +52,7 @@
             this.txtMonto.Size = new System.Drawing.Size(205, 20);
             this.txtMonto.TabIndex = 0;
             this.txtMonto.Tag = "";
+            this.txtMonto.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMonto_KeyPress);
             // 
             // lblMonto
             // 
@@ -82,7 +83,7 @@
             this.btnCargar.TabIndex = 5;
             this.btnCargar.Text = "Cargar";
             this.btnCargar.UseVisualStyleBackColor = true;
-            this.btnCargar.Click += new System.EventHandler(this.btnLogin_Click);
+            this.btnCargar.Click += new System.EventHandler(this.btnCargar_Click);
             // 
             // cmbTiposPago
             // 

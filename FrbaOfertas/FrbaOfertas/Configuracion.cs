@@ -10,9 +10,12 @@ namespace FrbaOfertas
 {
     class Configuracion
     {
+        /* SISTEMA */
+        public static DateTime fecha = Properties.Settings.Default.fecha;
+        public static String stringConexion = Properties.Settings.Default.Setting;
+
         /* LOGIN */
         public static FormLogin formLogin;
-        public static String stringConexion = ConfigurationManager.ConnectionStrings["FrbaOfertas.Properties.Settings.Setting"].ConnectionString;
         public static int cantidadMaximaIntentosLogin = 3;
         public static int idUsuario;
         public static int idRol;
