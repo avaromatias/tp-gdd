@@ -1093,7 +1093,16 @@ AS
 BEGIN
 	DECLARE @mail_cliente NVARCHAR(255),
 			@dni_cliente VARCHAR(18),
-			@id_cliente INT
+			@id_cliente INT,
+			@id_usuario INT,
+			@id_rol_cliente INT
+
+	SELECT TOP 1
+		@id_rol_cliente = [id_rol]
+	FROM
+		[LOS_GDDS].[roles]
+	WHERE
+		[nombre] = 'Cliente'
 
 	DECLARE clientes_cursor CURSOR FOR
 		SELECT
@@ -1112,7 +1121,14 @@ BEGIN
 		@id_cliente
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @mail_cliente, @dni_cliente, NULL, @id_cliente, NULL
+		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @mail_cliente, @dni_cliente, NULL, @id_cliente, @id_usuario OUT
+
+		INSERT INTO
+			[LOS_GDDS].[roles_usuario]
+		VALUES	(
+					@id_usuario,
+					@id_rol_cliente
+				)
 
 		FETCH NEXT FROM clientes_cursor INTO
 		@mail_cliente,
@@ -1132,7 +1148,16 @@ AS
 BEGIN
 	DECLARE @razon_social NVARCHAR(100),
 			@cuit VARCHAR(20),
-			@id_proveedor INT
+			@id_proveedor INT,
+			@id_usuario INT,
+			@id_rol_proveedor INT
+
+	SELECT TOP 1
+		@id_rol_proveedor = [id_rol]
+	FROM
+		[LOS_GDDS].[roles]
+	WHERE
+		[nombre] = 'Proveedor'
 
 	DECLARE proveedores_cursor CURSOR FOR
 		SELECT
@@ -1151,7 +1176,14 @@ BEGIN
 		@id_proveedor
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @razon_social, @cuit, @id_proveedor, NULL, NULL
+		EXEC [LOS_GDDS].[insertar_nuevo_usuario] @razon_social, @cuit, @id_proveedor, NULL, @id_usuario OUT
+
+		INSERT INTO
+			[LOS_GDDS].[roles_usuario]
+		VALUES	(
+					@id_usuario,
+					@id_rol_proveedor
+				)
 
 		FETCH NEXT FROM proveedores_cursor INTO
 		@razon_social,
@@ -1171,6 +1203,147 @@ GO
 DISABLE TRIGGER [LOS_GDDS].[update_compra]
 ON [LOS_GDDS].[facturas]
 GO
+
+-- inserto algunos datos de prueba
+INSERT INTO [LOS_GDDS].[usuarios]
+           ([username]
+           ,[password]
+           ,[habilitado]
+           ,[cantidad_logins_fallidos]
+           ,[id_proveedor]
+           ,[id_cliente])
+     VALUES
+           ('tute'
+           ,CAST(HASHBYTES('SHA2_256', 'tute') AS binary(32))
+           ,1
+           ,0
+           ,NULL
+           ,NULL)
+
+INSERT INTO [LOS_GDDS].[roles]
+           ([nombre]
+           ,[habilitado])
+     VALUES
+           ('Administrador'
+           ,1)
+
+INSERT INTO [LOS_GDDS].[roles]
+           ([nombre]
+           ,[habilitado])
+     VALUES
+           ('Proveedor'
+           ,1)
+
+INSERT INTO [LOS_GDDS].[roles]
+           ([nombre]
+           ,[habilitado])
+     VALUES
+           ('Cliente'
+           ,1)
+
+INSERT INTO [LOS_GDDS].[roles_usuario]
+           ([id_usuario]
+           ,[id_rol])
+     VALUES
+           ((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE username = 'tute')
+           ,(SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE nombre = 'Administrador'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('ABM de Roles')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('ABM de Clientes')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('ABM de Proveedores')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Modificar password')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Baja de usuario')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Cargar crédito')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Comprar oferta')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Crear oferta')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Facturar')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Listado estadístico')
+
+INSERT INTO [LOS_GDDS].[funcionalidades]
+           ([nombre])
+     VALUES
+           ('Consumir oferta')
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'ABM de Roles'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'ABM de Clientes'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'ABM de Proveedores'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Modificar password'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Baja de usuario'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Cliente')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Cargar crédito'))
 
 -- este workaround es para que se migren los datos únicamente una vez por tabla
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[clientes]) = 0)
