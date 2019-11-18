@@ -55,22 +55,30 @@ namespace FrbaOfertas
 
         private void btnCargar_Click(object sender, EventArgs e)
         {
-            if (validarCampos())
+            if (this.validarCampos())
             {
                 try
                 {
                     conexion.Open();
+
                     if(cmbTiposPago.SelectedIndex == 0) // Efectivo
                     {
                         string queryInsert = "INSERT INTO [LOS_GDDS].[cargas_realizadas] VALUES (" + this.idCliente + ", NULL, " + "(CONVERT(DATETIME, '" + Configuracion.fecha + "', 105)), " + txtMonto.Text + ")";
                         SqlCommand ejecutarInsertCargasRealizadas = new SqlCommand(queryInsert, conexion);
                         ejecutarInsertCargasRealizadas.ExecuteNonQuery();
                     }
-                    //DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
-                    //int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
-                    //string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
-                    //SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
-                    //ejecutarInsertRolesUsuario.ExecuteNonQuery();
+                    else if (cmbTiposPago.SelectedIndex == 1 || cmbTiposPago.SelectedIndex == 2) // Crédito o débito
+                    {
+                        DataRowView TarjetaSeleccionada = (DataRowView)cmbTarjetas.SelectedItem;
+                        int idTarjetaSeleccionada = (int)TarjetaSeleccionada.Row["id_tarjeta"];
+                        string queryInsert = "INSERT INTO [LOS_GDDS].[cargas_realizadas] VALUES (" + this.idCliente + ", " + idTarjetaSeleccionada + ", " + "(CONVERT(DATETIME, '" + Configuracion.fecha + "', 105)), " + txtMonto.Text + ")";
+                        SqlCommand ejecutarInsertCargasRealizadas = new SqlCommand(queryInsert, conexion);
+                        ejecutarInsertCargasRealizadas.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Seleccione un tipo de pago válido.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -105,7 +113,7 @@ namespace FrbaOfertas
                     break;
                 case 1: //Crédito
                     conexion.Open();
-                    queryTarjetas = "SELECT [numero], [fecha_vencimiento] FROM [LOS_GDDS].[tarjetas] WHERE [id_cliente] = " + idCliente + " AND [id_tipo_tarjeta] = 1";
+                    queryTarjetas = "SELECT [id_tarjeta], [numero], [fecha_vencimiento] FROM [LOS_GDDS].[tarjetas] WHERE [id_cliente] = " + idCliente + " AND [id_tipo_tarjeta] = 1";
                     cargarTarjetas = new SqlCommand(queryTarjetas, conexion);
                     adapter = new SqlDataAdapter(cargarTarjetas);
                     conexion.Close();

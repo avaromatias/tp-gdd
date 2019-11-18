@@ -11,11 +11,11 @@ using System.Data.SqlClient;
 
 namespace FrbaOfertas.AbmCliente
 {
-    public partial class AbmCliente : Form
+    public partial class FormABMCliente : Form
     {
         private DataRow clienteEncontrado;
 
-        public AbmCliente()
+        public FormABMCliente()
         {
             InitializeComponent();
             acciones.SelectedIndex = 0;

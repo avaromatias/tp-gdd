@@ -103,6 +103,8 @@ namespace FrbaOfertas
                     abmRol.ShowDialog();
                     break;
                 case Configuracion.abmClientes:
+                    AbmCliente.FormABMCliente abmCliente = new AbmCliente.FormABMCliente();
+                    abmCliente.ShowDialog();
                     break;
                 case Configuracion.abmProveedores:
                     break;
