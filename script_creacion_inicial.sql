@@ -1064,6 +1064,28 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[modificar_password]
+	@IdUsuario INT,
+	@NuevaPassword VARCHAR(255),
+	@Resultado INT OUT
+AS
+BEGIN
+BEGIN TRY
+	UPDATE
+		[LOS_GDDS].[usuarios]
+	SET
+		[password] = CAST(HASHBYTES('SHA2_256', @NuevaPassword) AS binary(32))
+	WHERE
+		[id_usuario] = @IdUsuario
+
+	SET @Resultado = 1 /*TODO OK*/
+END TRY
+BEGIN CATCH
+	SET @Resultado = 0 /*ERROR*/
+END CATCH
+END
+GO
+
 /* CREACIÓN TRIGGERS */
 
 CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
@@ -1367,7 +1389,6 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'ABM de Proveedores'))
 
-
 INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ([id_rol]
            ,[id_funcionalidad])
@@ -1395,6 +1416,20 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
      VALUES
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Cliente')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Cargar crédito'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Cliente')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Modificar password'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Modificar password'))
 
 INSERT INTO [LOS_GDDS].[tarjetas]
 	VALUES

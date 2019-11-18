@@ -108,6 +108,10 @@ namespace FrbaOfertas
                     break;
                 case Configuracion.abmProveedores:
                     break;
+                case Configuracion.modificarPassword:
+                    ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena();
+                    modificarContrasena.ShowDialog();
+                    break;
                 case Configuracion.cargarCredito:
                     conexion.Open();
                     string query = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
