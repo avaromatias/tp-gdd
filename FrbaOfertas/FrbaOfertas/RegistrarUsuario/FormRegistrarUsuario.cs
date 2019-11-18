@@ -43,6 +43,17 @@ namespace FrbaOfertas
                 case "Proveedor":
                     pnlProveedores.Visible = true;
                     pnlClientes.Visible = false;
+
+                    conexion.Open();
+                    // Cargo los roles existentes
+                    SqlCommand cargarRubros = new SqlCommand("SELECT [id_rubro], [descripcion] FROM [LOS_GDDS].[Rubros]", conexion);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cargarRubros);
+                    conexion.Close();
+                    DataTable table = new DataTable();
+                    adapter.Fill(table);
+                    cmbRubros.DataSource = table;
+                    cmbRubros.DisplayMember = "descripcion";
+                    cmbRubros.SelectedIndex = 0;
                     break;
                 default:
                     this.Height = 200;
@@ -103,7 +114,7 @@ namespace FrbaOfertas
                         SqlCommand existeUsuario = new SqlCommand("[LOS_GDDS].[existe_usuario]", conexion);
                         existeUsuario.CommandType = CommandType.StoredProcedure;
                         existeUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
-                        var resultado = existeUsuario.Parameters.Add("@Resultado", SqlDbType.Int);
+                        var resultado = existeUsuario.Parameters.Add("@Respuesta", SqlDbType.Int);
                         resultado.Direction = ParameterDirection.Output;
                         SqlDataReader data = existeUsuario.ExecuteReader();
                         conexion.Close();
@@ -129,111 +140,105 @@ namespace FrbaOfertas
             if (cmbRoles.Text.Equals("Cliente"))
             {
                 // INSERTAR CLIENTE
-                conexion.Open();
+                try
+                {
+                    conexion.Open();
+                    SqlCommand insertarCliente = new SqlCommand("[LOS_GDDS].[insertar_nuevo_cliente]", conexion);
+                    insertarCliente.CommandType = CommandType.StoredProcedure;
+                    insertarCliente.Parameters.AddWithValue("@Nombre", txtNombreCliente.Text);
+                    insertarCliente.Parameters.AddWithValue("@Apellido", txtApellido.Text);
+                    insertarCliente.Parameters.AddWithValue("@Dni", int.Parse(mtxtDni.Text));
+                    insertarCliente.Parameters.AddWithValue("@Mail", txtMailCliente.Text);
+                    insertarCliente.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoCliente.Text));
+                    insertarCliente.Parameters.AddWithValue("@Direccion", txtDireccionCliente.Text);
+                    insertarCliente.Parameters.AddWithValue("@CodigoPostal", mtxtCP.Text);
+                    insertarCliente.Parameters.AddWithValue("@FechaNacimiento", dtpFechaNacimiento.Value);
+                    // Agregar parámetro ciudad
+                    var idCliente = insertarCliente.Parameters.Add("@IdCliente", SqlDbType.Int);
+                    idCliente.Direction = ParameterDirection.Output;
+                    SqlDataReader dataCliente = insertarCliente.ExecuteReader();
+                    string idNuevoCliente = idCliente.Value.ToString();
+                    conexion.Close();
 
-                SqlCommand insertarCliente = new SqlCommand("[LOS_GDDS].[insertar_nuevo_cliente]", conexion);
-                insertarCliente.CommandType = CommandType.StoredProcedure;
-                insertarCliente.Parameters.AddWithValue("@Nombre", txtNombreCliente.Text);
-                insertarCliente.Parameters.AddWithValue("@Apellido", txtApellido.Text);
-                insertarCliente.Parameters.AddWithValue("@Dni", int.Parse(mtxtDni.Text));
-                insertarCliente.Parameters.AddWithValue("@Mail", txtMailCliente.Text);
-                insertarCliente.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoCliente.Text));
-                insertarCliente.Parameters.AddWithValue("@Direccion", txtDireccionCliente.Text);
-                insertarCliente.Parameters.AddWithValue("@CodigoPostal", mtxtCP.Text);
-                insertarCliente.Parameters.AddWithValue("@FechaNacimiento", dtpFechaNacimiento.Value);
-                // Agregar parámetro ciudad
-                var idCliente = insertarCliente.Parameters.Add("@IdCliente", SqlDbType.Int);
-                idCliente.Direction = ParameterDirection.Output;
-                SqlDataReader dataCliente = insertarCliente.ExecuteReader();
-                string idNuevoCliente = idCliente.Value.ToString();
+                    // INSERTAR USUARIO
+                    conexion.Open();
 
-                conexion.Close();
+                    SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
+                    insertarUsuario.CommandType = CommandType.StoredProcedure;
+                    insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                    insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
+                    insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoCliente);
+                    insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
+                    var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
+                    idUsuario.Direction = ParameterDirection.Output;
+                    SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
+                    string idNuevoUsuario = idUsuario.Value.ToString();
 
-                // INSERTAR USUARIO
-                conexion.Open();
-
-                SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
-                insertarUsuario.CommandType = CommandType.StoredProcedure;
-                insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
-                insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
-                insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoCliente);
-                insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
-                var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
-                idUsuario.Direction = ParameterDirection.Output;
-                SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
-                string idNuevoUsuario = idUsuario.Value.ToString();
-
-                conexion.Close();
-
-                // INSERTAR RELACIÓN ROL-USUARIO
-                conexion.Open();
-                
-                DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
-                int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
-                string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
-                SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
-                ejecutarInsertRolesUsuario.ExecuteNonQuery();
-
-                conexion.Close();
-
-                this.Close();
-                MessageBox.Show("El usuario se creó satisfactoriamente.");
-                this.padre.Visible = true;
+                    MessageBox.Show("El usuario se creó satisfactoriamente.");
+                    this.padre.Visible = true;
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    conexion.Close();
+                }
             }
             else if (cmbRoles.Text.Equals("Proveedor"))
             {
-                // INSERTAR PROVEEDOR
-                conexion.Open();
-                SqlCommand insertarProveedor = new SqlCommand("[LOS_GDDS].[insertar_nuevo_proveedor]", conexion);
-                insertarProveedor.CommandType = CommandType.StoredProcedure;
-                insertarProveedor.Parameters.AddWithValue("@RazonSocial", txtRazonSocial.Text);
-                insertarProveedor.Parameters.AddWithValue("@Mail", txtMailProveedor.Text);
-                insertarProveedor.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoProveedor.Text));
-                insertarProveedor.Parameters.AddWithValue("@CodigoPostal", txtMailCliente.Text); //Fixear
-                insertarProveedor.Parameters.AddWithValue("@Ciudad", txtCiudad.Text);
-                insertarProveedor.Parameters.AddWithValue("@Direccion", txtDireccionProveedor.Text);
-                insertarProveedor.Parameters.AddWithValue("@Cuit", mtxtCuit.Text);
-                insertarProveedor.Parameters.AddWithValue("@NombreContacto", txtNombreProveedor.Text);
-                DataRowView rubroSeleccionado = (DataRowView)cmbRubros.SelectedItem;
-                int idRubroSeleccionado = (int)rubroSeleccionado.Row["id_rubro"];
-                insertarProveedor.Parameters.AddWithValue("@Rubro", idRubroSeleccionado);
-                var idProveedor = insertarProveedor.Parameters.Add("@IdProveedor", SqlDbType.Int);
-                idProveedor.Direction = ParameterDirection.Output;
-                SqlDataReader dataProveedor = insertarProveedor.ExecuteReader();
-                string idNuevoProveedor = idProveedor.Value.ToString();
+                try
+                {
+                    // INSERTAR PROVEEDOR
+                    conexion.Open();
+                    SqlCommand insertarProveedor = new SqlCommand("[LOS_GDDS].[insertar_nuevo_proveedor]", conexion);
+                    insertarProveedor.CommandType = CommandType.StoredProcedure;
+                    insertarProveedor.Parameters.AddWithValue("@RazonSocial", txtRazonSocial.Text);
+                    insertarProveedor.Parameters.AddWithValue("@Mail", txtMailProveedor.Text);
+                    insertarProveedor.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoProveedor.Text));
+                    insertarProveedor.Parameters.AddWithValue("@CodigoPostal", txtMailCliente.Text); //Fixear
+                    insertarProveedor.Parameters.AddWithValue("@Ciudad", txtCiudad.Text);
+                    insertarProveedor.Parameters.AddWithValue("@Direccion", txtDireccionProveedor.Text);
+                    insertarProveedor.Parameters.AddWithValue("@Cuit", mtxtCuit.Text);
+                    insertarProveedor.Parameters.AddWithValue("@NombreContacto", txtNombreProveedor.Text);
+                    DataRowView rubroSeleccionado = (DataRowView)cmbRubros.SelectedItem;
+                    int idRubroSeleccionado = (int)rubroSeleccionado.Row["id_rubro"];
+                    insertarProveedor.Parameters.AddWithValue("@Rubro", idRubroSeleccionado);
+                    var idProveedor = insertarProveedor.Parameters.Add("@IdProveedor", SqlDbType.Int);
+                    idProveedor.Direction = ParameterDirection.Output;
+                    SqlDataReader dataProveedor = insertarProveedor.ExecuteReader();
+                    string idNuevoProveedor = idProveedor.Value.ToString();
 
-                conexion.Close();
+                    conexion.Close();
 
-                // INSERTAR USUARIO
-                conexion.Open();
+                    // INSERTAR USUARIO
+                    conexion.Open();
 
-                SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
-                insertarUsuario.CommandType = CommandType.StoredProcedure;
-                insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
-                insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
-                insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoProveedor);
-                insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
-                var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
-                idUsuario.Direction = ParameterDirection.Output;
-                SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
-                string idNuevoUsuario = idUsuario.Value.ToString();
+                    SqlCommand insertarUsuario = new SqlCommand("[LOS_GDDS].[insertar_nuevo_usuario]", conexion);
+                    insertarUsuario.CommandType = CommandType.StoredProcedure;
+                    insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
+                    insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
+                    insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoProveedor);
+                    insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
+                    var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
+                    idUsuario.Direction = ParameterDirection.Output;
+                    SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
+                    string idNuevoUsuario = idUsuario.Value.ToString();
 
-                conexion.Close();
-
-                // INSERTAR RELACIÓN ROL-USUARIO
-                conexion.Open();
-
-                DataRowView rolSeleccionado = (DataRowView)cmbRoles.SelectedItem;
-                int idRolSeleccionado = (int)rolSeleccionado.Row["id_rol"];
-                string queryInsert = "INSERT INTO [LOS_GDDS].[roles_usuario] VALUES (" + idNuevoUsuario + ", " + idRolSeleccionado + ")";
-                SqlCommand ejecutarInsertRolesUsuario = new SqlCommand(queryInsert, conexion);
-                ejecutarInsertRolesUsuario.ExecuteNonQuery();
-
-                conexion.Close();
-
-                this.Close();
-                MessageBox.Show("El usuario se creó satisfactoriamente.");
-                this.padre.Visible = true;
+                    MessageBox.Show("El usuario se creó satisfactoriamente.");
+                    this.padre.Visible = true;
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    conexion.Close();
+                }
             }
         }
 

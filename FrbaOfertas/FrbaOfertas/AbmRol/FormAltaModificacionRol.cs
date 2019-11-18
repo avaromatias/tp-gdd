@@ -16,14 +16,14 @@ namespace FrbaOfertas.AbmRol
         #region Variables
 
         SqlConnection conexion;
-        FormABMRol padre;
+        FormSeleccionarProveedor padre;
         int idRol;
         Boolean esAlta;
 
         #endregion
 
         // Constructor Alta
-        public FormAltaModificacionRol(FormABMRol padre)
+        public FormAltaModificacionRol(FormSeleccionarProveedor padre)
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);
@@ -34,7 +34,7 @@ namespace FrbaOfertas.AbmRol
         }
 
         // Constructor modificación
-        public FormAltaModificacionRol(FormABMRol padre, int unIdRol)
+        public FormAltaModificacionRol(FormSeleccionarProveedor padre, int unIdRol)
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);

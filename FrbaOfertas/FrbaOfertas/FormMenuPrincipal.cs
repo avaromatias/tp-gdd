@@ -99,18 +99,18 @@ namespace FrbaOfertas
             switch ((int.Parse(botonClickeado.Tag.ToString())))
             {
                 case Configuracion.abmRoles:
-                    AbmRol.FormABMRol abmRol = new AbmRol.FormABMRol();
-                    abmRol.ShowDialog();
+                    AbmRol.FormSeleccionarProveedor abmRol = new AbmRol.FormSeleccionarProveedor();
+                    abmRol.Show();
                     break;
                 case Configuracion.abmClientes:
                     AbmCliente.FormABMCliente abmCliente = new AbmCliente.FormABMCliente();
-                    abmCliente.ShowDialog();
+                    abmCliente.Show();
                     break;
                 case Configuracion.abmProveedores:
                     break;
                 case Configuracion.modificarPassword:
                     ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena();
-                    modificarContrasena.ShowDialog();
+                    modificarContrasena.Show();
                     break;
                 case Configuracion.cargarCredito:
                     conexion.Open();
@@ -132,9 +132,11 @@ namespace FrbaOfertas
                     }
                     conexion.Close();
                     FormCargarCredito formCargarCredito = new FormCargarCredito(idCliente);
-                    formCargarCredito.ShowDialog();
+                    formCargarCredito.Show();
                     break;
                 case Configuracion.altaOferta:
+                    CrearOferta.FormCrearOferta crearOferta = new CrearOferta.FormCrearOferta();
+                    crearOferta.Show();
                     break;
                 case Configuracion.comprarOferta:
                     break;

@@ -814,6 +814,32 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[cargar_proveedores]
+	@RazonSocial VARCHAR(255),
+	@Cuit VARCHAR(255)
+AS
+BEGIN
+	SELECT
+		[p].[id_proveedor],
+		[p].[razon_social] AS 'Razón social',
+		[p].[telefono] AS 'Teléfono',
+		[p].[ciudad] AS 'Ciudad',
+		[p].[direccion] AS 'Dirección',
+		[p].[cuit] AS 'CUIT'
+	FROM
+		[LOS_GDDS].[proveedores] [p]
+	JOIN
+		[LOS_GDDS].[usuarios] [u]
+	ON
+		[u].[id_proveedor] = [p].[id_proveedor]
+	WHERE
+		[p].[razon_social] LIKE '%' + ISNULL(@RazonSocial, '') + '%' AND
+		[p].[cuit] LIKE '%' + ISNULL(@Cuit, '') + '%' AND
+		[u].[habilitado] = 1
+	RETURN
+END
+GO
+
 CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_disponibles_rol]
 	@IdRol INT
 AS
@@ -1059,6 +1085,36 @@ BEGIN
 		)
 
 	SET @IdProveedor = SCOPE_IDENTITY();
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nueva_oferta]
+	@IdProveedor INT,
+	@PrecioLista NUMERIC(18, 2),
+	@PrecioOferta NUMERIC(18, 2),
+	@Stock NUMERIC(18, 0),
+	@UnidadesMaximas NUMERIC(18, 0),
+	@Descripcion NVARCHAR(255),
+	@FechaVencimiento DATETIME,
+	@FechaPublicacion DATETIME
+AS
+BEGIN
+	INSERT INTO
+		[LOS_GDDS].[ofertas] ([id_proveedor], [precio_lista], [precio_oferta], [stock], [unidades_maximas_cliente],
+			[descripcion], [fecha_vencimiento], [fecha_publicacion])
+	VALUES
+		(
+			@IdProveedor,
+			@PrecioLista,
+			@PrecioOferta,
+			@Stock,
+			@UnidadesMaximas,
+			@Descripcion,
+			@FechaVencimiento,
+			@FechaPublicacion
+		)
 
 	RETURN
 END

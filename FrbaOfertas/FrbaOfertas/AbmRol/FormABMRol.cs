@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace FrbaOfertas.AbmRol
 {
-    public partial class FormABMRol : Form
+    public partial class FormSeleccionarProveedor : Form
     {
         #region Variables
 
@@ -19,7 +19,7 @@ namespace FrbaOfertas.AbmRol
 
         #endregion
 
-        public FormABMRol()
+        public FormSeleccionarProveedor()
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);
