@@ -34,6 +34,7 @@ namespace FrbaOfertas.CrearOferta
             if (this.esAdmin && this.txtProveedor.Text.Equals(""))
             {
                 MessageBox.Show("Complete los campos vacíos.");
+                return false;
             }
             if (txtDescripcion.Text.Equals("") || txtPrecioLista.Text.Equals("") || txtPrecioOferta.Text.Equals("") ||
                 txtStock.Text.Equals("") || txtUnidadesMaximas.Text.Equals(""))
@@ -41,24 +42,51 @@ namespace FrbaOfertas.CrearOferta
                 MessageBox.Show("Complete los campos vacíos.");
                 return false;
             }
+            else if (int.Parse(txtPrecioOferta.Text) > int.Parse(txtPrecioLista.Text))
+            {
+                MessageBox.Show("El precio de oferta debe ser menor al precio de lista.");
+                return false;
+            }
+            else if (int.Parse(txtUnidadesMaximas.Text) > int.Parse(txtStock.Text))
+            {
+                MessageBox.Show("Las unidades máximas por cliente no pueden exceder el stock.");
+                return false;
+            }
+            else if (dtpFechaVencimiento.Value.CompareTo(dtpFechaPublicacion.Value) <= 0)
+            {
+                MessageBox.Show("La fecha de vencimiento debe ser posterior a la de publicación.");
+                return false;
+            }
             return true;
         }
 
         private void crearOferta()
         {
-            conexion.Open();
-            SqlCommand insertarOferta = new SqlCommand("[LOS_GDDS].[insertar_nueva_oferta]", conexion);
-            insertarOferta.CommandType = CommandType.StoredProcedure;
-            insertarOferta.Parameters.AddWithValue("@IdProveedor", this.idProveedor);
-            insertarOferta.Parameters.AddWithValue("@PrecioLista", int.Parse(txtPrecioLista.Text));
-            insertarOferta.Parameters.AddWithValue("@PrecioOferta", int.Parse(txtPrecioOferta.Text));
-            insertarOferta.Parameters.AddWithValue("@Stock", int.Parse(txtStock.Text));
-            insertarOferta.Parameters.AddWithValue("@UnidadesMaximas", int.Parse(txtUnidadesMaximas.Text));
-            insertarOferta.Parameters.AddWithValue("@Descripcion", txtDescripcion.Text);
-            insertarOferta.Parameters.AddWithValue("@FechaVencimiento", dtpFechaVencimiento.Value);
-            insertarOferta.Parameters.AddWithValue("@FechaPublicacion", dtpFechaPublicacion.Value);
-            SqlDataReader dataCliente = insertarOferta.ExecuteReader();
-            conexion.Close();
+            try
+            {
+                conexion.Open();
+                SqlCommand insertarOferta = new SqlCommand("[LOS_GDDS].[insertar_nueva_oferta]", conexion);
+                insertarOferta.CommandType = CommandType.StoredProcedure;
+                insertarOferta.Parameters.AddWithValue("@IdOferta", txtCodigoOferta.Text);
+                insertarOferta.Parameters.AddWithValue("@IdProveedor", this.idProveedor);
+                insertarOferta.Parameters.AddWithValue("@PrecioLista", int.Parse(txtPrecioLista.Text));
+                insertarOferta.Parameters.AddWithValue("@PrecioOferta", int.Parse(txtPrecioOferta.Text));
+                insertarOferta.Parameters.AddWithValue("@Stock", int.Parse(txtStock.Text));
+                insertarOferta.Parameters.AddWithValue("@UnidadesMaximas", int.Parse(txtUnidadesMaximas.Text));
+                insertarOferta.Parameters.AddWithValue("@Descripcion", txtDescripcion.Text);
+                insertarOferta.Parameters.AddWithValue("@FechaVencimiento", dtpFechaVencimiento.Value);
+                insertarOferta.Parameters.AddWithValue("@FechaPublicacion", dtpFechaPublicacion.Value);
+                SqlDataReader dataCliente = insertarOferta.ExecuteReader();
+                MessageBox.Show("La oferta fue creada correctamente.");
+                conexion.Close();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Hubo un error al crear la oferta solicitada.");
+                MessageBox.Show(ex.Message);
+                conexion.Close();
+            }
         }
 
         #endregion
@@ -87,19 +115,20 @@ namespace FrbaOfertas.CrearOferta
             {
                 pnlAdministrador.Visible = false;
                 pnlProveedor.Location = new Point(12, 12);
-                btnCrearOferta.Location = new Point(btnCrearOferta.Location.X, 196);
-                this.Height = 272;
+                btnCrearOferta.Location = new Point(btnCrearOferta.Location.X, 220);
+                this.Height = 290;
                 conexion.Open();
                 string queryIdProveedor = "SELECT [id_proveedor] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
                 SqlCommand ejecutarIdProveedor = new SqlCommand(queryIdProveedor, conexion);
                 try
                 {
-                    this.idProveedor = (int)ejecutar.ExecuteScalar();
+                    this.idProveedor = (int)ejecutarIdProveedor.ExecuteScalar();
                     this.esAdmin = false;
                 }
                 catch
                 {
                     MessageBox.Show("Esta funcionalidad es exclusiva para proveedores.");
+                    this.Close();
                 }
                 finally
                 {

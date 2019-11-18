@@ -1091,6 +1091,7 @@ END
 GO
 
 CREATE PROCEDURE [LOS_GDDS].[insertar_nueva_oferta]
+	@IdOferta NVARCHAR(50),
 	@IdProveedor INT,
 	@PrecioLista NUMERIC(18, 2),
 	@PrecioOferta NUMERIC(18, 2),
@@ -1102,10 +1103,11 @@ CREATE PROCEDURE [LOS_GDDS].[insertar_nueva_oferta]
 AS
 BEGIN
 	INSERT INTO
-		[LOS_GDDS].[ofertas] ([id_proveedor], [precio_lista], [precio_oferta], [stock], [unidades_maximas_cliente],
+		[LOS_GDDS].[ofertas] ([id_oferta], [id_proveedor], [precio_lista], [precio_oferta], [stock], [unidades_maximas_cliente],
 			[descripcion], [fecha_vencimiento], [fecha_publicacion])
 	VALUES
 		(
+			@IdOferta,
 			@IdProveedor,
 			@PrecioLista,
 			@PrecioOferta,

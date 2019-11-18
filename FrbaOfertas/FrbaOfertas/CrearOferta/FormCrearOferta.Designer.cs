@@ -34,6 +34,8 @@
             this.lblPrecioLista = new System.Windows.Forms.Label();
             this.txtPrecioLista = new System.Windows.Forms.TextBox();
             this.pnlProveedor = new System.Windows.Forms.Panel();
+            this.lblCodigoOferta = new System.Windows.Forms.Label();
+            this.txtCodigoOferta = new System.Windows.Forms.TextBox();
             this.lblHelpUnidadesMaximas = new System.Windows.Forms.Label();
             this.dtpFechaVencimiento = new System.Windows.Forms.DateTimePicker();
             this.dtpFechaPublicacion = new System.Windows.Forms.DateTimePicker();
@@ -57,15 +59,15 @@
             // 
             // txtDescripcion
             // 
-            this.txtDescripcion.Location = new System.Drawing.Point(126, 0);
+            this.txtDescripcion.Location = new System.Drawing.Point(126, 27);
             this.txtDescripcion.Name = "txtDescripcion";
             this.txtDescripcion.Size = new System.Drawing.Size(364, 20);
-            this.txtDescripcion.TabIndex = 1;
+            this.txtDescripcion.TabIndex = 2;
             // 
             // lblDescripcion
             // 
             this.lblDescripcion.AutoSize = true;
-            this.lblDescripcion.Location = new System.Drawing.Point(5, 3);
+            this.lblDescripcion.Location = new System.Drawing.Point(5, 30);
             this.lblDescripcion.Name = "lblDescripcion";
             this.lblDescripcion.Size = new System.Drawing.Size(66, 13);
             this.lblDescripcion.TabIndex = 1;
@@ -74,7 +76,7 @@
             // lblPrecioLista
             // 
             this.lblPrecioLista.AutoSize = true;
-            this.lblPrecioLista.Location = new System.Drawing.Point(5, 29);
+            this.lblPrecioLista.Location = new System.Drawing.Point(5, 56);
             this.lblPrecioLista.Name = "lblPrecioLista";
             this.lblPrecioLista.Size = new System.Drawing.Size(76, 13);
             this.lblPrecioLista.TabIndex = 3;
@@ -82,14 +84,16 @@
             // 
             // txtPrecioLista
             // 
-            this.txtPrecioLista.Location = new System.Drawing.Point(126, 26);
+            this.txtPrecioLista.Location = new System.Drawing.Point(126, 53);
             this.txtPrecioLista.Name = "txtPrecioLista";
             this.txtPrecioLista.Size = new System.Drawing.Size(364, 20);
-            this.txtPrecioLista.TabIndex = 2;
+            this.txtPrecioLista.TabIndex = 3;
             this.txtPrecioLista.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPrecioLista_KeyPress);
             // 
             // pnlProveedor
             // 
+            this.pnlProveedor.Controls.Add(this.lblCodigoOferta);
+            this.pnlProveedor.Controls.Add(this.txtCodigoOferta);
             this.pnlProveedor.Controls.Add(this.lblHelpUnidadesMaximas);
             this.pnlProveedor.Controls.Add(this.dtpFechaVencimiento);
             this.pnlProveedor.Controls.Add(this.dtpFechaPublicacion);
@@ -105,17 +109,34 @@
             this.pnlProveedor.Controls.Add(this.lblPrecioLista);
             this.pnlProveedor.Controls.Add(this.txtDescripcion);
             this.pnlProveedor.Controls.Add(this.txtPrecioLista);
-            this.pnlProveedor.Location = new System.Drawing.Point(12, 54);
+            this.pnlProveedor.Location = new System.Drawing.Point(12, 43);
             this.pnlProveedor.Name = "pnlProveedor";
-            this.pnlProveedor.Size = new System.Drawing.Size(490, 178);
+            this.pnlProveedor.Size = new System.Drawing.Size(490, 207);
             this.pnlProveedor.TabIndex = 4;
+            // 
+            // lblCodigoOferta
+            // 
+            this.lblCodigoOferta.AutoSize = true;
+            this.lblCodigoOferta.Location = new System.Drawing.Point(5, 4);
+            this.lblCodigoOferta.Name = "lblCodigoOferta";
+            this.lblCodigoOferta.Size = new System.Drawing.Size(73, 13);
+            this.lblCodigoOferta.TabIndex = 15;
+            this.lblCodigoOferta.Text = "Código oferta:";
+            // 
+            // txtCodigoOferta
+            // 
+            this.txtCodigoOferta.Location = new System.Drawing.Point(126, 1);
+            this.txtCodigoOferta.MaxLength = 50;
+            this.txtCodigoOferta.Name = "txtCodigoOferta";
+            this.txtCodigoOferta.Size = new System.Drawing.Size(364, 20);
+            this.txtCodigoOferta.TabIndex = 1;
             // 
             // lblHelpUnidadesMaximas
             // 
             this.lblHelpUnidadesMaximas.AutoSize = true;
             this.lblHelpUnidadesMaximas.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Bold);
             this.lblHelpUnidadesMaximas.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.lblHelpUnidadesMaximas.Location = new System.Drawing.Point(4, 102);
+            this.lblHelpUnidadesMaximas.Location = new System.Drawing.Point(4, 129);
             this.lblHelpUnidadesMaximas.Name = "lblHelpUnidadesMaximas";
             this.lblHelpUnidadesMaximas.Size = new System.Drawing.Size(24, 22);
             this.lblHelpUnidadesMaximas.TabIndex = 14;
@@ -126,26 +147,26 @@
             // 
             this.dtpFechaVencimiento.CustomFormat = "";
             this.dtpFechaVencimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFechaVencimiento.Location = new System.Drawing.Point(126, 156);
+            this.dtpFechaVencimiento.Location = new System.Drawing.Point(126, 183);
             this.dtpFechaVencimiento.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dtpFechaVencimiento.Name = "dtpFechaVencimiento";
             this.dtpFechaVencimiento.Size = new System.Drawing.Size(364, 20);
-            this.dtpFechaVencimiento.TabIndex = 7;
+            this.dtpFechaVencimiento.TabIndex = 8;
             // 
             // dtpFechaPublicacion
             // 
             this.dtpFechaPublicacion.CustomFormat = "";
             this.dtpFechaPublicacion.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFechaPublicacion.Location = new System.Drawing.Point(126, 130);
+            this.dtpFechaPublicacion.Location = new System.Drawing.Point(126, 157);
             this.dtpFechaPublicacion.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dtpFechaPublicacion.Name = "dtpFechaPublicacion";
             this.dtpFechaPublicacion.Size = new System.Drawing.Size(364, 20);
-            this.dtpFechaPublicacion.TabIndex = 6;
+            this.dtpFechaPublicacion.TabIndex = 7;
             // 
             // lblFechaPublicacion
             // 
             this.lblFechaPublicacion.AutoSize = true;
-            this.lblFechaPublicacion.Location = new System.Drawing.Point(5, 133);
+            this.lblFechaPublicacion.Location = new System.Drawing.Point(5, 160);
             this.lblFechaPublicacion.Name = "lblFechaPublicacion";
             this.lblFechaPublicacion.Size = new System.Drawing.Size(112, 13);
             this.lblFechaPublicacion.TabIndex = 11;
@@ -154,7 +175,7 @@
             // lblFechaVencimiento
             // 
             this.lblFechaVencimiento.AutoSize = true;
-            this.lblFechaVencimiento.Location = new System.Drawing.Point(5, 160);
+            this.lblFechaVencimiento.Location = new System.Drawing.Point(5, 187);
             this.lblFechaVencimiento.Name = "lblFechaVencimiento";
             this.lblFechaVencimiento.Size = new System.Drawing.Size(115, 13);
             this.lblFechaVencimiento.TabIndex = 10;
@@ -163,7 +184,7 @@
             // lblUnidadesMaximas
             // 
             this.lblUnidadesMaximas.AutoSize = true;
-            this.lblUnidadesMaximas.Location = new System.Drawing.Point(24, 107);
+            this.lblUnidadesMaximas.Location = new System.Drawing.Point(24, 134);
             this.lblUnidadesMaximas.Name = "lblUnidadesMaximas";
             this.lblUnidadesMaximas.Size = new System.Drawing.Size(98, 13);
             this.lblUnidadesMaximas.TabIndex = 9;
@@ -171,16 +192,16 @@
             // 
             // txtUnidadesMaximas
             // 
-            this.txtUnidadesMaximas.Location = new System.Drawing.Point(126, 104);
+            this.txtUnidadesMaximas.Location = new System.Drawing.Point(126, 131);
             this.txtUnidadesMaximas.Name = "txtUnidadesMaximas";
             this.txtUnidadesMaximas.Size = new System.Drawing.Size(364, 20);
-            this.txtUnidadesMaximas.TabIndex = 5;
+            this.txtUnidadesMaximas.TabIndex = 6;
             this.txtUnidadesMaximas.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtUnidadesMaximas_KeyPress);
             // 
             // lblStock
             // 
             this.lblStock.AutoSize = true;
-            this.lblStock.Location = new System.Drawing.Point(5, 81);
+            this.lblStock.Location = new System.Drawing.Point(5, 108);
             this.lblStock.Name = "lblStock";
             this.lblStock.Size = new System.Drawing.Size(38, 13);
             this.lblStock.TabIndex = 7;
@@ -188,16 +209,16 @@
             // 
             // txtStock
             // 
-            this.txtStock.Location = new System.Drawing.Point(126, 78);
+            this.txtStock.Location = new System.Drawing.Point(126, 105);
             this.txtStock.Name = "txtStock";
             this.txtStock.Size = new System.Drawing.Size(364, 20);
-            this.txtStock.TabIndex = 4;
+            this.txtStock.TabIndex = 5;
             this.txtStock.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStock_KeyPress);
             // 
             // lblPrecioOferta
             // 
             this.lblPrecioOferta.AutoSize = true;
-            this.lblPrecioOferta.Location = new System.Drawing.Point(5, 55);
+            this.lblPrecioOferta.Location = new System.Drawing.Point(5, 82);
             this.lblPrecioOferta.Name = "lblPrecioOferta";
             this.lblPrecioOferta.Size = new System.Drawing.Size(85, 13);
             this.lblPrecioOferta.TabIndex = 5;
@@ -205,10 +226,10 @@
             // 
             // txtPrecioOferta
             // 
-            this.txtPrecioOferta.Location = new System.Drawing.Point(126, 52);
+            this.txtPrecioOferta.Location = new System.Drawing.Point(126, 79);
             this.txtPrecioOferta.Name = "txtPrecioOferta";
             this.txtPrecioOferta.Size = new System.Drawing.Size(364, 20);
-            this.txtPrecioOferta.TabIndex = 3;
+            this.txtPrecioOferta.TabIndex = 4;
             this.txtPrecioOferta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPrecioOferta_KeyPress);
             // 
             // pnlAdministrador
@@ -226,7 +247,7 @@
             this.btnSeleccionarProveedor.Location = new System.Drawing.Point(361, 0);
             this.btnSeleccionarProveedor.Name = "btnSeleccionarProveedor";
             this.btnSeleccionarProveedor.Size = new System.Drawing.Size(129, 23);
-            this.btnSeleccionarProveedor.TabIndex = 0;
+            this.btnSeleccionarProveedor.TabIndex = 10;
             this.btnSeleccionarProveedor.Text = "Seleccionar proveedor";
             this.btnSeleccionarProveedor.UseVisualStyleBackColor = true;
             this.btnSeleccionarProveedor.Click += new System.EventHandler(this.btnSeleccionarProveedor_Click);
@@ -246,7 +267,7 @@
             this.txtProveedor.Location = new System.Drawing.Point(126, 2);
             this.txtProveedor.Name = "txtProveedor";
             this.txtProveedor.Size = new System.Drawing.Size(229, 20);
-            this.txtProveedor.TabIndex = 9;
+            this.txtProveedor.TabIndex = 12;
             // 
             // ttpFechaPublicacion
             // 
@@ -256,10 +277,10 @@
             // 
             // btnCrearOferta
             // 
-            this.btnCrearOferta.Location = new System.Drawing.Point(12, 238);
+            this.btnCrearOferta.Location = new System.Drawing.Point(12, 261);
             this.btnCrearOferta.Name = "btnCrearOferta";
             this.btnCrearOferta.Size = new System.Drawing.Size(490, 23);
-            this.btnCrearOferta.TabIndex = 8;
+            this.btnCrearOferta.TabIndex = 11;
             this.btnCrearOferta.Text = "Crear oferta";
             this.btnCrearOferta.UseVisualStyleBackColor = true;
             this.btnCrearOferta.Click += new System.EventHandler(this.btnCrearOferta_Click);
@@ -268,7 +289,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(515, 267);
+            this.ClientSize = new System.Drawing.Size(515, 296);
             this.Controls.Add(this.btnCrearOferta);
             this.Controls.Add(this.pnlAdministrador);
             this.Controls.Add(this.pnlProveedor);
@@ -308,5 +329,7 @@
         private System.Windows.Forms.Label lblHelpUnidadesMaximas;
         private System.Windows.Forms.Button btnCrearOferta;
         public System.Windows.Forms.TextBox txtProveedor;
+        private System.Windows.Forms.Label lblCodigoOferta;
+        private System.Windows.Forms.TextBox txtCodigoOferta;
     }
 }
