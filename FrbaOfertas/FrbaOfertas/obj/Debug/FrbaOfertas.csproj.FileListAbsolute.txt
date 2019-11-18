@@ -33,3 +33,4 @@ C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.csproj.GenerateResource.Cache
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormRegistrarUsuario.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.FormCargarCredito.resources
+C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.AbmCliente.FormABMCliente.resources

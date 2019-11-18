@@ -120,6 +120,9 @@
     <Compile Include="RegistrarUsuario\FormRegistrarUsuario.Designer.cs">
       <DependentUpon>FormRegistrarUsuario.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AbmCliente\FormABMCliente.resx">
+      <DependentUpon>FormABMCliente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\FormAltaModificacionRol.resx">
       <DependentUpon>FormAltaModificacionRol.cs</DependentUpon>
     </EmbeddedResource>

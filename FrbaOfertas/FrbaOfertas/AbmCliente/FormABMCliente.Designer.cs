@@ -273,7 +273,7 @@
             this.label9.TabIndex = 28;
             this.label9.Text = "Código postal";
             // 
-            // AbmCliente
+            // FormABMCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -302,7 +302,8 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.nombre);
             this.Controls.Add(this.label3);
-            this.Name = "AbmCliente";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "FormABMCliente";
             this.Text = "ABM Cliente";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

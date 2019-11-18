@@ -112,7 +112,20 @@ namespace FrbaOfertas
                     conexion.Open();
                     string query = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
                     SqlCommand ejecutar = new SqlCommand(query, conexion);
-                    int idCliente = (int) ejecutar.ExecuteScalar();
+                    int idCliente = 0;
+                    try
+                    {
+                        idCliente = (int)ejecutar.ExecuteScalar();
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Usted no posee el rol de cliente.");
+                        break;
+                    }
+                    finally
+                    {
+                        conexion.Close();
+                    }
                     conexion.Close();
                     FormCargarCredito formCargarCredito = new FormCargarCredito(idCliente);
                     formCargarCredito.ShowDialog();
