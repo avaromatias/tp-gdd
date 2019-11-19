@@ -1261,10 +1261,73 @@ BEGIN
 	ON
 		[c].[id_oferta] = [o].[id_oferta]
 	WHERE
+		[c].[id_cliente] = @IdCliente AND
 		[o].[id_proveedor] = @IdProveedor AND
 		[c].[fecha_consumo] IS NULL AND
 		[o].[descripcion] LIKE '%' + ISNULL(@Oferta, '') + '%' AND
 		[o].[fecha_vencimiento] BETWEEN @FechaActual AND @FechaVencimiento
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[cargar_compras_a_proveedor]
+	@IdProveedor NVARCHAR(50),
+	@FechaDesde DATETIME,
+	@FechaHasta DATETIME
+AS
+BEGIN
+	SELECT
+		[c].[id_compra] AS 'Código de compra',
+		[o].[descripcion] AS 'Descripción',
+		[c].[fecha] AS 'Fecha de compra'
+	FROM
+		[LOS_GDDS].[ofertas] [o]
+	JOIN
+		[LOS_GDDS].[compras] [c]
+	ON
+		[c].[id_oferta] = [o].[id_oferta]
+	WHERE
+		[o].[id_proveedor] = @IdProveedor AND
+		[c].[id_factura] IS NULL AND
+		[c].[fecha] BETWEEN @FechaDesde AND @FechaHasta
+	ORDER BY
+		[c].[fecha] DESC
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[insertar_nueva_factura]
+	@IdProveedor INT,
+	@FechaEmision DATETIME,
+	@FechaDesde DATETIME,
+	@FechaHasta DATETIME,
+	@IdFactura INT OUT
+AS
+BEGIN
+	DECLARE
+		@NroUltimaFactura NUMERIC(18, 0)
+
+	SELECT TOP 1
+		@NroUltimaFactura = [nro_factura]
+	FROM
+		[GD2C2019].[LOS_GDDS].[facturas]
+	ORDER BY
+		nro_factura DESC
+
+	INSERT INTO
+		[LOS_GDDS].[facturas] ([nro_factura], [id_proveedor], [fecha_emision], [fecha_desde], [fecha_hasta])
+	VALUES
+		(
+			@NroUltimaFactura + 1,
+			@IdProveedor,
+			@FechaEmision,
+			@FechaDesde,
+			@FechaHasta
+		)
+
+	SET @IdFactura = SCOPE_IDENTITY();
 
 	RETURN
 END
@@ -1451,6 +1514,56 @@ BEGIN
 END
 GO
 
+--Hay que arreglar este trigger porque está seteando el doble de lo que debería en el total de la factura
+CREATE TRIGGER [LOS_GDDS].[actualizar_total_factura]
+ON
+	[LOS_GDDS].[compras]
+AFTER
+	UPDATE
+AS
+BEGIN
+	DECLARE 
+		@id_factura INT,
+		@monto INT
+
+	DECLARE compras_cursor CURSOR FOR
+	SELECT
+		[f].[id_factura],
+		[o].[precio_oferta] * [i].[cantidad]
+	FROM
+		[LOS_GDDS].[facturas] [f]
+	JOIN
+		[inserted] [i]
+	ON
+		[i].[id_factura] = [f].[id_factura]
+	JOIN
+		[LOS_GDDS].[ofertas] [o]
+	ON
+		[o].[id_oferta] = [i].[id_oferta]
+
+	OPEN compras_cursor
+	FETCH NEXT FROM compras_cursor INTO
+		@id_factura,
+		@monto
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		UPDATE
+			[LOS_GDDS].[facturas]
+		SET
+			[total] = ISNULL([total], 0) + @monto
+		WHERE
+			[id_factura] = @id_factura
+
+	FETCH NEXT FROM compras_cursor INTO
+		@id_factura,
+		@monto
+	END
+	CLOSE compras_cursor
+	DEALLOCATE compras_cursor
+END
+GO
+
 -- deshabilito los triggers para que no ejecuten durante la migracion
 DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]
 ON [LOS_GDDS].[compras]
@@ -1600,6 +1713,13 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
      VALUES
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Baja de usuario'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Facturar'))
 
 INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ([id_rol]

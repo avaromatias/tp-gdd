@@ -94,11 +94,17 @@
     <Compile Include="ConsumirOferta\FormSeleccionarCliente.Designer.cs">
       <DependentUpon>FormSeleccionarCliente.cs</DependentUpon>
     </Compile>
-    <Compile Include="CrearOferta\FormSeleccionarProveedor.cs">
+    <Compile Include="CrearOferta\FormCrearOfertaSeleccionarProveedor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CrearOferta\FormSeleccionarProveedor.Designer.cs">
-      <DependentUpon>FormSeleccionarProveedor.cs</DependentUpon>
+    <Compile Include="CrearOferta\FormCrearOfertaSeleccionarProveedor.Designer.cs">
+      <DependentUpon>FormCrearOfertaSeleccionarProveedor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Facturar\FormFacturarSeleccionarProveedor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Facturar\FormFacturarSeleccionarProveedor.Designer.cs">
+      <DependentUpon>FormFacturarSeleccionarProveedor.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMenuPrincipal.cs">
       <SubType>Form</SubType>
@@ -112,11 +118,11 @@
     <Compile Include="CrearOferta\FormCrearOferta.Designer.cs">
       <DependentUpon>FormCrearOferta.cs</DependentUpon>
     </Compile>
-    <Compile Include="Facturar\Form1.cs">
+    <Compile Include="Facturar\FormFacturar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Facturar\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Facturar\FormFacturar.Designer.cs">
+      <DependentUpon>FormFacturar.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLogin.cs">
       <SubType>Form</SubType>
@@ -165,11 +171,17 @@
     <EmbeddedResource Include="ConsumirOferta\FormSeleccionarCliente.resx">
       <DependentUpon>FormSeleccionarCliente.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CrearOferta\FormSeleccionarProveedor.resx">
-      <DependentUpon>FormSeleccionarProveedor.cs</DependentUpon>
+    <EmbeddedResource Include="CrearOferta\FormCrearOfertaSeleccionarProveedor.resx">
+      <DependentUpon>FormCrearOfertaSeleccionarProveedor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CrearOferta\FormCrearOferta.resx">
       <DependentUpon>FormCrearOferta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Facturar\FormFacturar.resx">
+      <DependentUpon>FormFacturar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Facturar\FormFacturarSeleccionarProveedor.resx">
+      <DependentUpon>FormFacturarSeleccionarProveedor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMenuPrincipal.resx">
       <DependentUpon>FormMenuPrincipal.cs</DependentUpon>

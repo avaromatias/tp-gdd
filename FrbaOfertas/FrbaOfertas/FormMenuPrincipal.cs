@@ -147,6 +147,8 @@ namespace FrbaOfertas
                     seleccionarCliente.Show();
                     break;
                 case Configuracion.facturarProveedor:
+                    Facturar.FormFacturar facturarProveedor = new Facturar.FormFacturar();
+                    facturarProveedor.Show();
                     break;
                 case Configuracion.listadoEstadistico:
                     break;

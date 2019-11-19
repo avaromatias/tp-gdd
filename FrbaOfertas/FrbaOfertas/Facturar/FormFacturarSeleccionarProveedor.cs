@@ -9,18 +9,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FrbaOfertas.CrearOferta
+namespace FrbaOfertas.Facturar
 {
-    public partial class FormSeleccionarProveedor : Form
+    public partial class FormFacturarSeleccionarProveedor : Form
     {
         #region Variables
 
         SqlConnection conexion;
-        FormCrearOferta padre;
+        FormFacturar padre;
 
         #endregion
 
-        public FormSeleccionarProveedor(FormCrearOferta padre)
+        public FormFacturarSeleccionarProveedor(FormFacturar padre)
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);
@@ -55,13 +55,13 @@ namespace FrbaOfertas.CrearOferta
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-            txtRazonSocial.Text = "";
+            txtRazonSocial.Clear();
             this.cargarProveedores();
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            this.padre.txtProveedor.Text = gvwProveedores.SelectedRows[0].Cells[5].Value.ToString();
+            this.padre.txtProveedor.Text = gvwProveedores.SelectedRows[0].Cells[1].Value.ToString();
             this.padre.idProveedor = int.Parse(gvwProveedores.SelectedRows[0].Cells[0].Value.ToString());
             this.Close();
         }

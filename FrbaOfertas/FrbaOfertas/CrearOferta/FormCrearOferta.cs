@@ -176,7 +176,7 @@ namespace FrbaOfertas.CrearOferta
 
         private void btnSeleccionarProveedor_Click(object sender, EventArgs e)
         {
-            FormSeleccionarProveedor seleccionarProveedor = new FormSeleccionarProveedor(this);
+            FormCrearOfertaSeleccionarProveedor seleccionarProveedor = new FormCrearOfertaSeleccionarProveedor(this);
             seleccionarProveedor.ShowDialog();
         }
 

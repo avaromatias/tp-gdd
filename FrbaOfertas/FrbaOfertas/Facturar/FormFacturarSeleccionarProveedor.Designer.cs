@@ -1,6 +1,6 @@
-﻿namespace FrbaOfertas.CrearOferta
+﻿namespace FrbaOfertas.Facturar
 {
-    partial class FormSeleccionarProveedor
+    partial class FormFacturarSeleccionarProveedor
     {
         /// <summary>
         /// Required designer variable.
@@ -148,7 +148,7 @@
             this.txtRazonSocial.Size = new System.Drawing.Size(387, 20);
             this.txtRazonSocial.TabIndex = 0;
             // 
-            // FormSeleccionarProveedor
+            // FormFacturarSeleccionarProveedor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -158,7 +158,7 @@
             this.Controls.Add(this.gvwProveedores);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "FormSeleccionarProveedor";
+            this.Name = "FormFacturarSeleccionarProveedor";
             this.Text = "FRBA Ofertas - Seleccionar proveedor";
             this.Load += new System.EventHandler(this.FormABMRol_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gvwProveedores)).EndInit();
