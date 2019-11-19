@@ -139,6 +139,8 @@ namespace FrbaOfertas
                     crearOferta.Show();
                     break;
                 case Configuracion.comprarOferta:
+                    ComprarOferta.FormComprarOfertas comprarOfertas = new ComprarOferta.FormComprarOfertas();
+                    comprarOfertas.Show();
                     break;
                 case Configuracion.consumirOferta:
                     break;

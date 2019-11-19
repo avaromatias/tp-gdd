@@ -840,6 +840,38 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[cargar_ofertas_vigentes]
+	@FechaActual DATETIME,
+	@DescripcionOferta NVARCHAR(255),
+	@RazonSocialProveedor NVARCHAR(100),
+	@FechaVencimiento DATETIME
+AS
+BEGIN
+	SELECT
+		[o].[id_oferta],
+		[o].[descripcion] AS 'Oferta',
+		[p].[razon_social] AS 'Proveedor',
+		[o].[precio_lista] AS 'Precio de lista',
+		[o].[precio_oferta] AS 'Precio de oferta',
+		[o].[stock] AS 'Stock',
+		[o].[unidades_maximas_cliente] AS 'Unidades máximas',
+		[o].[fecha_vencimiento] AS 'Fecha de vencimiento',
+		[o].[fecha_publicacion] AS 'Fecha de publicación'
+	FROM
+		[LOS_GDDS].[ofertas] [o]
+	JOIN
+		[LOS_GDDS].[proveedores] [p]
+	ON
+		[p].[id_proveedor] = [o].[id_proveedor]
+	WHERE
+		[o].[descripcion] LIKE '%' + ISNULL(@DescripcionOferta, '') + '%' AND
+		[p].[razon_social] LIKE '%' + ISNULL(@RazonSocialProveedor, '') + '%' AND
+		[o].[fecha_vencimiento] BETWEEN @FechaActual AND @FechaVencimiento
+
+	RETURN
+END
+GO
+
 CREATE PROCEDURE [LOS_GDDS].[cargar_funcionalidades_disponibles_rol]
 	@IdRol INT
 AS
