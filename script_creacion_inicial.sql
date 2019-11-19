@@ -1244,7 +1244,7 @@ GO
 
 /* CREACIÓN TRIGGERS */
 
-CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]
 ON
 	[LOS_GDDS].[compras]
 AFTER
@@ -1280,6 +1280,13 @@ BEGIN
 			)
 	WHERE
 		[clientes].[id_cliente] = @id_cliente
+
+	UPDATE
+		[LOS_GDDS].[ofertas]
+	SET
+		[stock] -= @cantidad
+	WHERE
+		[id_oferta] = @id_oferta
 	COMMIT TRANSACTION
 END
 GO
@@ -1584,8 +1591,22 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ([id_rol]
            ,[id_funcionalidad])
      VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Cliente')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Comprar oferta'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Modificar password'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Crear oferta'))
 
 INSERT INTO [LOS_GDDS].[tarjetas]
 	VALUES

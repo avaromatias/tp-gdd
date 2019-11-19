@@ -64,6 +64,7 @@ namespace FrbaOfertas.ComprarOferta
         {
             txtOferta.Clear();
             txtProveedor.Clear();
+            this.buscarOfertas();
         }
 
         private void btnComprar_Click(object sender, EventArgs e)
@@ -115,6 +116,7 @@ namespace FrbaOfertas.ComprarOferta
                             break;
                         case 2:
                             MessageBox.Show("La compra N°" + idCompra.Value + " fue efectuada correctamente.");
+                            this.buscarOfertas();
                             break;
                     }
                 }
