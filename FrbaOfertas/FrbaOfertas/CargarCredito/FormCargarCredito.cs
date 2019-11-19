@@ -66,6 +66,7 @@ namespace FrbaOfertas
                         string queryInsert = "INSERT INTO [LOS_GDDS].[cargas_realizadas] VALUES (" + this.idCliente + ", NULL, " + "(CONVERT(DATETIME, '" + Configuracion.fecha + "', 105)), " + txtMonto.Text + ")";
                         SqlCommand ejecutarInsertCargasRealizadas = new SqlCommand(queryInsert, conexion);
                         ejecutarInsertCargasRealizadas.ExecuteNonQuery();
+                        MessageBox.Show("La carga fue realizada correctamente.");
                     }
                     else if (cmbTiposPago.SelectedIndex == 1 || cmbTiposPago.SelectedIndex == 2) // Crédito o débito
                     {

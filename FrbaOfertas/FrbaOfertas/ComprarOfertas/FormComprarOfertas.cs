@@ -68,9 +68,62 @@ namespace FrbaOfertas.ComprarOferta
 
         private void btnComprar_Click(object sender, EventArgs e)
         {
-            int idOferta = int.Parse(gvwOfertas.SelectedRows[0].Cells[0].Value.ToString());
+            string idOferta = gvwOfertas.SelectedRows[0].Cells[0].Value.ToString();
+            int idCliente = 0;
+            conexion.Open();
+            string queryIdCliente = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
+            SqlCommand ejecutarIdCliente = new SqlCommand(queryIdCliente, conexion);
+            try
+            {
+                idCliente = (int)ejecutarIdCliente.ExecuteScalar();
+            }
+            catch
+            {
+                MessageBox.Show("Esta funcionalidad es exclusiva para clientes.");
+                this.Close();
+            }
+            finally
+            {
+                conexion.Close();
+            }
 
+            if (idCliente != 0)
+            {
+                try
+                {
+                    conexion.Open();
+                    SqlCommand crearOferta = new SqlCommand("[LOS_GDDS].[comprar_oferta]", conexion);
+                    crearOferta.CommandType = CommandType.StoredProcedure;
+                    crearOferta.Parameters.AddWithValue("@IdOferta", idOferta);
+                    crearOferta.Parameters.AddWithValue("@IdCliente", idCliente);
+                    crearOferta.Parameters.AddWithValue("@Fecha", Configuracion.fecha);
+                    crearOferta.Parameters.AddWithValue("@Cantidad", dudCantidad.Text);
+                    var respuesta = crearOferta.Parameters.Add("@Respuesta", SqlDbType.Int);
+                    var idCompra = crearOferta.Parameters.Add("@IdCompra", SqlDbType.Int);
+                    respuesta.Direction = ParameterDirection.Output;
+                    idCompra.Direction = ParameterDirection.Output;
 
+                    SqlDataReader dataOferta = crearOferta.ExecuteReader();
+                    conexion.Close();
+                    switch (int.Parse(respuesta.Value.ToString()))
+                    {
+                        case 0:
+                            MessageBox.Show("Saldo insuficiente.");
+                            break;
+                        case 1:
+                            MessageBox.Show("No puede superar el límite de unidades máximas por cliente.");
+                            break;
+                        case 2:
+                            MessageBox.Show("La compra N°" + idCompra.Value + " fue efectuada correctamente.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Hubo un error al comprar la oferta solicitada. | " + ex.Message);
+                    conexion.Close();
+                }
+            }
         }
 
         private void gvwOfertas_MouseCaptureChanged(object sender, EventArgs e)
@@ -84,11 +137,11 @@ namespace FrbaOfertas.ComprarOferta
             dudCantidad.SelectedIndex = 0;
         }
 
-        #endregion
-
         private void dudCantidad_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }
+
+        #endregion
     }
 }

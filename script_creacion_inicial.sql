@@ -853,7 +853,7 @@ BEGIN
 		[p].[razon_social] AS 'Proveedor',
 		[o].[precio_lista] AS 'Precio de lista',
 		[o].[precio_oferta] AS 'Precio de oferta',
-		[o].[stock] AS 'Stock',
+		[o].[stock] AS 'Disponibles',
 		[o].[unidades_maximas_cliente] AS 'Unidades máximas',
 		[o].[fecha_vencimiento] AS 'Fecha de vencimiento',
 		[o].[fecha_publicacion] AS 'Fecha de publicación'
@@ -864,6 +864,7 @@ BEGIN
 	ON
 		[p].[id_proveedor] = [o].[id_proveedor]
 	WHERE
+		[o].[stock] > 0 AND
 		[o].[descripcion] LIKE '%' + ISNULL(@DescripcionOferta, '') + '%' AND
 		[p].[razon_social] LIKE '%' + ISNULL(@RazonSocialProveedor, '') + '%' AND
 		[o].[fecha_vencimiento] BETWEEN @FechaActual AND @FechaVencimiento
@@ -1173,6 +1174,71 @@ END TRY
 BEGIN CATCH
 	SET @Resultado = 0 /*ERROR*/
 END CATCH
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[comprar_oferta]
+	@IdOferta NVARCHAR(50),
+	@IdCliente INT,
+	@Fecha DATETIME,
+	@Cantidad NUMERIC(18, 0),
+	@Respuesta INT OUT,
+	@IdCompra INT OUT
+AS
+BEGIN
+	DECLARE
+		@PrecioOferta NUMERIC(18, 0),
+		@Saldo NUMERIC(18, 2),
+		@CantidadCompras INT,
+		@UnidadesMaximas INT
+
+	SELECT
+		@PrecioOferta = [precio_oferta],
+		@UnidadesMaximas = [unidades_maximas_cliente]
+	FROM
+		[LOS_GDDS].[ofertas]
+	WHERE
+		[id_oferta] = @IdOferta
+
+	SELECT
+		@Saldo = [saldo]
+	FROM
+		[LOS_GDDS].[clientes]
+	WHERE
+		[id_cliente] = @IdCliente
+
+	SELECT
+		@CantidadCompras = SUM([cantidad])
+	FROM
+		[LOS_GDDS].[compras]
+	WHERE
+		[id_cliente] = @IdCliente AND
+		[id_oferta] = @IdOferta
+
+	IF @PrecioOferta * @Cantidad > @Saldo
+	BEGIN
+		SET @Respuesta = 0 /* No tiene saldo disponible */
+	END
+	ELSE IF @CantidadCompras > @UnidadesMaximas
+	BEGIN
+		SET @Respuesta = 1 /* Excede unidades máximas por cliente */
+	END
+	ELSE
+	BEGIN
+		INSERT INTO
+			[LOS_GDDS].[compras] ([id_oferta], [id_cliente], [fecha], [cantidad])
+		VALUES
+			(
+				@IdOferta,
+				@IdCliente,
+				@Fecha,
+				@Cantidad
+			)
+		SET @Respuesta = 2 /* Todo ok */
+		SET @IdCompra = SCOPE_IDENTITY();
+	END
+
+	RETURN
 END
 GO
 

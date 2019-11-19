@@ -83,8 +83,7 @@ namespace FrbaOfertas.CrearOferta
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Hubo un error al crear la oferta solicitada.");
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Hubo un error al crear la oferta solicitada. | " + ex.Message);
                 conexion.Close();
             }
         }
