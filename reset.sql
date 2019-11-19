@@ -205,6 +205,12 @@ DROP PROCEDURE  [LOS_GDDS].cargar_proveedores
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nueva_oferta')
 DROP PROCEDURE  [LOS_GDDS].insertar_nueva_oferta
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'comprar_oferta')
+DROP PROCEDURE  [LOS_GDDS].comprar_oferta
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_ofertas_vigentes')
+DROP PROCEDURE  [LOS_GDDS].cargar_ofertas_vigentes
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]
