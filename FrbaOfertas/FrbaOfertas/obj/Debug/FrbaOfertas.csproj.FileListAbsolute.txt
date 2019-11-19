@@ -37,6 +37,6 @@ C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.CrearOferta.FormCrearOferta.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.AbmRol.FormSeleccionarProveedor.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.CrearOferta.FormSeleccionarProveedor.resources
-C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.ComprarOferta.FormConsumirOferta.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.ConsumirOferta.FormConsumirOferta.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.ConsumirOferta.FormSeleccionarCliente.resources
+C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.ComprarOferta.FormComprarOferta.resources
