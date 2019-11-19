@@ -82,6 +82,18 @@
       <DependentUpon>FormComprarOfertas.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuracion.cs" />
+    <Compile Include="ConsumirOferta\FormConsumirOferta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConsumirOferta\FormConsumirOferta.Designer.cs">
+      <DependentUpon>FormConsumirOferta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConsumirOferta\FormSeleccionarCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConsumirOferta\FormSeleccionarCliente.Designer.cs">
+      <DependentUpon>FormSeleccionarCliente.cs</DependentUpon>
+    </Compile>
     <Compile Include="CrearOferta\FormSeleccionarProveedor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +158,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ComprarOfertas\FormComprarOfertas.resx">
       <DependentUpon>FormComprarOfertas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsumirOferta\FormConsumirOferta.resx">
+      <DependentUpon>FormConsumirOferta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConsumirOferta\FormSeleccionarCliente.resx">
+      <DependentUpon>FormSeleccionarCliente.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CrearOferta\FormSeleccionarProveedor.resx">
       <DependentUpon>FormSeleccionarProveedor.cs</DependentUpon>

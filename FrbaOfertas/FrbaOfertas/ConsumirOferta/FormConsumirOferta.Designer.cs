@@ -1,4 +1,4 @@
-﻿namespace FrbaOfertas.ComprarOferta
+﻿namespace FrbaOfertas.ConsumirOferta
 {
     partial class FormConsumirOferta
     {
@@ -31,16 +31,12 @@
             this.gbxFiltros = new System.Windows.Forms.GroupBox();
             this.dtpFechaVencimiento = new System.Windows.Forms.DateTimePicker();
             this.lblVencimiento = new System.Windows.Forms.Label();
-            this.lblProveedor = new System.Windows.Forms.Label();
-            this.txtProveedor = new System.Windows.Forms.TextBox();
             this.lblOferta = new System.Windows.Forms.Label();
             this.btnLimpiar = new System.Windows.Forms.Button();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.txtOferta = new System.Windows.Forms.TextBox();
             this.gvwOfertas = new System.Windows.Forms.DataGridView();
-            this.btnComprar = new System.Windows.Forms.Button();
-            this.lblCantidad = new System.Windows.Forms.Label();
-            this.dudCantidad = new System.Windows.Forms.DomainUpDown();
+            this.btnConsumir = new System.Windows.Forms.Button();
             this.gbxFiltros.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvwOfertas)).BeginInit();
             this.SuspendLayout();
@@ -49,8 +45,6 @@
             // 
             this.gbxFiltros.Controls.Add(this.dtpFechaVencimiento);
             this.gbxFiltros.Controls.Add(this.lblVencimiento);
-            this.gbxFiltros.Controls.Add(this.lblProveedor);
-            this.gbxFiltros.Controls.Add(this.txtProveedor);
             this.gbxFiltros.Controls.Add(this.lblOferta);
             this.gbxFiltros.Controls.Add(this.btnLimpiar);
             this.gbxFiltros.Controls.Add(this.btnBuscar);
@@ -59,7 +53,7 @@
             this.gbxFiltros.Margin = new System.Windows.Forms.Padding(2);
             this.gbxFiltros.Name = "gbxFiltros";
             this.gbxFiltros.Padding = new System.Windows.Forms.Padding(2);
-            this.gbxFiltros.Size = new System.Drawing.Size(892, 98);
+            this.gbxFiltros.Size = new System.Drawing.Size(618, 73);
             this.gbxFiltros.TabIndex = 5;
             this.gbxFiltros.TabStop = false;
             this.gbxFiltros.Text = "Filtros de búsqueda";
@@ -68,39 +62,21 @@
             // 
             this.dtpFechaVencimiento.CustomFormat = "";
             this.dtpFechaVencimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFechaVencimiento.Location = new System.Drawing.Point(95, 70);
+            this.dtpFechaVencimiento.Location = new System.Drawing.Point(95, 46);
             this.dtpFechaVencimiento.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dtpFechaVencimiento.Name = "dtpFechaVencimiento";
-            this.dtpFechaVencimiento.Size = new System.Drawing.Size(603, 20);
+            this.dtpFechaVencimiento.Size = new System.Drawing.Size(329, 20);
             this.dtpFechaVencimiento.TabIndex = 11;
             // 
             // lblVencimiento
             // 
             this.lblVencimiento.AutoSize = true;
-            this.lblVencimiento.Location = new System.Drawing.Point(5, 74);
+            this.lblVencimiento.Location = new System.Drawing.Point(5, 50);
             this.lblVencimiento.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblVencimiento.Name = "lblVencimiento";
             this.lblVencimiento.Size = new System.Drawing.Size(85, 13);
             this.lblVencimiento.TabIndex = 6;
             this.lblVencimiento.Text = "Vence antes de:";
-            // 
-            // lblProveedor
-            // 
-            this.lblProveedor.AutoSize = true;
-            this.lblProveedor.Location = new System.Drawing.Point(5, 48);
-            this.lblProveedor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblProveedor.Name = "lblProveedor";
-            this.lblProveedor.Size = new System.Drawing.Size(59, 13);
-            this.lblProveedor.TabIndex = 5;
-            this.lblProveedor.Text = "Proveedor:";
-            // 
-            // txtProveedor
-            // 
-            this.txtProveedor.Location = new System.Drawing.Point(95, 45);
-            this.txtProveedor.Margin = new System.Windows.Forms.Padding(2);
-            this.txtProveedor.Name = "txtProveedor";
-            this.txtProveedor.Size = new System.Drawing.Size(603, 20);
-            this.txtProveedor.TabIndex = 4;
             // 
             // lblOferta
             // 
@@ -114,7 +90,7 @@
             // 
             // btnLimpiar
             // 
-            this.btnLimpiar.Location = new System.Drawing.Point(703, 56);
+            this.btnLimpiar.Location = new System.Drawing.Point(428, 45);
             this.btnLimpiar.Margin = new System.Windows.Forms.Padding(2);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(185, 22);
@@ -125,7 +101,7 @@
             // 
             // btnBuscar
             // 
-            this.btnBuscar.Location = new System.Drawing.Point(703, 30);
+            this.btnBuscar.Location = new System.Drawing.Point(428, 20);
             this.btnBuscar.Margin = new System.Windows.Forms.Padding(2);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(185, 22);
@@ -139,7 +115,7 @@
             this.txtOferta.Location = new System.Drawing.Point(95, 21);
             this.txtOferta.Margin = new System.Windows.Forms.Padding(2);
             this.txtOferta.Name = "txtOferta";
-            this.txtOferta.Size = new System.Drawing.Size(603, 20);
+            this.txtOferta.Size = new System.Drawing.Size(329, 20);
             this.txtOferta.TabIndex = 0;
             // 
             // gvwOfertas
@@ -152,7 +128,7 @@
             this.gvwOfertas.BackgroundColor = System.Drawing.SystemColors.ControlLight;
             this.gvwOfertas.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvwOfertas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gvwOfertas.Location = new System.Drawing.Point(11, 113);
+            this.gvwOfertas.Location = new System.Drawing.Point(11, 88);
             this.gvwOfertas.Margin = new System.Windows.Forms.Padding(2);
             this.gvwOfertas.MultiSelect = false;
             this.gvwOfertas.Name = "gvwOfertas";
@@ -160,59 +136,36 @@
             this.gvwOfertas.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.gvwOfertas.RowTemplate.Height = 24;
             this.gvwOfertas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gvwOfertas.Size = new System.Drawing.Size(892, 257);
+            this.gvwOfertas.Size = new System.Drawing.Size(618, 282);
             this.gvwOfertas.TabIndex = 6;
-            this.gvwOfertas.MouseCaptureChanged += new System.EventHandler(this.gvwOfertas_MouseCaptureChanged);
             // 
-            // btnComprar
+            // btnConsumir
             // 
-            this.btnComprar.Location = new System.Drawing.Point(198, 382);
-            this.btnComprar.Margin = new System.Windows.Forms.Padding(2);
-            this.btnComprar.Name = "btnComprar";
-            this.btnComprar.Size = new System.Drawing.Size(705, 22);
-            this.btnComprar.TabIndex = 12;
-            this.btnComprar.Text = "Comprar";
-            this.btnComprar.UseVisualStyleBackColor = true;
-            this.btnComprar.Click += new System.EventHandler(this.btnComprar_Click);
+            this.btnConsumir.Location = new System.Drawing.Point(11, 382);
+            this.btnConsumir.Margin = new System.Windows.Forms.Padding(2);
+            this.btnConsumir.Name = "btnConsumir";
+            this.btnConsumir.Size = new System.Drawing.Size(618, 22);
+            this.btnConsumir.TabIndex = 12;
+            this.btnConsumir.Text = "Consumir";
+            this.btnConsumir.UseVisualStyleBackColor = true;
+            this.btnConsumir.Click += new System.EventHandler(this.btnConsumir_Click);
             // 
-            // lblCantidad
-            // 
-            this.lblCantidad.AutoSize = true;
-            this.lblCantidad.Location = new System.Drawing.Point(16, 386);
-            this.lblCantidad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblCantidad.Name = "lblCantidad";
-            this.lblCantidad.Size = new System.Drawing.Size(52, 13);
-            this.lblCantidad.TabIndex = 13;
-            this.lblCantidad.Text = "Cantidad:";
-            // 
-            // dudCantidad
-            // 
-            this.dudCantidad.Location = new System.Drawing.Point(73, 383);
-            this.dudCantidad.Name = "dudCantidad";
-            this.dudCantidad.Size = new System.Drawing.Size(120, 20);
-            this.dudCantidad.TabIndex = 14;
-            this.dudCantidad.Text = "1";
-            this.dudCantidad.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dudCantidad_KeyPress);
-            // 
-            // FormComprarOfertas
+            // FormConsumirOferta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 413);
-            this.Controls.Add(this.dudCantidad);
-            this.Controls.Add(this.lblCantidad);
-            this.Controls.Add(this.btnComprar);
+            this.ClientSize = new System.Drawing.Size(640, 413);
+            this.Controls.Add(this.btnConsumir);
             this.Controls.Add(this.gvwOfertas);
             this.Controls.Add(this.gbxFiltros);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FormComprarOfertas";
-            this.Text = "FRBA Ofertas - Comprar ofertas";
+            this.Name = "FormConsumirOferta";
+            this.Text = "FRBA Ofertas - Consumir oferta";
             this.Load += new System.EventHandler(this.FormComprarOfertas_Load);
             this.gbxFiltros.ResumeLayout(false);
             this.gbxFiltros.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvwOfertas)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -224,12 +177,8 @@
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.TextBox txtOferta;
         private System.Windows.Forms.Label lblVencimiento;
-        private System.Windows.Forms.Label lblProveedor;
-        private System.Windows.Forms.TextBox txtProveedor;
         private System.Windows.Forms.DateTimePicker dtpFechaVencimiento;
         private System.Windows.Forms.DataGridView gvwOfertas;
-        private System.Windows.Forms.Button btnComprar;
-        private System.Windows.Forms.Label lblCantidad;
-        private System.Windows.Forms.DomainUpDown dudCantidad;
+        private System.Windows.Forms.Button btnConsumir;
     }
 }

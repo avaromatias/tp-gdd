@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace FrbaOfertas.ComprarOferta
 {
-    public partial class FormComprarOfertas : Form
+    public partial class FormConsumirOferta : Form
     {
 
         #region Variables
@@ -20,7 +20,7 @@ namespace FrbaOfertas.ComprarOferta
 
         #endregion
 
-        public FormComprarOfertas()
+        public FormConsumirOferta()
         {
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);

@@ -123,7 +123,7 @@ namespace FrbaOfertas
                     }
                     catch
                     {
-                        MessageBox.Show("Usted no posee el rol de cliente.");
+                        MessageBox.Show("Esta funcionalidad es exclusiva para clientes.");
                         break;
                     }
                     finally
@@ -139,10 +139,12 @@ namespace FrbaOfertas
                     crearOferta.Show();
                     break;
                 case Configuracion.comprarOferta:
-                    ComprarOferta.FormComprarOfertas comprarOfertas = new ComprarOferta.FormComprarOfertas();
+                    ComprarOferta.FormConsumirOferta comprarOfertas = new ComprarOferta.FormConsumirOferta();
                     comprarOfertas.Show();
                     break;
                 case Configuracion.consumirOferta:
+                    ConsumirOferta.FormSeleccionarCliente seleccionarCliente = new ConsumirOferta.FormSeleccionarCliente();
+                    seleccionarCliente.Show();
                     break;
                 case Configuracion.facturarProveedor:
                     break;
@@ -153,7 +155,7 @@ namespace FrbaOfertas
 
         #endregion
 
-        #region Eveentos
+        #region Eventos
 
         private void lnkLogout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

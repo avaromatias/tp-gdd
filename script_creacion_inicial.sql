@@ -178,7 +178,7 @@ CREATE TABLE [LOS_GDDS].[compras] (
 	FOREIGN KEY (id_oferta) REFERENCES [LOS_GDDS].[ofertas](id_oferta),
 	FOREIGN KEY (id_cliente) REFERENCES [LOS_GDDS].[clientes](id_cliente),
 	FOREIGN KEY (id_factura) REFERENCES [LOS_GDDS].[facturas](id_factura),
-	CHECK([fecha_consumo] > [fecha])
+	CHECK([fecha_consumo] >= [fecha])
 )
 GO
 
@@ -1219,7 +1219,7 @@ BEGIN
 	BEGIN
 		SET @Respuesta = 0 /* No tiene saldo disponible */
 	END
-	ELSE IF @CantidadCompras > @UnidadesMaximas
+	ELSE IF ISNULL(@CantidadCompras, 0) + @Cantidad > @UnidadesMaximas
 	BEGIN
 		SET @Respuesta = 1 /* Excede unidades máximas por cliente */
 	END
@@ -1237,6 +1237,34 @@ BEGIN
 		SET @Respuesta = 2 /* Todo ok */
 		SET @IdCompra = SCOPE_IDENTITY();
 	END
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[cargar_compras_cliente]
+	@IdCliente INT,
+	@IdProveedor NVARCHAR(50),
+	@FechaActual DATETIME,
+	@FechaVencimiento DATETIME,
+	@Oferta NVARCHAR(255)
+AS
+BEGIN
+	SELECT
+		[c].[id_compra] AS 'Código de compra',
+		[o].[descripcion] AS 'Oferta',
+		[o].[fecha_vencimiento] AS 'Fecha de vencimiento'
+	FROM
+		[LOS_GDDS].[ofertas] [o]
+	JOIN
+		[LOS_GDDS].[compras] [c]
+	ON
+		[c].[id_oferta] = [o].[id_oferta]
+	WHERE
+		[o].[id_proveedor] = @IdProveedor AND
+		[c].[fecha_consumo] IS NULL AND
+		[o].[descripcion] LIKE '%' + ISNULL(@Oferta, '') + '%' AND
+		[o].[fecha_vencimiento] BETWEEN @FechaActual AND @FechaVencimiento
 
 	RETURN
 END
@@ -1424,7 +1452,7 @@ END
 GO
 
 -- deshabilito los triggers para que no ejecuten durante la migracion
-DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+DISABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]
 ON [LOS_GDDS].[compras]
 GO
 
@@ -1608,6 +1636,13 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Crear oferta'))
 
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Consumir oferta'))
+
 INSERT INTO [LOS_GDDS].[tarjetas]
 	VALUES
 		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
@@ -1701,7 +1736,7 @@ END
 GO
 
 -- habilito los triggers para que ejecuten durante la ejecución de la app
-ENABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente]
+ENABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]
 ON [LOS_GDDS].[compras]
 GO
 
