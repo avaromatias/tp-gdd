@@ -28,6 +28,9 @@ namespace FrbaOfertas.AbmRol
             InitializeComponent();
             conexion = new SqlConnection(Configuracion.stringConexion);
             this.padre = padre;
+            lblHabilitado.Visible = false;
+            cmbHabilitado.Visible = false;
+            txtRol.Width = 528;
             this.cargarTodasLasFuncionalidades();
             this.cargarEstructuraTabla();
             esAlta = true;
@@ -106,6 +109,13 @@ namespace FrbaOfertas.AbmRol
             txtRol.Text = tabla.Rows[0]["nombre"].ToString();
         }
 
+        private void cargarHabilitado()
+        {
+            string query = "SELECT CAST([habilitado] AS INT) FROM [LOS_GDDS].[roles] WHERE [id_rol] = " + idRol;
+            SqlCommand ejecutar = new SqlCommand(query, conexion);
+            cmbHabilitado.SelectedIndex = int.Parse(ejecutar.ExecuteScalar().ToString());
+        }
+
         public void cargarDatos()
         {
             conexion.Open();
@@ -113,6 +123,10 @@ namespace FrbaOfertas.AbmRol
             this.cargarFuncionalidadesDisponibles();
             this.cargarFuncionalidadesRestantes();
             this.cargarNombre();
+            if (!esAlta)
+            {
+                this.cargarHabilitado();
+            }
 
             conexion.Close();
         }
@@ -124,8 +138,12 @@ namespace FrbaOfertas.AbmRol
                 conexion.Open();
 
                 string queryUpdateNombre = "UPDATE [LOS_GDDS].[roles] SET [nombre] = '" + txtRol.Text + "' WHERE [id_rol] = " + idRol;
-                SqlCommand ejecutarUpdate = new SqlCommand(queryUpdateNombre, conexion);
-                ejecutarUpdate.ExecuteNonQuery();
+                SqlCommand ejecutarUpdateNombre = new SqlCommand(queryUpdateNombre, conexion);
+                ejecutarUpdateNombre.ExecuteNonQuery();
+
+                string queryUpdateHabilitado = "UPDATE [LOS_GDDS].[roles] SET [habilitado] = '" + cmbHabilitado.SelectedIndex + "' WHERE [id_rol] = " + idRol;
+                SqlCommand ejecutarUpdateHabilitado = new SqlCommand(queryUpdateHabilitado, conexion);
+                ejecutarUpdateHabilitado.ExecuteNonQuery();
 
                 string queryDelete = "DELETE [LOS_GDDS].[funcionalidades_rol] WHERE [id_rol] = " + idRol;
                 SqlCommand ejecutarDelete = new SqlCommand(queryDelete, conexion);

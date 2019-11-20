@@ -178,8 +178,6 @@ namespace FrbaOfertas
             conexion.Close();
         }
 
-        #endregion
-
         private void FormMenuPrincipal_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult seleccionUsuario = MessageBox.Show("¿Cerrar sesión?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -192,6 +190,8 @@ namespace FrbaOfertas
                 e.Cancel = true;
             }
         }
+
+        #endregion
 
     }
 }

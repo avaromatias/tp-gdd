@@ -51,9 +51,8 @@
             this.gvwRoles.BackgroundColor = System.Drawing.SystemColors.ControlLight;
             this.gvwRoles.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvwRoles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gvwRoles.ColumnHeadersVisible = false;
             this.gvwRoles.Location = new System.Drawing.Point(9, 66);
-            this.gvwRoles.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gvwRoles.Margin = new System.Windows.Forms.Padding(2);
             this.gvwRoles.Name = "gvwRoles";
             this.gvwRoles.ReadOnly = true;
             this.gvwRoles.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -66,7 +65,7 @@
             // btnAlta
             // 
             this.btnAlta.Location = new System.Drawing.Point(9, 187);
-            this.btnAlta.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAlta.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlta.Name = "btnAlta";
             this.btnAlta.Size = new System.Drawing.Size(181, 24);
             this.btnAlta.TabIndex = 1;
@@ -77,7 +76,7 @@
             // btnModificacion
             // 
             this.btnModificacion.Location = new System.Drawing.Point(190, 187);
-            this.btnModificacion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnModificacion.Margin = new System.Windows.Forms.Padding(2);
             this.btnModificacion.Name = "btnModificacion";
             this.btnModificacion.Size = new System.Drawing.Size(181, 24);
             this.btnModificacion.TabIndex = 2;
@@ -88,11 +87,11 @@
             // btnBaja
             // 
             this.btnBaja.Location = new System.Drawing.Point(370, 187);
-            this.btnBaja.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBaja.Margin = new System.Windows.Forms.Padding(2);
             this.btnBaja.Name = "btnBaja";
             this.btnBaja.Size = new System.Drawing.Size(181, 24);
             this.btnBaja.TabIndex = 3;
-            this.btnBaja.Text = "Eliminar";
+            this.btnBaja.Text = "Inhabilitar";
             this.btnBaja.UseVisualStyleBackColor = true;
             this.btnBaja.Click += new System.EventHandler(this.btnBaja_Click);
             // 
@@ -103,9 +102,9 @@
             this.gbxFiltros.Controls.Add(this.btnBuscar);
             this.gbxFiltros.Controls.Add(this.txtRol);
             this.gbxFiltros.Location = new System.Drawing.Point(9, 10);
-            this.gbxFiltros.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbxFiltros.Margin = new System.Windows.Forms.Padding(2);
             this.gbxFiltros.Name = "gbxFiltros";
-            this.gbxFiltros.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gbxFiltros.Padding = new System.Windows.Forms.Padding(2);
             this.gbxFiltros.Size = new System.Drawing.Size(542, 51);
             this.gbxFiltros.TabIndex = 4;
             this.gbxFiltros.TabStop = false;
@@ -114,7 +113,7 @@
             // lblRol
             // 
             this.lblRol.AutoSize = true;
-            this.lblRol.Location = new System.Drawing.Point(5, 22);
+            this.lblRol.Location = new System.Drawing.Point(5, 24);
             this.lblRol.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRol.Name = "lblRol";
             this.lblRol.Size = new System.Drawing.Size(26, 13);
@@ -123,8 +122,8 @@
             // 
             // btnLimpiar
             // 
-            this.btnLimpiar.Location = new System.Drawing.Point(435, 20);
-            this.btnLimpiar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnLimpiar.Location = new System.Drawing.Point(435, 21);
+            this.btnLimpiar.Margin = new System.Windows.Forms.Padding(2);
             this.btnLimpiar.Name = "btnLimpiar";
             this.btnLimpiar.Size = new System.Drawing.Size(103, 19);
             this.btnLimpiar.TabIndex = 2;
@@ -134,8 +133,8 @@
             // 
             // btnBuscar
             // 
-            this.btnBuscar.Location = new System.Drawing.Point(328, 20);
-            this.btnBuscar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBuscar.Location = new System.Drawing.Point(328, 21);
+            this.btnBuscar.Margin = new System.Windows.Forms.Padding(2);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(103, 19);
             this.btnBuscar.TabIndex = 1;
@@ -146,12 +145,12 @@
             // txtRol
             // 
             this.txtRol.Location = new System.Drawing.Point(34, 21);
-            this.txtRol.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtRol.Margin = new System.Windows.Forms.Padding(2);
             this.txtRol.Name = "txtRol";
             this.txtRol.Size = new System.Drawing.Size(290, 20);
             this.txtRol.TabIndex = 0;
             // 
-            // FormABMRol
+            // FormSeleccionarProveedor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -162,8 +161,8 @@
             this.Controls.Add(this.btnAlta);
             this.Controls.Add(this.gvwRoles);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.Name = "FormABMRol";
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Name = "FormSeleccionarProveedor";
             this.Text = "FRBA Ofertas - ABM de Roles";
             this.Load += new System.EventHandler(this.FormABMRol_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gvwRoles)).EndInit();

@@ -38,7 +38,7 @@ namespace FrbaOfertas.AbmRol
             adapter.Fill(tabla);
             gvwRoles.DataSource = tabla;
             gvwRoles.Columns[0].Visible = false;
-            gvwRoles.Columns[1].Width = 500;
+            gvwRoles.Columns[1].Width = 400;
             conexion.Close();
         }
 
@@ -74,7 +74,7 @@ namespace FrbaOfertas.AbmRol
 
         private void btnBaja_Click(object sender, EventArgs e)
         {
-            DialogResult seleccionUsuario = MessageBox.Show("¿Está seguro de que desea eliminar este rol?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult seleccionUsuario = MessageBox.Show("¿Está seguro de que desea inhabilitar el rol seleccionado?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (seleccionUsuario == DialogResult.Yes)
             {
                 conexion.Open();

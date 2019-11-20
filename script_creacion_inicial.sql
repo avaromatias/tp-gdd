@@ -802,12 +802,19 @@ AS
 BEGIN
 	SELECT
 		[id_rol],
-		[nombre]
+		[nombre] AS 'Nombre',
+		(CASE
+			WHEN
+				[habilitado] = 1
+				THEN
+					'Si'
+				ELSE
+					'No'
+		 END) AS 'Habilitado'
 	FROM
 		[LOS_GDDS].[roles]
 	WHERE
-		[nombre] LIKE '%' + ISNULL(@Rol, '') + '%' AND
-		[habilitado] = 1
+		[nombre] LIKE '%' + ISNULL(@Rol, '') + '%'
 	RETURN
 END
 GO
