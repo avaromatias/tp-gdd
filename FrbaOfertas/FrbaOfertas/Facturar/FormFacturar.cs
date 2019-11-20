@@ -123,33 +123,10 @@ namespace FrbaOfertas.Facturar
 
                     if (idFactura != -1)
                     {
-                        bool todoOk = true;
-                        for (int i = 0; i < gvwCompras.RowCount; i++)
-                        {
-                            string nroCompra = gvwCompras.Rows[i].Cells[0].Value.ToString();
-                            try
-                            {
-                                conexion.Open();
-                                string query = "UPDATE [LOS_GDDS].[compras] SET [id_factura] = " + idFactura + "WHERE [id_compra] = " + nroCompra;
-                                SqlCommand ejecutar = new SqlCommand(query, conexion);
-                                ejecutar.ExecuteNonQuery();
-                                conexion.Close();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Hubo un error al asociar la compra N°" + nroCompra + " con la factura. Se detuvo el proceso de facturación. | " + ex.Message);
-                                conexion.Close();
-                                todoOk = false;
-                                break;
-                            }
-                        }
-                        if (todoOk)
-                        {
-                            int nroFactura = this.getDeFactura(idFactura, "nro_factura");
-                            int totalFacturado = this.getDeFactura(idFactura, "total");
+                        int nroFactura = this.getDeFactura(idFactura, "nro_factura");
+                        int totalFacturado = this.getDeFactura(idFactura, "total");
 
-                            MessageBox.Show("Factura N°" + nroFactura + " generada correctamente. Total facturado: $" + totalFacturado);
-                        }
+                        MessageBox.Show("Factura N°" + nroFactura + " generada correctamente. Total facturado: $" + totalFacturado);
                     }
                     this.cargarCompras();
                 }
