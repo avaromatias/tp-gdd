@@ -236,8 +236,7 @@ AS
 BEGIN
 	DECLARE @fecha_entrega_oferta DATETIME = NULL
 	SELECT
-		@fecha_entrega_oferta =
-		[Oferta_Entregado_Fecha]
+		@fecha_entrega_oferta = [Oferta_Entregado_Fecha]
 		FROM
 			[gd_esquema].[Maestra]
 		WHERE 
@@ -256,8 +255,7 @@ AS
 BEGIN
 	DECLARE @id_tarjeta INT = NULL
 	SELECT TOP 1
-		@id_tarjeta =
-		[t].[id_tarjeta]
+		@id_tarjeta = [t].[id_tarjeta]
 		FROM
 			[LOS_GDDS].[tarjetas] [t]
 		WHERE
@@ -732,7 +730,7 @@ BEGIN
 		NOT EXISTS (SELECT
 						1
 					FROM
-						[LOS_GDDS].[compras] c
+						[LOS_GDDS].[compras] [c]
 					WHERE
 						[c].[id_factura] = [f].[id_factura]
 					)
@@ -881,9 +879,9 @@ BEGIN
 		[f].[id_funcionalidad],
 		[f].[nombre]
 	FROM
-		[LOS_GDDS].[funcionalidades] f
+		[LOS_GDDS].[funcionalidades] [f]
 	LEFT JOIN
-		[LOS_GDDS].[funcionalidades_rol] fr
+		[LOS_GDDS].[funcionalidades_rol] [fr]
 	ON
 		[fr].[id_funcionalidad] = [f].[id_funcionalidad]
 	WHERE
@@ -908,9 +906,9 @@ BEGIN
 		[f].[id_funcionalidad],
 		[f].[nombre]
 	FROM
-		[LOS_GDDS].[funcionalidades] f
+		[LOS_GDDS].[funcionalidades] [f]
 	LEFT JOIN
-		[LOS_GDDS].[funcionalidades_rol] fr
+		[LOS_GDDS].[funcionalidades_rol] [fr]
 	ON
 		[fr].[id_funcionalidad] = [f].[id_funcionalidad]
 	WHERE
@@ -1532,11 +1530,11 @@ BEGIN
 		[o].[precio_oferta] * [i].[cantidad]
 	FROM
 		[LOS_GDDS].[facturas] [f]
-	JOIN
+	INNER JOIN
 		[inserted] [i]
 	ON
 		[i].[id_factura] = [f].[id_factura]
-	JOIN
+	INNER JOIN
 		[LOS_GDDS].[ofertas] [o]
 	ON
 		[o].[id_oferta] = [i].[id_oferta]
