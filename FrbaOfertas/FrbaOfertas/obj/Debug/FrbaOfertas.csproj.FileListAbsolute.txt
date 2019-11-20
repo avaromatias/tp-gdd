@@ -42,3 +42,4 @@ C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.CrearOferta.FormCrearOfertaSeleccionarProveedor.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.Facturar.FormFacturar.resources
 C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.Facturar.FormFacturarSeleccionarProveedor.resources
+C:\Users\Gustavo\workspace\tp-gdd\FrbaOfertas\FrbaOfertas\obj\Debug\FrbaOfertas.ListadoEstadistico.FormListadoEstadistico.resources

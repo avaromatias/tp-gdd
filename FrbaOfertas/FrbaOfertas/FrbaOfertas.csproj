@@ -51,11 +51,11 @@
     <Compile Include="AbmCliente\FormABMCliente.Designer.cs">
       <DependentUpon>FormABMCliente.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmProveedor\Form1.cs">
+    <Compile Include="AbmProveedor\FormABMProveedor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmProveedor\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="AbmProveedor\FormABMProveedor.Designer.cs">
+      <DependentUpon>FormABMProveedor.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmRol\FormAltaModificacionRol.cs">
       <SubType>Form</SubType>
@@ -130,11 +130,11 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListadoEstadistico\Form1.cs">
+    <Compile Include="ListadoEstadistico\FormListadoEstadistico.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListadoEstadistico\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ListadoEstadistico\FormListadoEstadistico.Designer.cs">
+      <DependentUpon>FormListadoEstadistico.cs</DependentUpon>
     </Compile>
     <Compile Include="ModificarContrasena\FormModificarContrasena.cs">
       <SubType>Form</SubType>
@@ -188,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListadoEstadistico\FormListadoEstadistico.resx">
+      <DependentUpon>FormListadoEstadistico.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModificarContrasena\FormModificarContrasena.resx">
       <DependentUpon>FormModificarContrasena.cs</DependentUpon>

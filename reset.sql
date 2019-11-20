@@ -220,6 +220,12 @@ DROP PROCEDURE  [LOS_GDDS].cargar_compras_a_proveedor
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nueva_factura')
 DROP PROCEDURE  [LOS_GDDS].insertar_nueva_factura
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_listado_estadistico_mayor_porcentaje')
+DROP PROCEDURE  [LOS_GDDS].cargar_listado_estadistico_mayor_porcentaje
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_listado_estadistico_mayor_facturacion')
+DROP PROCEDURE  [LOS_GDDS].cargar_listado_estadistico_mayor_facturacion
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]

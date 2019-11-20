@@ -1331,6 +1331,62 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[cargar_listado_estadistico_mayor_porcentaje]
+	@FechaDesde DATETIME,
+	@FechaHasta DATETIME
+AS
+BEGIN
+	SELECT TOP 5
+		[p].[razon_social] AS 'Proveedor',
+		CAST(AVG([o].[precio_oferta] * 100 / [o].[precio_lista]) AS DECIMAL(4, 2)) AS 'Descuento promedio'
+	FROM
+		[LOS_GDDS].[proveedores] [p]
+	JOIN
+		[LOS_GDDS].[ofertas] [o]
+	ON
+		[o].[id_proveedor] = [p].[id_proveedor]
+	WHERE
+		MONTH([o].[fecha_publicacion]) >= MONTH(@FechaDesde) AND
+		YEAR([o].[fecha_publicacion]) >= YEAR(@FechaDesde) AND
+		MONTH([o].[fecha_vencimiento]) <= MONTH(@FechaHasta) AND
+		YEAR([o].[fecha_vencimiento]) <= YEAR(@FechaHasta)
+	GROUP BY
+		[p].[id_proveedor], [p].[razon_social]
+	ORDER BY
+		2 DESC
+
+	RETURN
+END
+GO
+
+CREATE PROCEDURE [LOS_GDDS].[cargar_listado_estadistico_mayor_facturacion]
+	@FechaDesde DATETIME,
+	@FechaHasta DATETIME
+AS
+BEGIN
+	SELECT TOP 5
+		[p].[razon_social] AS 'Proveedor',
+		SUM([f].[total]) AS 'Facturación total'
+	FROM
+		[LOS_GDDS].[proveedores] [p]
+	JOIN
+		[LOS_GDDS].[facturas] [f]
+	ON
+		[f].[id_proveedor] = [p].[id_proveedor]
+	WHERE
+		MONTH([f].[fecha_desde]) >= MONTH(@FechaDesde) AND
+		YEAR([f].[fecha_desde]) >= YEAR(@FechaDesde) AND
+		MONTH([f].[fecha_hasta]) <= MONTH(@FechaHasta) AND
+		YEAR([f].[fecha_hasta]) <= YEAR(@FechaHasta)
+	GROUP BY
+		[p].[id_proveedor], [p].[razon_social]
+	ORDER BY
+		2 DESC
+
+	RETURN
+END
+GO
+
 /* CREACIÓN TRIGGERS */
 
 CREATE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]
@@ -1718,6 +1774,34 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
      VALUES
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Facturar'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Listado estadístico'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Crear oferta'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Comprar oferta'))
+
+INSERT INTO [LOS_GDDS].[funcionalidades_rol]
+           ([id_rol]
+           ,[id_funcionalidad])
+     VALUES
+           ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Administrador')
+           ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Consumir oferta'))
 
 INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ([id_rol]

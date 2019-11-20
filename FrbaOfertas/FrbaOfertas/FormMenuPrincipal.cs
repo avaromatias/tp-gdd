@@ -107,30 +107,34 @@ namespace FrbaOfertas
                     abmCliente.Show();
                     break;
                 case Configuracion.abmProveedores:
+                    AbmProveedor.FormABMProveedor abmProveedor = new AbmProveedor.FormABMProveedor();
+                    abmProveedor.Show();
                     break;
                 case Configuracion.modificarPassword:
                     ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena();
                     modificarContrasena.Show();
                     break;
                 case Configuracion.cargarCredito:
-                    conexion.Open();
-                    string query = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
-                    SqlCommand ejecutar = new SqlCommand(query, conexion);
-                    int idCliente = 0;
-                    try
-                    {
-                        idCliente = (int)ejecutar.ExecuteScalar();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Esta funcionalidad es exclusiva para clientes.");
-                        break;
-                    }
-                    finally
-                    {
-                        conexion.Close();
-                    }
-                    conexion.Close();
+                    #region GetIDCliente
+		                conexion.Open();
+                        string query = "SELECT [id_cliente] FROM [LOS_GDDS].[usuarios] WHERE [id_usuario] = " + Configuracion.idUsuario;
+                        SqlCommand ejecutar = new SqlCommand(query, conexion);
+                        int idCliente = 0;
+                        try
+                        {
+                            idCliente = (int)ejecutar.ExecuteScalar();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Esta funcionalidad es exclusiva para clientes.");
+                            break;
+                        }
+                        finally
+                        {
+                            conexion.Close();
+                        }
+                        conexion.Close(); 
+	                #endregion
                     FormCargarCredito formCargarCredito = new FormCargarCredito(idCliente);
                     formCargarCredito.Show();
                     break;
@@ -151,6 +155,8 @@ namespace FrbaOfertas
                     facturarProveedor.Show();
                     break;
                 case Configuracion.listadoEstadistico:
+                    ListadoEstadistico.FormListadoEstadistico listadoEstadistico = new ListadoEstadistico.FormListadoEstadistico();
+                    listadoEstadistico.Show();
                     break;
             }
         }
