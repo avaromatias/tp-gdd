@@ -47,7 +47,8 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
 	saldo NUMERIC(18,2),
 	ciudad NVARCHAR(255),
-	CHECK ([saldo] >= 0)
+	CHECK ([saldo] >= 0),
+	habilitado BIT DEFAULT 1
 )
 GO
 
@@ -105,7 +106,8 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
 	id_rubro INT
-	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro)
+	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro),
+	habilitado BIT DEFAULT 1
 )
 GO
 
@@ -961,6 +963,37 @@ BEGIN
 	RETURN
 END
 GO*/
+
+CREATE PROCEDURE LOS_GDDS.modificar_cliente
+	@IdCliente INT
+	@Nombre VARCHAR(255),
+	@Apellido VARCHAR(255),
+	@Dni NUMERIC(18, 0),
+	@Mail NVARCHAR(255),
+	@Telefono NUMERIC(18, 0),
+	@Direccion NVARCHAR(255),
+	@CodigoPostal NVARCHAR(15),
+	@FechaNacimiento DATETIME,
+	@Ciudad VARCHAR(255),
+	@Habilitado BIT
+AS
+BEGIN
+	UPDATE LOS_GDDS.clientes
+		SET nombre = @Nombre,
+		apellido = @Apellido,
+		dni = @Dni,
+		mail = @Mail,
+		fecha_nacimiento = @FechaNacimiento,
+		telefono = @Telefono,
+		ciudad = @Ciudad,
+		direccion = @Direccion,
+		codigo_postal = @CodigoPostal,
+		habilitado = @Habilitado
+		WHERE id_cliente = @IdCliente
+
+	RETURN
+END
+GO
 
 CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_rol]
 	@Nombre VARCHAR(255),

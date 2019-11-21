@@ -53,13 +53,12 @@ namespace FrbaOfertas.AbmCliente
 
         private void crearCliente(object sender, EventArgs e)
         {
-            this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente " + nombre.Text + " " + apellido.Text + " " + dni.Text + " " + mail.Text + " " + telefono.Text + " " + direccion.Text + " " + codigoPostal.Text + " " + fecha.Text);
+            this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente " + nombre.Text + " " + apellido.Text + " " + dni.Text + " " + mail.Text + " " + telefono.Text + " " + direccion.Text + " " + codigoPostal.Text + " " + fecha.Value.ToShortDateString());
         }
 
         private DataTable makeQuery(String query)
         {
             SqlConnection conexion = new SqlConnection(Configuracion.stringConexion);
-
             SqlCommand command = new SqlCommand(query, conexion);
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             conexion.Close();
@@ -76,7 +75,7 @@ namespace FrbaOfertas.AbmCliente
 
         private DataTable getClienteByUsername()
         {
-            return this.makeQuery("SELECT TOP 1 c.id_cliente, c.nombre, c.apellido, c.dni, c.mail, c.telefono, c.fecha_nacimiento, c.direccion, c.codigo_postal, c.ciudad FROM LOS_GDDS.usuarios u JOIN LOS_GDDS.clientes c ON u.id_cliente = c.id_cliente WHERE u.username = '" + user.Text + "'");
+            return this.makeQuery("SELECT TOP 1 c.id_cliente, c.nombre, c.apellido, c.dni, c.mail, c.telefono, c.fecha_nacimiento, c.direccion, c.codigo_postal, c.ciudad, c.habilitado FROM LOS_GDDS.usuarios u JOIN LOS_GDDS.clientes c ON u.id_cliente = c.id_cliente WHERE u.username = '" + user.Text + "'");
         }
 
         private bool existeClienteConMismoDni()
@@ -110,6 +109,7 @@ namespace FrbaOfertas.AbmCliente
                     codigoPostal.Text = cliente["codigo_postal"].ToString();
                     ciudad.Text = cliente["ciudad"].ToString();
                     fecha.Text = cliente["fecha_nacimiento"].ToString();
+                    estadoCliente.Checked = !Convert.ToBoolean(cliente["habilitado"].ToString());
                 }
                 else
                 {
@@ -118,21 +118,24 @@ namespace FrbaOfertas.AbmCliente
             }
         }
 
+        private bool camposSonValidos() {
+            string[] campos = {nombre.Text, apellido.Text, dni.Text, mail.Text, fecha.Text, telefono.Text, ciudad.Text, direccion.Text, codigoPostal.Text};
+            foreach(string campo in campos)    {
+                if(campo == "")
+                    return false;
+            }
+            return true;
+        }
+
         private void actualizarCliente(object sender, EventArgs e)
         {
-            this.makeQuery(@"
-                UPDATE LOS_GDDS.clientes
-                    SET nombre = " + nombre.Text + @",
-                    apellido = " + apellido.Text + @",
-                    dni = " + dni.Text + @",
-                    mail = " + mail.Text + @",
-                    fecha_nacimiento = " + fecha.Text + @",
-                    telefono = " + telefono.Text + @",
-                    ciudad = " + ciudad.Text + @",
-                    direccion = " + direccion.Text + @",
-                    codigo_postal = " + codigoPostal.Text + @"
-                    WHERE id_cliente = " + this.clienteEncontrado["id_cliente"] + @"
-            ");
+            if(this.camposSonValidos()) {
+                this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteEncontrado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + @"T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
+            }
+            else
+            {
+                MessageBox.Show("Alguno de los dátos está vacío.");
+            }
         }
 
         private void tabPage1_Click(object sender, EventArgs e)
