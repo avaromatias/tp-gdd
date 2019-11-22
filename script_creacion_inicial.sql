@@ -41,7 +41,6 @@ CREATE TABLE [LOS_GDDS].[clientes] (
 	mail NVARCHAR(255),
 	telefono NUMERIC(18,0),
 	direccion NVARCHAR(255),
-	-- todo: revisar codigo postal. No estoy seguro que sea correcto el data type pero no lo veo en la tabla maestra
 	codigo_postal NVARCHAR(15),
 	fecha_nacimiento DATETIME,
 	-- me guie por las columnas que manejan montos de dinero en la tabla maestra, todos estan con este datatype
@@ -103,7 +102,6 @@ CREATE TABLE [LOS_GDDS].[proveedores] (
 	ciudad NVARCHAR(255),
 	direccion NVARCHAR(100),
 	cuit NVARCHAR(20) UNIQUE NOT NULL,
-	-- todo: revisar, le defini el datatype asi nomas
 	nombre_contacto NVARCHAR(100),
 	id_rubro INT
 	FOREIGN KEY (id_rubro) REFERENCES [LOS_GDDS].[rubros](id_rubro),
@@ -228,26 +226,6 @@ BEGIN
 		WHERE 
 			[cuit] = @cuit
 	RETURN @id_proveedor
-END
-GO
-
--- esta function está al pedo por ahora, pero hasta que revisemos bien los datos popor las dudas la dejo
-CREATE FUNCTION [LOS_GDDS].[buscar_fecha_entrega_oferta] (@codigo_oferta NVARCHAR(50), @dni_cliente NUMERIC(18,0))
-RETURNS DATETIME
-AS
-BEGIN
-	DECLARE @fecha_entrega_oferta DATETIME = NULL
-	SELECT
-		@fecha_entrega_oferta = [Oferta_Entregado_Fecha]
-		FROM
-			[gd_esquema].[Maestra]
-		WHERE 
-			[Oferta_Codigo] = @codigo_oferta
-		AND 
-			[Cli_Dni] = @dni_cliente
-		AND 
-			[Oferta_Entregado_Fecha] IS NOT NULL
-	RETURN @fecha_entrega_oferta
 END
 GO
 
@@ -463,33 +441,6 @@ BEGIN
 	)
 END
 GO
-
---CREATE PROCEDURE [LOS_GDDS].[crear_usuarios_para_clientes_con_tarjeta]
---AS
---BEGIN
---	INSERT INTO
---		[LOS_GDDS].[usuarios](username, password, habilitado, cantidad_logins_fallidos, id_cliente)
---	(
---		SELECT
---			DISTINCT
---			UPPER(CONCAT([c].[nombre], [c].[apellido])),
---			HASHBYTES('SHA2_256', CAST([c].[dni] AS VARCHAR(8))),
---			1,
---			0,
---			[c].[id_cliente]
---		FROM 
---			[LOS_GDDS].[cargas_realizadas] [cr]
---		INNER JOIN
---			[LOS_GDDS].[tarjetas] [t]
---		ON
---			[t].[id_tarjeta] = [cr].[id_tarjeta]
---		INNER JOIN
---			[LOS_GDDS].[clientes] [c]
---		ON
---			[c].[id_cliente] = [cr].[id_cliente]
---	)
---END
---GO
 
 CREATE PROCEDURE [LOS_GDDS].[migrar_cargas_realizadas]
 AS
@@ -1444,7 +1395,6 @@ BEGIN
 	SELECT
 		@id_cliente = [i].[id_cliente],
 		@id_oferta = [i].[id_oferta],
-		-- chequear que onda la cantidad, siempre esta en NULL actualmente
 		@cantidad = [i].[cantidad]
 	FROM
 		[inserted] [i]
@@ -1608,7 +1558,6 @@ BEGIN
 END
 GO
 
---Hay que arreglar este trigger porque está seteando el doble de lo que debería en el total de la factura
 CREATE TRIGGER [LOS_GDDS].[actualizar_total_factura]
 ON
 	[LOS_GDDS].[compras]
@@ -1919,9 +1868,6 @@ BEGIN
 	PRINT('migrando compras')
 	EXEC [LOS_GDDS].[migrar_compras]
 	PRINT('compras migradas!')
-	--PRINT('actualizando fecha de entrega de compras')
-	--EXEC [LOS_GDDS].[actualizar_fecha_entrega_ofertas]
-	--PRINT('fecha de entrega de compras actualizadas')
 END
 GO
 
@@ -1973,27 +1919,3 @@ GO
 ENABLE TRIGGER [LOS_GDDS].[update_compra]
 ON [LOS_GDDS].[facturas]
 GO
-
--- Hay que verificar el tema de la asociar el usuario con el cliente
--- existen distintos clientes con igual mail lo que nos puede llegar a dar problemas
--- probar con estas queries
-	--SELECT u.id_proveedor, p.id_proveedor FROM
-	--	LOS_GDDS.usuarios U
-	--INNER JOIN
-	--	[LOS_GDDS].[proveedores] p
-	--ON
-	--	p.razon_social = U.username
-	--WHERE
-	--	u.id_proveedor <> p.id_proveedor
-	--	order by 1
-
-
-	--SELECT u.id_cliente, c.id_cliente FROM
-	--	LOS_GDDS.usuarios U
-	--INNER JOIN
-	--	[LOS_GDDS].clientes c
-	--ON
-	--	c.mail = U.username
-	--WHERE
-	--	u.id_cliente <> c.id_cliente
-	--	order by 1,2
