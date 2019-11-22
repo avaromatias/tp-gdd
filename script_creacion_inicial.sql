@@ -964,8 +964,8 @@ BEGIN
 END
 GO*/
 
-CREATE PROCEDURE LOS_GDDS.modificar_cliente
-	@IdCliente INT
+CREATE PROCEDURE [LOS_GDDS].[modificar_cliente]
+	@IdCliente INT,
 	@Nombre VARCHAR(255),
 	@Apellido VARCHAR(255),
 	@Dni NUMERIC(18, 0),
@@ -978,7 +978,7 @@ CREATE PROCEDURE LOS_GDDS.modificar_cliente
 	@Habilitado BIT
 AS
 BEGIN
-	UPDATE LOS_GDDS.clientes
+	UPDATE [LOS_GDDS].[clientes]
 		SET nombre = @Nombre,
 		apellido = @Apellido,
 		dni = @Dni,
@@ -1873,38 +1873,6 @@ INSERT INTO [LOS_GDDS].[funcionalidades_rol]
            ((SELECT [id_rol] FROM [LOS_GDDS].[roles] WHERE [nombre] = 'Proveedor')
            ,(SELECT [id_funcionalidad] FROM [LOS_GDDS].[funcionalidades] WHERE [nombre] = 'Consumir oferta'))
 
-INSERT INTO [LOS_GDDS].[tarjetas]
-	VALUES
-		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
-		12345678,
-		GETDATE(),
-		1234,
-		1);
-
-INSERT INTO [LOS_GDDS].[tarjetas]
-	VALUES
-		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
-		11111111,
-		GETDATE(),
-		5678,
-		1);
-
-INSERT INTO [LOS_GDDS].[tarjetas]
-	VALUES
-		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
-		22222222,
-		GETDATE(),
-		1122,
-		1);
-
-INSERT INTO [LOS_GDDS].[tarjetas]
-	VALUES
-		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
-		87654321,
-		GETDATE(),
-		0990,
-		2);
-
 -- este workaround es para que se migren los datos únicamente una vez por tabla
 IF((SELECT COUNT(1) FROM [LOS_GDDS].[clientes]) = 0)
 BEGIN
@@ -1964,6 +1932,38 @@ BEGIN
 	PRINT('facturas migradas!')
 END
 GO
+
+INSERT INTO [LOS_GDDS].[tarjetas]
+	VALUES
+		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
+		12345678,
+		GETDATE(),
+		1234,
+		1);
+
+INSERT INTO [LOS_GDDS].[tarjetas]
+	VALUES
+		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
+		11111111,
+		GETDATE(),
+		5678,
+		1);
+
+INSERT INTO [LOS_GDDS].[tarjetas]
+	VALUES
+		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
+		22222222,
+		GETDATE(),
+		1122,
+		1);
+
+INSERT INTO [LOS_GDDS].[tarjetas]
+	VALUES
+		((SELECT [id_usuario] FROM [LOS_GDDS].[usuarios] WHERE [username] = 'tute'),
+		87654321,
+		GETDATE(),
+		0990,
+		2);
 
 -- habilito los triggers para que ejecuten durante la ejecución de la app
 ENABLE TRIGGER [LOS_GDDS].[aplicar_compra_en_saldo_cliente_y_stock]

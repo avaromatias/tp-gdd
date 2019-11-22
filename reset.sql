@@ -226,6 +226,9 @@ DROP PROCEDURE  [LOS_GDDS].cargar_listado_estadistico_mayor_porcentaje
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'cargar_listado_estadistico_mayor_facturacion')
 DROP PROCEDURE  [LOS_GDDS].cargar_listado_estadistico_mayor_facturacion
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'modificar_cliente')
+DROP PROCEDURE  [LOS_GDDS].[modificar_cliente]
+
 IF EXISTS (SELECT * FROM sys.schemas WHERE name = 'LOS_GDDS')
 BEGIN
 DROP SCHEMA [LOS_GDDS]
