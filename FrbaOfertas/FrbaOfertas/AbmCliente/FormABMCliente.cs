@@ -53,7 +53,7 @@ namespace FrbaOfertas.AbmCliente
 
         private void crearCliente(object sender, EventArgs e)
         {
-            this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente " + nombre.Text + " " + apellido.Text + " " + dni.Text + " " + mail.Text + " " + telefono.Text + " " + direccion.Text + " " + codigoPostal.Text + " " + fecha.Value.ToShortDateString());
+            this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente '" + user.Text + "', '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', '" + codigoPostal.Text + "', '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', NULL");
         }
 
         private DataTable makeQuery(String query)
@@ -98,6 +98,9 @@ namespace FrbaOfertas.AbmCliente
                 DataTable clienteEncontrado = this.getClienteByUsername();
                 if (clienteEncontrado.Rows.Count > 0)
                 {
+                    if (this.enModoCreacion())
+                        MessageBox.Show("El usuario ya es cliente.");
+                    acciones.SelectedIndex = 0;
                     DataRow cliente = clienteEncontrado.Rows[0];
                     this.clienteEncontrado = cliente;
                     nombre.Text = cliente["nombre"].ToString();
@@ -113,15 +116,19 @@ namespace FrbaOfertas.AbmCliente
                 }
                 else
                 {
-                    MessageBox.Show("No se encontró ningún cliente con ese nombre de usuario.");
+                    if (!this.enModoCreacion())
+                        MessageBox.Show("No se encontró ningún cliente con ese nombre de usuario. Puede crearlo.");
+                    acciones.SelectedIndex = 1;
                 }
             }
         }
 
-        private bool camposSonValidos() {
-            string[] campos = {nombre.Text, apellido.Text, dni.Text, mail.Text, fecha.Text, telefono.Text, ciudad.Text, direccion.Text, codigoPostal.Text};
-            foreach(string campo in campos)    {
-                if(campo == "")
+        private bool camposSonValidos()
+        {
+            TextBox[] campos = { nombre, apellido, dni, mail, telefono, ciudad, direccion, codigoPostal };
+            foreach (TextBox campo in campos)
+            {
+                if (campo.Text == "")
                     return false;
             }
             return true;
@@ -129,8 +136,9 @@ namespace FrbaOfertas.AbmCliente
 
         private void actualizarCliente(object sender, EventArgs e)
         {
-            if(this.camposSonValidos()) {
-                this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteEncontrado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + @"T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
+            if (this.camposSonValidos())
+            {
+                this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteEncontrado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
             }
             else
             {

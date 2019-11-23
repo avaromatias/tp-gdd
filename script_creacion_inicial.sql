@@ -1044,6 +1044,7 @@ END
 GO
 
 CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_cliente]
+	@Username VARCHAR(255),
 	@Nombre VARCHAR(255),
 	@Apellido VARCHAR(255),
 	@Dni NUMERIC(18, 0),
@@ -1052,12 +1053,13 @@ CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_cliente]
 	@Direccion NVARCHAR(255),
 	@CodigoPostal NVARCHAR(15),
 	@FechaNacimiento DATETIME,
+	@Ciudad VARCHAR(255),
 	@IdCliente INT OUT
 AS
 BEGIN
 	INSERT INTO
 		[LOS_GDDS].[clientes] ([nombre], [apellido], [dni], [mail], [telefono], [direccion],
-		[codigo_postal], [fecha_nacimiento], [saldo])
+		[codigo_postal], [fecha_nacimiento], [saldo], ciudad)
 	VALUES
 		(
 			@Nombre,
@@ -1068,10 +1070,13 @@ BEGIN
 			@Direccion,
 			@CodigoPostal,
 			@FechaNacimiento,
-			200
+			200,
+			@Ciudad
 		)
 
 	SET @IdCliente = SCOPE_IDENTITY();
+	
+	UPDATE LOS_GDDS.usuarios SET id_cliente = @IdCliente WHERE username = @Username;
 
 	RETURN
 END
