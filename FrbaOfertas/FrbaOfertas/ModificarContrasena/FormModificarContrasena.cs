@@ -17,11 +17,14 @@ namespace FrbaOfertas.ModificarContrasena
 
         SqlConnection conexion;
 
+        int idUsuario;
+
         #endregion
 
-        public FormModificarContrasena()
+        public FormModificarContrasena(int usuario)
         {
             InitializeComponent();
+            this.idUsuario = usuario;
             conexion = new SqlConnection(Configuracion.stringConexion);
         }
 
@@ -51,7 +54,7 @@ namespace FrbaOfertas.ModificarContrasena
 
             SqlCommand modificarContrasena = new SqlCommand("[LOS_GDDS].[modificar_password]", conexion);
             modificarContrasena.CommandType = CommandType.StoredProcedure;
-            modificarContrasena.Parameters.AddWithValue("@IdUsuario", Configuracion.idUsuario);
+            modificarContrasena.Parameters.AddWithValue("@IdUsuario", this.idUsuario);
             modificarContrasena.Parameters.AddWithValue("@NuevaPassword", txtNuevaContrasena.Text);
             var resultado = modificarContrasena.Parameters.Add("@Resultado", SqlDbType.Int);
             resultado.Direction = ParameterDirection.Output;

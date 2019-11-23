@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -111,7 +111,7 @@ namespace FrbaOfertas
                     abmProveedor.Show();
                     break;
                 case Configuracion.modificarPassword:
-                    ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena();
+                    ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena(Configuracion.idUsuario);
                     modificarContrasena.Show();
                     break;
                 case Configuracion.cargarCredito:
