@@ -37,10 +37,9 @@
             // 
             // searchBtn
             // 
-            this.searchBtn.Location = new System.Drawing.Point(545, 54);
-            this.searchBtn.Margin = new System.Windows.Forms.Padding(6);
+            this.searchBtn.Location = new System.Drawing.Point(272, 28);
             this.searchBtn.Name = "searchBtn";
-            this.searchBtn.Size = new System.Drawing.Size(150, 44);
+            this.searchBtn.Size = new System.Drawing.Size(75, 23);
             this.searchBtn.TabIndex = 25;
             this.searchBtn.Text = "Buscar";
             this.searchBtn.UseVisualStyleBackColor = true;
@@ -49,26 +48,26 @@
             // lblSearchUser
             // 
             this.lblSearchUser.AutoSize = true;
-            this.lblSearchUser.Location = new System.Drawing.Point(49, 64);
-            this.lblSearchUser.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblSearchUser.Location = new System.Drawing.Point(24, 33);
             this.lblSearchUser.Name = "lblSearchUser";
-            this.lblSearchUser.Size = new System.Drawing.Size(87, 26);
+            this.lblSearchUser.Size = new System.Drawing.Size(43, 13);
             this.lblSearchUser.TabIndex = 24;
             this.lblSearchUser.Text = "Usuario";
             // 
             // user
             // 
-            this.user.Location = new System.Drawing.Point(141, 58);
+            this.user.Location = new System.Drawing.Point(70, 30);
             this.user.Margin = new System.Windows.Forms.Padding(0);
             this.user.Name = "user";
-            this.user.Size = new System.Drawing.Size(366, 31);
+            this.user.Size = new System.Drawing.Size(185, 20);
             this.user.TabIndex = 23;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(141, 181);
+            this.button1.Location = new System.Drawing.Point(70, 94);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(366, 67);
+            this.button1.Size = new System.Drawing.Size(183, 35);
             this.button1.TabIndex = 26;
             this.button1.Text = "Modificar Contraseña";
             this.button1.UseVisualStyleBackColor = true;
@@ -77,9 +76,10 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(141, 293);
+            this.button2.Location = new System.Drawing.Point(70, 152);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(366, 67);
+            this.button2.Size = new System.Drawing.Size(183, 35);
             this.button2.TabIndex = 27;
             this.button2.Text = "Desactivar";
             this.button2.UseVisualStyleBackColor = true;
@@ -88,14 +88,16 @@
             // 
             // ModificarUsuario
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(730, 410);
+            this.ClientSize = new System.Drawing.Size(365, 213);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.searchBtn);
             this.Controls.Add(this.lblSearchUser);
             this.Controls.Add(this.user);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "ModificarUsuario";
             this.Text = "Modificar Usuario";
             this.ResumeLayout(false);

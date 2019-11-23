@@ -25,7 +25,7 @@ namespace FrbaOfertas
             abmClientes = 2,
             abmProveedores = 3,
             modificarPassword = 4,
-            bajaUsuario = 5,
+            modificarUsuario = 5,
             cargarCredito = 6,
             comprarOferta = 7,
             altaOferta = 8,

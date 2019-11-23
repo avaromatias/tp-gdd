@@ -139,6 +139,7 @@ namespace FrbaOfertas.AbmCliente
             if (this.camposSonValidos())
             {
                 this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteEncontrado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
+                MessageBox.Show("Los datos fueron modificados correctamente.");
             }
             else
             {

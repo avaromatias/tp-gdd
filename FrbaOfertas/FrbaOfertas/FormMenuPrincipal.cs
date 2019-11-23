@@ -114,6 +114,10 @@ namespace FrbaOfertas
                     ModificarContrasena.FormModificarContrasena modificarContrasena = new ModificarContrasena.FormModificarContrasena(Configuracion.idUsuario);
                     modificarContrasena.Show();
                     break;
+                case Configuracion.modificarUsuario:
+                    ModificarUsuario.ModificarUsuario modificarUsuario = new ModificarUsuario.ModificarUsuario();
+                    modificarUsuario.Show();
+                    break;
                 case Configuracion.cargarCredito:
                     #region GetIDCliente
 		                conexion.Open();
@@ -123,17 +127,14 @@ namespace FrbaOfertas
                         try
                         {
                             idCliente = (int)ejecutar.ExecuteScalar();
+                            conexion.Close();
                         }
                         catch
                         {
+                            conexion.Close();
                             MessageBox.Show("Esta funcionalidad es exclusiva para clientes.");
                             break;
                         }
-                        finally
-                        {
-                            conexion.Close();
-                        }
-                        conexion.Close(); 
 	                #endregion
                     FormCargarCredito formCargarCredito = new FormCargarCredito(idCliente);
                     formCargarCredito.Show();
