@@ -393,6 +393,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.razonSocial);
             this.Controls.Add(this.lblRazonSocial);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FormABMProveedor";
             this.Text = "ABM Proveedores";
             this.filtro.ResumeLayout(false);

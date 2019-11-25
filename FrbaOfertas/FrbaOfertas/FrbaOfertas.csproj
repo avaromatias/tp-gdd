@@ -159,6 +159,9 @@
     <EmbeddedResource Include="AbmCliente\FormABMCliente.resx">
       <DependentUpon>FormABMCliente.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AbmProveedor\FormABMProveedor.resx">
+      <DependentUpon>FormABMProveedor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\FormAltaModificacionRol.resx">
       <DependentUpon>FormAltaModificacionRol.cs</DependentUpon>
     </EmbeddedResource>
