@@ -49,6 +49,7 @@
             this.txtMonto.Location = new System.Drawing.Point(100, 6);
             this.txtMonto.Margin = new System.Windows.Forms.Padding(2);
             this.txtMonto.Name = "txtMonto";
+            this.txtMonto.ShortcutsEnabled = false;
             this.txtMonto.Size = new System.Drawing.Size(205, 20);
             this.txtMonto.TabIndex = 0;
             this.txtMonto.Tag = "";
