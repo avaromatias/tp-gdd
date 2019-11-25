@@ -52,7 +52,6 @@
             this.lblRazonSocial = new System.Windows.Forms.Label();
             this.rubros = new System.Windows.Forms.ComboBox();
             this.filtro = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.lblSrchRazonSocial = new System.Windows.Forms.Label();
             this.lblProveedores = new System.Windows.Forms.Label();
             this.srchRazonSocial = new System.Windows.Forms.TextBox();
@@ -271,7 +270,6 @@
             // 
             // filtro
             // 
-            this.filtro.Controls.Add(this.button1);
             this.filtro.Controls.Add(this.lblSrchRazonSocial);
             this.filtro.Controls.Add(this.lblProveedores);
             this.filtro.Controls.Add(this.srchRazonSocial);
@@ -287,15 +285,6 @@
             this.filtro.TabIndex = 55;
             this.filtro.TabStop = false;
             this.filtro.Text = "Buscar proveedor";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(154, 160);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(118, 23);
-            this.button1.TabIndex = 65;
-            this.button1.Text = "Modificar";
-            this.button1.UseVisualStyleBackColor = true;
             // 
             // lblSrchRazonSocial
             // 
@@ -439,7 +428,6 @@
         private System.Windows.Forms.Label lblRazonSocial;
         private System.Windows.Forms.ComboBox rubros;
         private System.Windows.Forms.GroupBox filtro;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblSrchRazonSocial;
         private System.Windows.Forms.TextBox srchRazonSocial;
         private System.Windows.Forms.ComboBox proveedores;

@@ -13,42 +13,123 @@ namespace FrbaOfertas.AbmCliente
 {
     public partial class FormABMCliente : Form
     {
-        private DataRow clienteEncontrado;
+        private DataTable clientesEncontrados;
+        private DataRow clienteSeleccionado;
 
         public FormABMCliente()
         {
             InitializeComponent();
             acciones.SelectedIndex = 0;
+            clientes.DisplayMember = "dni";
         }
 
-        private bool enModoCreacion()
+        private DataTable buscar()
         {
-            return Convert.ToBoolean(acciones.SelectedIndex);
+            string query = "SELECT c.id_cliente, c.nombre, c.apellido, c.dni, c.mail, c.telefono, c.fecha_nacimiento, c.direccion, c.codigo_postal, c.ciudad, c.habilitado, u.username FROM LOS_GDDS.clientes c JOIN LOS_GDDS.usuarios u ON u.id_cliente = c.id_cliente WHERE ";
+            string condicionNombre = !srchNombre.Text.Equals("") ? "c.nombre LIKE '%" + srchNombre.Text + "%'" : "";
+            query += condicionNombre;
+            if (!srchDni.Text.Equals(""))
+            {
+                string condicionDni = "c.dni = '" + srchDni.Text + "'";
+                query += !srchNombre.Text.Equals("") ? " AND " + condicionDni : condicionDni;
+            }
+            if (!srchMail.Text.Equals(""))
+            {
+                string condicionMail = "c.mail LIKE '%" + srchMail.Text + "%'";
+                query += !srchNombre.Text.Equals("") || !srchDni.Text.Equals("") ? " AND " + condicionMail : condicionMail;
+            }
+            if (!srchApellido.Text.Equals(""))
+            {
+                string condicionApellido = "c.apellido LIKE '%" + srchApellido.Text + "%'";
+                query += !srchNombre.Text.Equals("") || !srchDni.Text.Equals("") || !srchMail.Text.Equals("") ? " AND " + condicionApellido : condicionApellido;
+            }
+
+            return this.makeQuery(query);
         }
 
+        private void cargarClientes(object sender, EventArgs e)
+        {
+            if (!srchDni.Text.Equals("") || !srchMail.Text.Equals("") || !srchNombre.Text.Equals("") || !srchApellido.Text.Equals(""))
+            {
+                this.clientesEncontrados = this.buscar();
+                clientes.DataSource = this.clientesEncontrados;
+                this.seleccionarCliente(null, null);
+            }
+        }
+
+        private void seleccionarCliente(object sender, EventArgs e)
+        {
+            TextBox[] campos = { nombre, apellido, dni, mail, ciudad, direccion, codigoPostal, telefono, user };
+
+            if (this.clientesEncontrados.Rows.Count > 0)
+            {
+                this.cambiarEstadoHabilitacionCampos(true);
+
+                this.clienteSeleccionado = this.clientesEncontrados.Rows[clientes.SelectedIndex];
+                DataRow cliente = this.clienteSeleccionado;
+                nombre.Text = cliente["nombre"].ToString();
+                apellido.Text = cliente["apellido"].ToString();
+                dni.Text = cliente["dni"].ToString();
+                mail.Text = cliente["mail"].ToString();
+                telefono.Text = cliente["telefono"].ToString();
+                direccion.Text = cliente["direccion"].ToString();
+                codigoPostal.Text = cliente["codigo_postal"].ToString();
+                ciudad.Text = cliente["ciudad"].ToString();
+                fecha.Text = cliente["fecha_nacimiento"].ToString();
+                estadoCliente.Checked = !Convert.ToBoolean(cliente["habilitado"].ToString());
+                user.Text = cliente["username"].ToString();
+            }
+            else
+            {
+                this.limpiarCampos();
+                this.cambiarEstadoHabilitacionCampos(false);
+            }
+        }
+
+        private void limpiarCampos()
+        {
+            TextBox[] campos = { nombre, apellido, dni, mail, ciudad, direccion, codigoPostal, telefono, user };
+            foreach (TextBox campo in campos)
+            {
+                campo.Clear();
+            }
+        }
 
         private void acciones_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            nombre.Clear();
-            apellido.Clear();
-            dni.Clear();
-            mail.Clear();
-            ciudad.Clear();
-            direccion.Clear();
-            codigoPostal.Clear();
-            telefono.Clear();
+            this.limpiarCampos();
+
+            this.cambiarEstadoHabilitacionCampos(this.enModoCreacion());
+            user.Enabled = this.enModoCreacion();
             if (this.enModoCreacion())
             {
                 estadoCliente.Hide();
+                filtro.Hide();
+                lblSrchDni.Hide();
+                lblSrchMail.Hide();
+                lblSrchNombre.Hide();
+                clientes.Hide();
+                lblClientes.Hide();
                 saveBtn.Click -= this.actualizarCliente;
                 saveBtn.Click += this.crearCliente;
             }
             else
             {
                 estadoCliente.Show();
+                filtro.Show();
+                lblSrchDni.Show();
+                lblSrchMail.Show();
+                lblSrchNombre.Show();
+                clientes.Show();
+                lblClientes.Show();
                 saveBtn.Click -= this.crearCliente;
                 saveBtn.Click += this.actualizarCliente;
             }
+        }
+
+        private bool enModoCreacion()
+        {
+            return Convert.ToBoolean(acciones.SelectedIndex);
         }
 
         private void crearCliente(object sender, EventArgs e)
@@ -80,47 +161,51 @@ namespace FrbaOfertas.AbmCliente
 
         private bool existeClienteConMismoDni()
         {
-            return getIdClienteByDni().Rows.Count > 0;
+            return dni.Text.Equals("")? false : getIdClienteByDni().Rows.Count > 0;
+        }
+
+        private bool dniExisteYNoEsElPropio()
+        {
+            return this.clienteSeleccionado == null ? false : !this.clienteSeleccionado["dni"].Equals(dni.Text);
         }
 
         private void dni_Leave(object sender, EventArgs e)
         {
-            if (this.enModoCreacion() && this.existeClienteConMismoDni())
+            if (this.existeClienteConMismoDni() && (this.enModoCreacion() || dniExisteYNoEsElPropio()))
             {
                 MessageBox.Show("Ya existe un cliente con ese número de documento.");
             }
         }
 
-        private void searchBtn_Click(object sender, EventArgs e)
+
+        private void cambiarEstadoHabilitacionCampos(bool nuevoEstado)
         {
-            if (user.Text != "")
+            TextBox[] campos = { nombre, apellido, dni, mail, ciudad, direccion, codigoPostal, telefono };
+            foreach (TextBox campo in campos)
             {
-                DataTable clienteEncontrado = this.getClienteByUsername();
-                if (clienteEncontrado.Rows.Count > 0)
-                {
-                    if (this.enModoCreacion())
-                        MessageBox.Show("El usuario ya es cliente.");
-                    acciones.SelectedIndex = 0;
-                    DataRow cliente = clienteEncontrado.Rows[0];
-                    this.clienteEncontrado = cliente;
-                    nombre.Text = cliente["nombre"].ToString();
-                    apellido.Text = cliente["apellido"].ToString();
-                    dni.Text = cliente["dni"].ToString();
-                    mail.Text = cliente["mail"].ToString();
-                    telefono.Text = cliente["telefono"].ToString();
-                    direccion.Text = cliente["direccion"].ToString();
-                    codigoPostal.Text = cliente["codigo_postal"].ToString();
-                    ciudad.Text = cliente["ciudad"].ToString();
-                    fecha.Text = cliente["fecha_nacimiento"].ToString();
-                    estadoCliente.Checked = !Convert.ToBoolean(cliente["habilitado"].ToString());
-                }
-                else
-                {
-                    if (!this.enModoCreacion())
-                        MessageBox.Show("No se encontró ningún cliente con ese nombre de usuario. Puede crearlo.");
-                    acciones.SelectedIndex = 1;
-                }
+                campo.Enabled = nuevoEstado;
             }
+
+            Label[] labels = { lblNombre, lblApellido, lblMail, lblTelefono, lblCiudad, lblDireccion, lblFecha, lblCodigoPostal, lblDni, lblUser };
+
+            foreach(Label label in labels)  {
+                label.Enabled = nuevoEstado;
+            }
+
+            estadoCliente.Enabled = nuevoEstado;
+
+            fecha.Enabled = nuevoEstado;
+        }
+
+        private bool existeClienteByUsername()
+        {
+            return this.getClienteByUsername().Rows.Count > 0;
+        }
+
+        private void username_Leave(object sender, EventArgs e)
+        {
+            if(this.existeClienteByUsername())
+                MessageBox.Show("El usuario ya es cliente.");
         }
 
         private bool camposSonValidos()
@@ -138,12 +223,12 @@ namespace FrbaOfertas.AbmCliente
         {
             if (this.camposSonValidos())
             {
-                this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteEncontrado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
+                this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteSeleccionado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
                 MessageBox.Show("Los datos fueron modificados correctamente.");
             }
             else
             {
-                MessageBox.Show("Alguno de los dátos está vacío.");
+                MessageBox.Show("Alguno de los datos está vacío o es inválido.");
             }
         }
 
@@ -188,6 +273,21 @@ namespace FrbaOfertas.AbmCliente
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblSrchCuit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblSrchRazonSocial_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblProveedores_Click(object sender, EventArgs e)
         {
 
         }

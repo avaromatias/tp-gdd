@@ -93,7 +93,7 @@ GO
 -- tabla proveedores
 CREATE TABLE [LOS_GDDS].[proveedores] (
 	id_proveedor INT PRIMARY KEY IDENTITY,
-	razon_social NVARCHAR(100),
+	razon_social NVARCHAR(100) UNIQUE,
 	-- use el mismo datatype que usamos en clientes, porque en la maestra no esta el campo
 	mail NVARCHAR(255),
 	telefono NUMERIC(18,0),
@@ -946,6 +946,37 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [LOS_GDDS].[modificar_proveedor]
+	@IdProveedor INT,
+	@RazonSocial VARCHAR(255),
+	@Contacto VARCHAR(255),
+	@Cuit NVARCHAR(20),
+	@Mail NVARCHAR(255),
+	@Telefono NUMERIC(18, 0),
+	@Direccion NVARCHAR(255),
+	@CodigoPostal NVARCHAR(15),
+	@IdRubro INT,
+	@Ciudad VARCHAR(255),
+	@Habilitado BIT
+AS
+BEGIN
+	UPDATE [LOS_GDDS].[proveedores]
+		SET razon_social = @RazonSocial,
+		nombre_contacto = @Contacto,
+		cuit = @Cuit,
+		mail = @Mail,
+		id_rubro = @IdRubro,
+		telefono = @Telefono,
+		ciudad = @Ciudad,
+		direccion = @Direccion,
+		codigo_postal = @CodigoPostal,
+		habilitado = @Habilitado
+		WHERE id_proveedor = @IdProveedor
+
+	RETURN
+END
+GO
+
 CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_rol]
 	@Nombre VARCHAR(255),
 	@Habilitado BIT,
@@ -1083,6 +1114,7 @@ END
 GO
 
 CREATE PROCEDURE [LOS_GDDS].[insertar_nuevo_proveedor]
+	@Username VARCHAR(255),
 	@RazonSocial NVARCHAR(100),
 	@Mail NVARCHAR(255),
 	@Telefono NUMERIC(18, 0),
@@ -1110,8 +1142,10 @@ BEGIN
 			@NombreContacto,
 			@Rubro
 		)
-
+	
 	SET @IdProveedor = SCOPE_IDENTITY();
+	
+	UPDATE LOS_GDDS.usuarios SET id_proveedor = @IdProveedor WHERE username = @Username;
 
 	RETURN
 END
