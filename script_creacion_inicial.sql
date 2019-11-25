@@ -1090,7 +1090,7 @@ AS
 BEGIN
 	INSERT INTO
 		[LOS_GDDS].[clientes] ([nombre], [apellido], [dni], [mail], [telefono], [direccion],
-		[codigo_postal], [fecha_nacimiento], [saldo], ciudad)
+		[codigo_postal], [fecha_nacimiento], [saldo], [ciudad])
 	VALUES
 		(
 			@Nombre,
@@ -1107,7 +1107,10 @@ BEGIN
 
 	SET @IdCliente = SCOPE_IDENTITY();
 	
-	UPDATE LOS_GDDS.usuarios SET id_cliente = @IdCliente WHERE username = @Username;
+	IF(@Username IS NOT NULL)
+		BEGIN
+			UPDATE LOS_GDDS.usuarios SET id_cliente = @IdCliente WHERE username = @Username;
+		END
 
 	RETURN
 END
@@ -1145,7 +1148,10 @@ BEGIN
 	
 	SET @IdProveedor = SCOPE_IDENTITY();
 	
-	UPDATE LOS_GDDS.usuarios SET id_proveedor = @IdProveedor WHERE username = @Username;
+	IF(@Username IS NOT NULL)
+		BEGIN
+			UPDATE LOS_GDDS.usuarios SET id_proveedor = @IdProveedor WHERE username = @Username;
+		END
 
 	RETURN
 END
@@ -1969,4 +1975,13 @@ GO
 
 ENABLE TRIGGER [LOS_GDDS].[update_compra]
 ON [LOS_GDDS].[facturas]
+GO
+
+-- deshabilito los triggers que servían únicamente en el contexto de la migración
+DISABLE TRIGGER [LOS_GDDS].[generar_usuario_cliente]
+ON [LOS_GDDS].[clientes]
+GO
+
+DISABLE TRIGGER [LOS_GDDS].[generar_usuario_proveedor]
+ON [LOS_GDDS].[proveedores]
 GO

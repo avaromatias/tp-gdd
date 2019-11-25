@@ -45,7 +45,7 @@ namespace FrbaOfertas
                     pnlClientes.Visible = false;
 
                     conexion.Open();
-                    // Cargo los roles existentes
+                    // Cargo los rubros existentes
                     SqlCommand cargarRubros = new SqlCommand("SELECT [id_rubro], [descripcion] FROM [LOS_GDDS].[Rubros]", conexion);
                     SqlDataAdapter adapter = new SqlDataAdapter(cargarRubros);
                     conexion.Close();
@@ -145,6 +145,7 @@ namespace FrbaOfertas
                     conexion.Open();
                     SqlCommand insertarCliente = new SqlCommand("[LOS_GDDS].[insertar_nuevo_cliente]", conexion);
                     insertarCliente.CommandType = CommandType.StoredProcedure;
+                    insertarCliente.Parameters.AddWithValue("@Username", DBNull.Value);
                     insertarCliente.Parameters.AddWithValue("@Nombre", txtNombreCliente.Text);
                     insertarCliente.Parameters.AddWithValue("@Apellido", txtApellido.Text);
                     insertarCliente.Parameters.AddWithValue("@Dni", int.Parse(mtxtDni.Text));
@@ -153,7 +154,7 @@ namespace FrbaOfertas
                     insertarCliente.Parameters.AddWithValue("@Direccion", txtDireccionCliente.Text);
                     insertarCliente.Parameters.AddWithValue("@CodigoPostal", mtxtCP.Text);
                     insertarCliente.Parameters.AddWithValue("@FechaNacimiento", dtpFechaNacimiento.Value);
-                    // Agregar parámetro ciudad
+                    insertarCliente.Parameters.AddWithValue("@Ciudad", DBNull.Value);
                     var idCliente = insertarCliente.Parameters.Add("@IdCliente", SqlDbType.Int);
                     idCliente.Direction = ParameterDirection.Output;
                     SqlDataReader dataCliente = insertarCliente.ExecuteReader();
@@ -195,10 +196,11 @@ namespace FrbaOfertas
                     conexion.Open();
                     SqlCommand insertarProveedor = new SqlCommand("[LOS_GDDS].[insertar_nuevo_proveedor]", conexion);
                     insertarProveedor.CommandType = CommandType.StoredProcedure;
+                    insertarProveedor.Parameters.AddWithValue("@Username", DBNull.Value);
                     insertarProveedor.Parameters.AddWithValue("@RazonSocial", txtRazonSocial.Text);
                     insertarProveedor.Parameters.AddWithValue("@Mail", txtMailProveedor.Text);
                     insertarProveedor.Parameters.AddWithValue("@Telefono", int.Parse(mtxtTelefonoProveedor.Text));
-                    insertarProveedor.Parameters.AddWithValue("@CodigoPostal", txtMailCliente.Text); //Fixear
+                    insertarProveedor.Parameters.AddWithValue("@CodigoPostal", DBNull.Value);
                     insertarProveedor.Parameters.AddWithValue("@Ciudad", txtCiudad.Text);
                     insertarProveedor.Parameters.AddWithValue("@Direccion", txtDireccionProveedor.Text);
                     insertarProveedor.Parameters.AddWithValue("@Cuit", mtxtCuit.Text);
@@ -220,8 +222,8 @@ namespace FrbaOfertas
                     insertarUsuario.CommandType = CommandType.StoredProcedure;
                     insertarUsuario.Parameters.AddWithValue("@Username", txtUsername.Text);
                     insertarUsuario.Parameters.AddWithValue("@Password", txtPassword.Text);
-                    insertarUsuario.Parameters.AddWithValue("@IdCliente", idNuevoProveedor);
-                    insertarUsuario.Parameters.AddWithValue("@IdProveedor", DBNull.Value);
+                    insertarUsuario.Parameters.AddWithValue("@IdCliente", DBNull.Value);
+                    insertarUsuario.Parameters.AddWithValue("@IdProveedor", idNuevoProveedor);
                     var idUsuario = insertarUsuario.Parameters.Add("@IdUsuario", SqlDbType.Int);
                     idUsuario.Direction = ParameterDirection.Output;
                     SqlDataReader dataUsuario = insertarUsuario.ExecuteReader();
