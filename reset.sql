@@ -190,6 +190,9 @@ DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_cliente]
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_proveedor')
 DROP PROCEDURE  [LOS_GDDS].[insertar_nuevo_proveedor]
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'modificar_proveedor')
+DROP PROCEDURE  [LOS_GDDS].[modificar_proveedor]
+
 IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'insertar_nuevo_usuario')
 DROP PROCEDURE  [LOS_GDDS].insertar_nuevo_usuario
 
