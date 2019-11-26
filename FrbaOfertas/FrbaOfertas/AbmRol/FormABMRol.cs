@@ -84,6 +84,8 @@ namespace FrbaOfertas.AbmRol
                 SqlCommand ejecutar = new SqlCommand(queryBajaLogicaRol, conexion);
                 ejecutar.ExecuteNonQuery();
 
+                new SqlCommand("DELETE FROM LOS_GDDS.roles_usuario WHERE id_rol = " + idRol, conexion).ExecuteNonQuery();
+
                 conexion.Close();
 
                 this.cargarRoles();
