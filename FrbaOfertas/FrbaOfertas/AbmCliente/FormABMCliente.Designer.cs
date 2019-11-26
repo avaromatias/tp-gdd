@@ -63,6 +63,7 @@
             this.srchDni = new System.Windows.Forms.TextBox();
             this.srchMail = new System.Windows.Forms.TextBox();
             this.lblSrchMail = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.filtro.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -412,11 +413,22 @@
             this.lblSrchMail.TabIndex = 60;
             this.lblSrchMail.Text = "Mail";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(460, 10);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(91, 23);
+            this.button1.TabIndex = 57;
+            this.button1.Text = "Limpiar campos";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.limpiarCampos);
+            // 
             // FormABMCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(574, 432);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.filtro);
             this.Controls.Add(this.codigoPostal);
             this.Controls.Add(this.lblCodigoPostal);
@@ -489,6 +501,7 @@
         private System.Windows.Forms.TextBox srchMail;
         private System.Windows.Forms.Label lblSrchMail;
         private System.Windows.Forms.Label lblSrchApellido;
+        private System.Windows.Forms.Button button1;
 
     }
 }

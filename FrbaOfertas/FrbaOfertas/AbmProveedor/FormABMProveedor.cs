@@ -73,11 +73,11 @@ namespace FrbaOfertas.AbmProveedor
             }
             else
             {
-                this.limpiarCampos();
+                this.limpiarCampos(null, null);
             }
         }
 
-        private void limpiarCampos()
+        private void limpiarCampos(object sender, EventArgs e)
         {
             TextBox[] campos = { razonSocial, contacto, cuit, mail, ciudad, direccion, codigoPostal, telefono, user };
             foreach (TextBox campo in campos)
@@ -88,7 +88,7 @@ namespace FrbaOfertas.AbmProveedor
 
         private void acciones_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            this.limpiarCampos();
+            this.limpiarCampos(null, null);
             user.Enabled = this.enModoCreacion();
             if (this.enModoCreacion())
             {

@@ -81,12 +81,12 @@ namespace FrbaOfertas.AbmCliente
             }
             else
             {
-                this.limpiarCampos();
+                this.limpiarCampos(null, null);
                 this.cambiarEstadoHabilitacionCampos(false);
             }
         }
 
-        private void limpiarCampos()
+        private void limpiarCampos(object sender, EventArgs e)
         {
             TextBox[] campos = { nombre, apellido, dni, mail, ciudad, direccion, codigoPostal, telefono, user };
             foreach (TextBox campo in campos)
@@ -97,7 +97,7 @@ namespace FrbaOfertas.AbmCliente
 
         private void acciones_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            this.limpiarCampos();
+            this.limpiarCampos(null, null);
 
             this.cambiarEstadoHabilitacionCampos(this.enModoCreacion());
             user.Enabled = this.enModoCreacion();
@@ -134,7 +134,15 @@ namespace FrbaOfertas.AbmCliente
 
         private void crearCliente(object sender, EventArgs e)
         {
-            this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente '" + user.Text + "', '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', '" + codigoPostal.Text + "', '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', NULL");
+            if (this.camposSonValidos())
+            {
+                this.makeQuery("EXEC LOS_GDDS.insertar_nuevo_cliente '" + user.Text + "', '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', '" + codigoPostal.Text + "', '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', NULL");
+                MessageBox.Show("El cliente fue dado de alta correctamente.");
+            }
+            else
+            {
+                MessageBox.Show("Alguno de los datos está vacío o es inválido.");
+            }
         }
 
         private DataTable makeQuery(String query)
@@ -159,9 +167,15 @@ namespace FrbaOfertas.AbmCliente
             return this.makeQuery("SELECT TOP 1 c.id_cliente, c.nombre, c.apellido, c.dni, c.mail, c.telefono, c.fecha_nacimiento, c.direccion, c.codigo_postal, c.ciudad, c.habilitado FROM LOS_GDDS.usuarios u JOIN LOS_GDDS.clientes c ON u.id_cliente = c.id_cliente WHERE u.username = '" + user.Text + "'");
         }
 
+        private bool isInt(string number)
+        {
+            int n;
+            return int.TryParse(number, out n);
+        }
+
         private bool existeClienteConMismoDni()
         {
-            return dni.Text.Equals("")? false : getIdClienteByDni().Rows.Count > 0;
+            return dni.Text.Equals("") || !isInt(dni.Text)? false : getIdClienteByDni().Rows.Count > 0;
         }
 
         private bool dniExisteYNoEsElPropio()
@@ -202,15 +216,34 @@ namespace FrbaOfertas.AbmCliente
             return this.getClienteByUsername().Rows.Count > 0;
         }
 
+        private DataTable getIdUsuarioByUsername()
+        {
+            return this.makeQuery("SELECT id_usuario FROM LOS_GDDS.usuarios WHERE username = '" + user.Text + "'");
+        }
+
+        private bool existeUsuario()
+        {
+            return this.getIdUsuarioByUsername().Rows.Count > 0;
+        }
+
         private void username_Leave(object sender, EventArgs e)
         {
-            if(this.existeClienteByUsername())
+            saveBtn.Enabled = true;
+            if (!this.existeUsuario())
+            {
+                MessageBox.Show("No existe ningún usuario con ese nombre.");
+                saveBtn.Enabled = false;
+            }
+            else if (this.existeClienteByUsername())
+            {
                 MessageBox.Show("El usuario ya es cliente.");
+                saveBtn.Enabled = false;
+            }            
         }
 
         private bool camposSonValidos()
         {
-            TextBox[] campos = { nombre, apellido, dni, mail, telefono, ciudad, direccion, codigoPostal };
+            TextBox[] campos = { nombre, apellido, dni, mail, telefono, ciudad, direccion, codigoPostal, user };
             foreach (TextBox campo in campos)
             {
                 if (campo.Text == "")
