@@ -178,7 +178,7 @@
             this.fecha.Enabled = false;
             this.fecha.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.fecha.Location = new System.Drawing.Point(387, 330);
-            this.fecha.MaxDate = new System.DateTime(2019, 11, 14, 0, 0, 0, 0);
+            this.fecha.MaxDate = new System.DateTime(3000, 11, 14, 0, 0, 0, 0);
             this.fecha.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.fecha.Name = "fecha";
             this.fecha.Size = new System.Drawing.Size(178, 20);

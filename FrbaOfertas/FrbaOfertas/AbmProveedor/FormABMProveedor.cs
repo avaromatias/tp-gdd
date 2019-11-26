@@ -257,6 +257,12 @@ namespace FrbaOfertas.AbmProveedor
             if (this.camposSonValidos())
             {
                 this.makeQuery("EXEC LOS_GDDS.modificar_proveedor " + this.proveedorSeleccionado["id_proveedor"] + ", '" + razonSocial.Text + "', '" + contacto.Text + "', '" + cuit.Text + "', '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', '" + codigoPostal.Text + "', " + rubros.SelectedValue + ", '" + ciudad.Text + "', " + (estadoProveedor.Checked ? 0 : 1));
+                string idUsuario = this.makeQuery("SELECT id_usuario FROM LOS_GDDS.usuarios WHERE username = '" + user.Text + "'").Rows[0]["id_usuario"].ToString();
+                DataTable rolUsuario = this.makeQuery("SELECT 1 FROM LOS_GDDS.roles_usuario WHERE id_usuario = " + idUsuario + " AND id_rol = 2");
+                if (rolUsuario.Rows.Count == 0)
+                {
+                    this.makeQuery("INSERT INTO LOS_GDDS.roles_usuario VALUES(" + idUsuario + ", 2)");
+                }
                 MessageBox.Show("Los datos fueron modificados correctamente.");
             }
             else

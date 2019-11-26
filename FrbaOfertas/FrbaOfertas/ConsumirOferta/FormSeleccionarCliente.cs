@@ -40,8 +40,8 @@ namespace FrbaOfertas.ConsumirOferta
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                    //MessageBox.Show("No se encontró ningún cliente con ese nombre de usuario.");
+                    //MessageBox.Show(ex.Message);
+                    MessageBox.Show("No se encontró ningún cliente con ese nombre de usuario.");
                 }
                 finally
                 {

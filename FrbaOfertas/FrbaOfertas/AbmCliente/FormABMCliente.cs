@@ -257,6 +257,12 @@ namespace FrbaOfertas.AbmCliente
             if (this.camposSonValidos())
             {
                 this.makeQuery("EXEC LOS_GDDS.modificar_cliente " + this.clienteSeleccionado["id_cliente"] + ", '" + nombre.Text + "', '" + apellido.Text + "', " + dni.Text + ", '" + mail.Text + "', " + telefono.Text + ", '" + direccion.Text + "', " + codigoPostal.Text + ", '" + fecha.Value.ToString("yyyy-MM-dd") + "T00:00:00.000', '" + ciudad.Text + "', " + (estadoCliente.Checked ? 0 : 1));
+                string idUsuario = this.makeQuery("SELECT id_usuario FROM LOS_GDDS.usuarios WHERE username = '" + user.Text + "'").Rows[0]["id_usuario"].ToString();
+                DataTable rolUsuario = this.makeQuery("SELECT 1 FROM LOS_GDDS.roles_usuario WHERE id_usuario = " + idUsuario + " AND id_rol = 3");
+                if (rolUsuario.Rows.Count == 0)
+                {
+                    this.makeQuery("INSERT INTO LOS_GDDS.roles_usuario VALUES(" + idUsuario + ", 3)");
+                }
                 MessageBox.Show("Los datos fueron modificados correctamente.");
             }
             else

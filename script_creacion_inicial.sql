@@ -149,7 +149,6 @@ GO
 
 -- tabla ofertas
 CREATE TABLE [LOS_GDDS].[ofertas] (
-	-- este ID es un NVARCHAR segun la tabla maestra
 	id_oferta NVARCHAR(50) PRIMARY KEY,
 	id_proveedor INT NOT NULL,
 	precio_lista NUMERIC(18,2),
@@ -387,7 +386,6 @@ BEGIN
 	UPDATE
 		[clientes]
 	SET
-		-- estoy actualizando el saldo disponible en base a lo vendido y NO a lo entregado
 		[saldo] +=
 				(
 					SELECT
@@ -564,30 +562,6 @@ BEGIN
 END
 GO
 
---CREATE PROCEDURE [LOS_GDDS].[actualizar_saldo_disponible_clientes]
---AS
---BEGIN
---	UPDATE
---		[LOS_GDDS].[clientes]
---	SET
---		[saldo] -=
---					(
---						SELECT
---							SUM([o].[precio_oferta])
---						FROM
---							[LOS_GDDS].[compras] [c]
---						INNER JOIN
---							[LOS_GDDS].[ofertas] [o]
---						ON
---							[c].[id_oferta] = [o].[id_oferta]
---						WHERE
---							[clientes].[id_cliente] = [c].[id_cliente]
---						GROUP BY
---							[o].[id_oferta], [c].[id_cliente]
---					)
---END
---GO
-
 CREATE PROCEDURE [LOS_GDDS].[migrar_compras]
 AS
 BEGIN
@@ -624,7 +598,6 @@ BEGIN
 		)
 
 	EXEC [LOS_GDDS].[actualizar_stock_ofertas]
---	EXEC [LOS_GDDS].[actualizar_saldo_disponible_clientes]
 END
 GO
 
@@ -884,36 +857,6 @@ BEGIN
 	RETURN
 END
 GO
-
-/*CREATE PROCEDURE [LOS_GDDS].[sacar_funcionalidades_a_rol]
-	@IdRol INT
-AS
-BEGIN
-	DELETE
-		[LOS_GDDS].[funcionalidades_rol]
-	WHERE
-		[id_rol] = @IdRol
-
-	RETURN
-END
-GO
-
-CREATE PROCEDURE [LOS_GDDS].[insertar_funcionalidad_rol]
-	@IdRol INT,
-	@IdFuncionalidad INT
-AS
-BEGIN
-	INSERT INTO
-		[LOS_GDDS].[funcionalidades_rol]
-	VALUES
-		(
-			@IdRol,
-			@IdFuncionalidad
-		)
-
-	RETURN
-END
-GO*/
 
 CREATE PROCEDURE [LOS_GDDS].[modificar_cliente]
 	@IdCliente INT,
